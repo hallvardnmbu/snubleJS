@@ -1,0 +1,23 @@
+[package]
+name = "vinmonopolet"
+version = "0.0.1"
+edition = "2021"
+description = "Vinmonopolet wine tracker"
+authors = ["Hallvard Høyland Lavik"]
+homepage = "https://github.com/hallvardnmbu/vinmonopolet"
+readme = "README.md"
+license = "Apache-2.0"
+repository = "https://github.com/hallvardnmbu/vinmonopolet"
+include = ["**/*.rs", "Cargo.toml"]
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+chrono = "0.4"
+dotenv = "0.15"
+thiserror = "1.0"
+
+[[bin]]
+name = "vinmonopolet"
+path = "src/fetch.rs"
