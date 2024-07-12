@@ -1,4 +1,4 @@
-"""Stores the fetched products and their prices in CSV files."""
+"""Stores the fetched products and their prices in `parquet` files."""
 
 import os
 import pandas as pd
@@ -8,8 +8,8 @@ from scrape import LOGGER, CATEGORY, get_products
 
 def store_products(
         category: CATEGORY = CATEGORY.RED_WINE,
-        products: str = "products.csv",
-        prices: str = "prices.csv"
+        products: str = "products",
+        prices: str = "prices"
 ):
     """
     Fetches all products from the given category and stores them in file `products` (overwrites).
@@ -20,15 +20,16 @@ def store_products(
     category : CATEGORY, optional
         The category of products to fetch.
     products : str, optional
-        The name of the CSV file to store the products. Overwrites the file if it exists.
+        The name of the `parquet` file to store the products.
+        Overwrites the file if it exists.
     prices : str, optional
-        The name of the CSV file to store the updated prices.
+        The name of the `parquet` file to store the updated prices.
     """
     LOGGER.info(f"Storing products from category {category.value}.")
 
     _products = get_products(category)
     _products = pd.DataFrame(_products).T
-    _products.to_csv(products)
+    _products.to_parquet(products + ".parquet")
 
     _store_prices(_products, prices)
 
@@ -45,28 +46,27 @@ def _store_prices(
     products : pd.DataFrame
         The products with their current metadata.
     file : str
-        The name of the CSV file to store the updated prices.
+        The name of the `parquet` file to store the updated prices.
     """
     LOGGER.info(f" Storing prices in {file}.")
 
-    products.reset_index(inplace=True, names="id")
-    products.set_index(['name', 'volume', 'country', 'district', 'sub_district'], inplace=True)
+    products = products[["price"]].copy()
     products.rename(columns={"price": pd.Timestamp.now()}, inplace=True)
 
     if not os.path.exists(file):
         LOGGER.debug(f"Creating new file {file}.")
-        products.to_csv(file)
+        products.to_parquet(file + ".parquet")
         return
 
-    old = pd.read_csv(file, index_col=['name', 'volume', 'country', 'district', 'sub_district'])
+    old = pd.read_parquet(file + ".parquet")
 
     updated = pd.concat([old, products], axis=1)
-    updated.to_csv(file)
+    updated.to_parquet(file + ".parquet")
 
 
 def store_prices(
         category: CATEGORY = CATEGORY.RED_WINE,
-        file: str = "prices.csv"
+        file: str = "prices"
 ):
     """
     Fetches all products from the given category and updates (appends) their prices in `file`.
@@ -76,7 +76,7 @@ def store_prices(
     category : CATEGORY, optional
         The category of products to fetch.
     file : str, optional
-        The name of the CSV file to store the updated prices.
+        The name of the `parquet` file to store the updated prices.
     """
     LOGGER.info(f"Storing prices from category {category.value}.")
 
