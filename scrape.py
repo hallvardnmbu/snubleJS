@@ -4,14 +4,15 @@ import enum
 import json
 import requests
 from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-from fp.fp import FreeProxy
 
 _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
         "search?searchType=product"
         "&currentPage={}"
         "&q=%3Arelevance%3AmainCategory%3A{}")
+
+_PROXIES = None
+_PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies"
+              "&proxy_format=protocolipport&format=text")
 
 
 class CATEGORY(enum.Enum):
@@ -37,14 +38,18 @@ class CATEGORY(enum.Enum):
     MEAD = "mjød"
 
 
-def get_free_proxies():
-    proxy_list_url = "https://www.proxy-list.download/api/v1/get?type=https"
-    response = requests.get(proxy_list_url)
-    proxies = response.text.split('\r\n')
-    return [proxy for proxy in proxies if proxy][::-1]
+def get_proxy():
+    global _PROXIES
+
+    if _PROXIES is None:
+        _PROXIES = [proxy for proxy in
+                    requests.get(_PROXY_URL).text.split('\r\n')
+                    if proxy and proxy.startswith("http")]
+
+    return {"http": _PROXIES.pop(0)}
 
 
-def get_products(category: CATEGORY, use_proxy: bool = True) -> dict:
+def get_products(category: CATEGORY) -> dict:
     """
     Fetches all products from the given category.
 
@@ -52,8 +57,6 @@ def get_products(category: CATEGORY, use_proxy: bool = True) -> dict:
     ----------
     category : CATEGORY
         The category of products to fetch.
-    use_proxy : bool, optional
-        Whether to use a VPN to fetch the products.
 
     Returns
     -------
@@ -64,17 +67,20 @@ def get_products(category: CATEGORY, use_proxy: bool = True) -> dict:
     items = {}
     session = requests.Session()
 
-    # Works: 195.159.124.56:85
-    #        195.159.124.57:85
-    proxy = {
-        "http": f"http://195.159.124.57:85",
-        "https": f"http://195.159.124.57:85"
-    }
-
+    proxy = get_proxy()
     for page in range(1000):
-        response = session.get(_URL.format(page, category.value), proxies=proxy)
 
-        if response.status_code != 200:
+        i = 0
+        response = None
+        while i < 10:
+            try:
+                response = session.get(_URL.format(page, category.value), proxies=proxy)
+                break
+            except requests.exceptions.ProxyError:
+                proxy = get_proxy()
+                i += 1
+
+        if response is None or response.status_code != 200:
             print(f"Failed to fetch page {page}.")
             break
 
@@ -104,7 +110,5 @@ def get_products(category: CATEGORY, use_proxy: bool = True) -> dict:
                 "district": district,
                 "sub_district": sub_district
             }
-
-        return items
 
     return items
