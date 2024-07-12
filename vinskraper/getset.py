@@ -33,7 +33,7 @@ def set_data(state):
     state['flag']['updating'] = False
 
 
-def set_category(state, category):
+def set_category(state):
     """
     Updates the current category with the selected value.
     Thereafter, the data is updated by calling `set_data`.
@@ -43,6 +43,7 @@ def set_category(state, category):
     state : dict
         The current state of the application.
     """
+    category = state['parameter']['category']['value']
     state['parameter'] = {
         'category': {
             'name': state['categories'][category],

@@ -17,23 +17,21 @@
         "ccad7k7sc5oxy81l": {
             "id": "ccad7k7sc5oxy81l",
             "type": "page",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "root",
-            "handlers": {},
-            "visible": true
-        },
-        "g75pfkrw9ibv1jct": {
-            "id": "g75pfkrw9ibv1jct",
-            "type": "heading",
             "content": {
-                "text": "Hallais",
-                "headingType": "h1"
+                "accentColor": "#EE7214",
+                "emptinessColor": "#FFF6E9",
+                "primaryTextColor": "#191817",
+                "secondaryTextColor": "#EE7214",
+                "containerBackgroundColor": "#F9E8D9",
+                "separatorColor": "#191817",
+                "selectedColor": "#EE7214",
+                "cssClasses": "",
+                "buttonColor": "#F9E8D9",
+                "buttonTextColor": "#191817"
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "ccad7k7sc5oxy81l",
+            "parentId": "root",
             "handlers": {},
             "visible": true
         },
@@ -42,7 +40,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 1,
+            "position": 0,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -66,7 +64,13 @@
                 "label": "",
                 "options": "@{categories}",
                 "placeholder": "Kategori",
-                "maximumCount": "1"
+                "maximumCount": "1",
+                "cssClasses": "",
+                "selectedColor": "#FFF6E9",
+                "accentColor": "#F9E8D9",
+                "chipTextColor": "#EE7214",
+                "primaryTextColor": "#191817",
+                "secondaryTextColor": "#191817"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -85,7 +89,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -101,7 +105,7 @@
             "position": 0,
             "parentId": "5apxotnfx4swl932",
             "handlers": {},
-            "visible": true
+            "visible": "flag.fetch_allowed"
         },
         "ievverr9gyla4bny": {
             "id": "ievverr9gyla4bny",
@@ -147,10 +151,11 @@
             "id": "f2z440vk7btjnj01",
             "type": "message",
             "content": {
-                "message": "%Updating"
+                "message": "%Fetching",
+                "loadingColor": "#527853"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 2,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.fetching"
@@ -159,10 +164,11 @@
             "id": "ep60i50awfyxuux2",
             "type": "message",
             "content": {
-                "message": "%Updating data"
+                "message": "%Updating",
+                "loadingColor": "#527853"
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 3,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.updating"
@@ -172,11 +178,26 @@
             "type": "dataframe",
             "content": {
                 "dataframe": "@{data.products}",
-                "displayRowCount": ""
+                "displayRowCount": "",
+                "dataframeBackgroundColor": "#FFF6E9",
+                "dataframeHeaderRowBackgroundColor": "#F9E8D9",
+                "fontStyle": "monospace"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 4,
             "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "bsydyjlumqy0kcn1": {
+            "id": "bsydyjlumqy0kcn1",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "n1bns18x494nl7q3",
             "handlers": {},
             "visible": true
         }

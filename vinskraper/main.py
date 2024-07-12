@@ -6,17 +6,6 @@ from getset import CATEGORY, set_data, set_category, get_prices, get_products
 
 
 STATE = streamsync.init_state({
-    'colours': {
-        'pink': '#c37892',
-        'brown': '#8a795d',
-        'purple': '#746cc0',
-        'red': 'red',
-        'background': '#AAD3DF',
-        'green': '#BCDAB1',
-        'black': '#143439',
-        'white': '#F3EFE8',
-    },
-
     'categories': {
         v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
         for k, v in CATEGORY.__dict__["_value2member_map_"].items()
@@ -37,6 +26,16 @@ STATE = streamsync.init_state({
     },
 
     'plot': {
+        'colours': {
+            'pink': '#c37892',
+            'brown': '#8a795d',
+            'purple': '#746cc0',
+            'red': 'red',
+            'background': '#AAD3DF',
+            'green': '#BCDAB1',
+            'black': '#143439',
+            'white': '#F3EFE8',
+        },
     },
 
     'flag': {
@@ -45,5 +44,7 @@ STATE = streamsync.init_state({
         'updating': False,
     },
 })
+
+STATE.import_stylesheet("theme", "/stylesheet.css")
 
 set_data(STATE)
