@@ -2,8 +2,12 @@
 
 import enum
 import json
+import logging
+
 import requests
 from bs4 import BeautifulSoup
+
+LOGGER = logging.getLogger(__name__)
 
 _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
         "search?searchType=product"
@@ -12,7 +16,7 @@ _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
 
 _PROXIES = None
 _PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies"
-              "&proxy_format=protocolipport&format=text")
+              "&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000")
 
 
 class CATEGORY(enum.Enum):
@@ -64,6 +68,8 @@ def get_products(category: CATEGORY) -> dict:
         A dictionary containing the products fetched from the given category.
         The product ID is used as the key, and the product information is stored as a dictionary.
     """
+    LOGGER.info(f"Fetching products from category {category.value}.")
+
     items = {}
     session = requests.Session()
     proxy = get_proxy()
@@ -73,6 +79,7 @@ def get_products(category: CATEGORY) -> dict:
     # Assuming that there is less than 1000 pages.
 
     for page in range(1000):
+        LOGGER.debug(f"[Page] {page}.")
 
         # ------------------------------------------------------------------------------------------
         # Tries to fetch the page using the proxy.
@@ -86,11 +93,16 @@ def get_products(category: CATEGORY) -> dict:
                 response = session.get(_URL.format(page, category.value), proxies=proxy)
                 break
             except requests.exceptions.ProxyError:
+                LOGGER.debug(" [Proxy] Error, trying another proxy.")
                 proxy = get_proxy()
                 i += 1
+            except Exception as e:
+                LOGGER.error(f"Error at page {page} (with proxy {proxy} at retry {i}).\n"
+                             f"{e}")
+                break
 
         if response is None or response.status_code != 200:
-            print(f"Failed to fetch page {page}.")
+            LOGGER.error(f"Failed to fetch page {page}.")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -99,7 +111,7 @@ def get_products(category: CATEGORY) -> dict:
         soup = BeautifulSoup(response.text, "html.parser")
         products = json.loads(soup.string)["productSearchResult"]["products"]
         if not products:
-            print(f"No more products (got to page {page - 1}).")
+            LOGGER.info(f"No more products (got to page {page - 1}).")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -116,7 +128,7 @@ def get_products(category: CATEGORY) -> dict:
             district = product["district"].get("name", None)
             sub_district = product["sub_District"].get("name", None)
 
-            items[code] = {
+            items[code if code not in items else _get_code(list(items.keys()), float(code))] = {
                 "name": name,
                 "price": price,
                 "volume": volume,
@@ -125,6 +137,14 @@ def get_products(category: CATEGORY) -> dict:
                 "sub_district": sub_district
             }
 
-        return items
-
     return items
+
+
+def _get_code(keys: list, code: float) -> float:
+    """Iteratively finds the next available code by adding `0.1` if duplicated."""
+    LOGGER.debug(f"Code {code} already exists, finding new code.")
+    _code = int(code)
+    while code in keys:
+        code += 0.1 if code - _code < 0.9 else 0.01
+    LOGGER.debug(f"New code found: {code}.")
+    return code

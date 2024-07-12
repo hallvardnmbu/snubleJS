@@ -1,7 +1,9 @@
+"""Stores the fetched products and their prices in CSV files."""
+
 import os
 import pandas as pd
 
-from scrape import CATEGORY, get_products
+from scrape import LOGGER, CATEGORY, get_products
 
 
 def store_products(
@@ -22,6 +24,8 @@ def store_products(
     prices : str, optional
         The name of the CSV file to store the updated prices.
     """
+    LOGGER.info(f"Storing products from category {category.value}.")
+
     _products = get_products(category)
     _products = pd.DataFrame(_products).T
     _products.to_csv(products)
@@ -43,11 +47,14 @@ def _store_prices(
     file : str
         The name of the CSV file to store the updated prices.
     """
+    LOGGER.info(f" Storing prices in {file}.")
+
     products.reset_index(inplace=True, names="id")
     products.set_index(['name', 'volume', 'country', 'district', 'sub_district'], inplace=True)
     products.rename(columns={"price": pd.Timestamp.now()}, inplace=True)
 
     if not os.path.exists(file):
+        LOGGER.debug(f"Creating new file {file}.")
         products.to_csv(file)
         return
 
@@ -71,6 +78,8 @@ def store_prices(
     file : str, optional
         The name of the CSV file to store the updated prices.
     """
+    LOGGER.info(f"Storing prices from category {category.value}.")
+
     products = get_products(category)
     products = pd.DataFrame(products).T
     _store_prices(products, file)
