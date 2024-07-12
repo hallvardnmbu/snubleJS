@@ -66,9 +66,18 @@ def get_products(category: CATEGORY) -> dict:
     """
     items = {}
     session = requests.Session()
-
     proxy = get_proxy()
+
+    # ----------------------------------------------------------------------------------------------
+    # Loops through the pages of the category.
+    # Assuming that there is less than 1000 pages.
+
     for page in range(1000):
+
+        # ------------------------------------------------------------------------------------------
+        # Tries to fetch the page using the proxy.
+        # If it fails, it tries with a new proxy.
+        # Breaks if it fails 10 consecutive times.
 
         i = 0
         response = None
@@ -84,12 +93,17 @@ def get_products(category: CATEGORY) -> dict:
             print(f"Failed to fetch page {page}.")
             break
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        # ------------------------------------------------------------------------------------------
+        # Parses the response and extracts the products.
 
+        soup = BeautifulSoup(response.text, "html.parser")
         products = json.loads(soup.string)["productSearchResult"]["products"]
         if not products:
             print(f"No more products (got to page {page - 1}).")
             break
+
+        # ------------------------------------------------------------------------------------------
+        # Extracts the product information and stores it in the dictionary.
 
         for product in products:
             code = product.get("code", None)
