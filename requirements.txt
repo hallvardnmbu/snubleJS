@@ -1,5 +1,11 @@
 pandas
+
+# Web scraping:
 urllib3
 requests
 beautifulsoup4
 pyarrow
+
+# Application:
+streamsync
+plotly

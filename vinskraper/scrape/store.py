@@ -3,17 +3,19 @@
 import os
 import pandas as pd
 
-from scrape import LOGGER, CATEGORY, get_products
+from .scrape import LOGGER, CATEGORY, scrape_products, scrape_prices
 
 
 def store_products(
         category: CATEGORY = CATEGORY.RED_WINE,
-        products: str = "products",
-        prices: str = "prices"
+        products: str = "../products.parquet",
+        prices: str = "../prices.parquet"
 ):
     """
     Fetches all products from the given category and stores them in file `products` (overwrites).
     Updates the prices in file `prices` with the newly fetched values (appends).
+    This function should not be called as regularly as `update_prices`.
+    Only call this function when you want to update the product list.
 
     Parameters
     ----------
@@ -27,14 +29,14 @@ def store_products(
     """
     LOGGER.info(f"Storing products from category {category.value}.")
 
-    _products = get_products(category)
+    _products = scrape_products(category)
     _products = pd.DataFrame(_products).T
-    _products.to_parquet(products + ".parquet")
+    _products.to_parquet(products)
 
-    _store_prices(_products, prices)
+    _update_prices(_products, prices)
 
 
-def _store_prices(
+def _update_prices(
         products: pd.DataFrame,
         file: str
 ):
@@ -55,21 +57,22 @@ def _store_prices(
 
     if not os.path.exists(file):
         LOGGER.debug(f"Creating new file {file}.")
-        products.to_parquet(file + ".parquet")
+        products.to_parquet(file)
         return
 
-    old = pd.read_parquet(file + ".parquet")
+    old = pd.read_parquet(file)
 
     updated = pd.concat([old, products], axis=1)
-    updated.to_parquet(file + ".parquet")
+    updated.to_parquet(file)
 
 
-def store_prices(
+def update_prices(
         category: CATEGORY = CATEGORY.RED_WINE,
-        file: str = "prices"
+        file: str = "../prices.parquet"
 ):
     """
     Fetches all products from the given category and updates (appends) their prices in `file`.
+    This is the function to call when you want to update the prices of the products.
 
     Parameters
     ----------
@@ -80,6 +83,6 @@ def store_prices(
     """
     LOGGER.info(f"Storing prices from category {category.value}.")
 
-    products = get_products(category)
-    products = pd.DataFrame(products).T
-    _store_prices(products, file)
+    prices = scrape_prices(category)
+    prices = pd.DataFrame(prices).T
+    _update_prices(prices, file)

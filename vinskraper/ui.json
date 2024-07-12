@@ -1,0 +1,184 @@
+{
+    "metadata": {
+        "streamsync_version": "0.5.0"
+    },
+    "components": {
+        "root": {
+            "id": "root",
+            "type": "root",
+            "content": {
+                "appName": "vinskraper"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "handlers": {},
+            "visible": true
+        },
+        "ccad7k7sc5oxy81l": {
+            "id": "ccad7k7sc5oxy81l",
+            "type": "page",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "root",
+            "handlers": {},
+            "visible": true
+        },
+        "g75pfkrw9ibv1jct": {
+            "id": "g75pfkrw9ibv1jct",
+            "type": "heading",
+            "content": {
+                "text": "Hallais",
+                "headingType": "h1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "n1bns18x494nl7q3": {
+            "id": "n1bns18x494nl7q3",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "ofj7d8hv9f34tr3x": {
+            "id": "ofj7d8hv9f34tr3x",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "n1bns18x494nl7q3",
+            "handlers": {},
+            "visible": true
+        },
+        "0h1zk1okn0ouaspi": {
+            "id": "0h1zk1okn0ouaspi",
+            "type": "selectinput",
+            "content": {
+                "label": "",
+                "options": "@{categories}",
+                "placeholder": "Kategori",
+                "maximumCount": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ofj7d8hv9f34tr3x",
+            "handlers": {
+                "ss-option-change": "set_category"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "ss-option-change",
+                "stateRef": "parameter.category.value"
+            }
+        },
+        "5apxotnfx4swl932": {
+            "id": "5apxotnfx4swl932",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "qmj43cgf8a7pwq37": {
+            "id": "qmj43cgf8a7pwq37",
+            "type": "column",
+            "content": {
+                "title": "",
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "5apxotnfx4swl932",
+            "handlers": {},
+            "visible": true
+        },
+        "ievverr9gyla4bny": {
+            "id": "ievverr9gyla4bny",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "5apxotnfx4swl932",
+            "handlers": {},
+            "visible": true
+        },
+        "pp2dr6b9nm107lk1": {
+            "id": "pp2dr6b9nm107lk1",
+            "type": "button",
+            "content": {
+                "text": "Hent dagens priser for @{parameter.category.name}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qmj43cgf8a7pwq37",
+            "handlers": {
+                "ss-click": "get_prices"
+            },
+            "visible": "flag.fetch_allowed"
+        },
+        "ufv4awae1h9iphzg": {
+            "id": "ufv4awae1h9iphzg",
+            "type": "button",
+            "content": {
+                "text": "Oppdater produktliste @{parameter.category.name}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ievverr9gyla4bny",
+            "handlers": {
+                "ss-click": "get_products"
+            },
+            "visible": "flag.fetch_allowed"
+        },
+        "f2z440vk7btjnj01": {
+            "id": "f2z440vk7btjnj01",
+            "type": "message",
+            "content": {
+                "message": "%Updating"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": "flag.fetching"
+        },
+        "ep60i50awfyxuux2": {
+            "id": "ep60i50awfyxuux2",
+            "type": "message",
+            "content": {
+                "message": "%Updating data"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": "flag.updating"
+        },
+        "56a17g5y715knvqv": {
+            "id": "56a17g5y715knvqv",
+            "type": "dataframe",
+            "content": {
+                "dataframe": "@{data.products}",
+                "displayRowCount": ""
+            },
+            "isCodeManaged": false,
+            "position": 5,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        }
+    }
+}
