@@ -125,4 +125,6 @@ def get_products(category: CATEGORY) -> dict:
                 "sub_district": sub_district
             }
 
+        return items
+
     return items
