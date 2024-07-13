@@ -18,16 +18,16 @@
             "id": "ccad7k7sc5oxy81l",
             "type": "page",
             "content": {
-                "accentColor": "#EE7214",
-                "emptinessColor": "#FFF6E9",
-                "primaryTextColor": "#191817",
-                "secondaryTextColor": "#EE7214",
-                "containerBackgroundColor": "#F9E8D9",
-                "separatorColor": "#191817",
-                "selectedColor": "#EE7214",
+                "accentColor": "#F3F7F4",
+                "emptinessColor": "#FFFFFF",
+                "primaryTextColor": "#06070E",
+                "secondaryTextColor": "#136F63",
+                "containerBackgroundColor": "#F3F7F4",
+                "separatorColor": "#06070E",
+                "selectedColor": "#136F63",
                 "cssClasses": "",
-                "buttonColor": "#F9E8D9",
-                "buttonTextColor": "#191817"
+                "buttonColor": "#F3F7F4",
+                "buttonTextColor": "#136F63"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -66,11 +66,10 @@
                 "placeholder": "Kategori",
                 "maximumCount": "1",
                 "cssClasses": "",
-                "selectedColor": "#FFF6E9",
-                "accentColor": "#F9E8D9",
-                "chipTextColor": "#EE7214",
-                "primaryTextColor": "#191817",
-                "secondaryTextColor": "#191817"
+                "selectedColor": "#FFFFFF",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -84,64 +83,16 @@
                 "stateRef": "parameter.category.value"
             }
         },
-        "5apxotnfx4swl932": {
-            "id": "5apxotnfx4swl932",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "ccad7k7sc5oxy81l",
-            "handlers": {},
-            "visible": true
-        },
-        "qmj43cgf8a7pwq37": {
-            "id": "qmj43cgf8a7pwq37",
-            "type": "column",
-            "content": {
-                "title": "",
-                "width": "1"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "5apxotnfx4swl932",
-            "handlers": {},
-            "visible": "flag.fetch_allowed"
-        },
-        "ievverr9gyla4bny": {
-            "id": "ievverr9gyla4bny",
-            "type": "column",
-            "content": {
-                "width": "1"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "5apxotnfx4swl932",
-            "handlers": {},
-            "visible": true
-        },
         "pp2dr6b9nm107lk1": {
             "id": "pp2dr6b9nm107lk1",
             "type": "button",
             "content": {
-                "text": "Hent dagens priser for @{parameter.category.name}"
+                "text": "Hent dagens priser for @{parameter.category.name}",
+                "separatorColor": "#06070E"
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "qmj43cgf8a7pwq37",
-            "handlers": {
-                "ss-click": "get_prices"
-            },
-            "visible": "flag.fetch_allowed"
-        },
-        "ufv4awae1h9iphzg": {
-            "id": "ufv4awae1h9iphzg",
-            "type": "button",
-            "content": {
-                "text": "Oppdater produktliste @{parameter.category.name}"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "ievverr9gyla4bny",
+            "parentId": "bsydyjlumqy0kcn1",
             "handlers": {
                 "ss-click": "get_products"
             },
@@ -152,10 +103,10 @@
             "type": "message",
             "content": {
                 "message": "%Fetching",
-                "loadingColor": "#527853"
+                "loadingColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.fetching"
@@ -165,10 +116,10 @@
             "type": "message",
             "content": {
                 "message": "%Updating",
-                "loadingColor": "#527853"
+                "loadingColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 2,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.updating"
@@ -177,14 +128,14 @@
             "id": "56a17g5y715knvqv",
             "type": "dataframe",
             "content": {
-                "dataframe": "@{data.products}",
+                "dataframe": "@{data}",
                 "displayRowCount": "",
-                "dataframeBackgroundColor": "#FFF6E9",
-                "dataframeHeaderRowBackgroundColor": "#F9E8D9",
+                "dataframeBackgroundColor": "#FFFFFF",
+                "dataframeHeaderRowBackgroundColor": "#F3F7F4",
                 "fontStyle": "monospace"
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 3,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true

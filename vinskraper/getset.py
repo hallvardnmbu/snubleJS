@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 
-from scrape.store import CATEGORY, update_prices, store_products
+from scrape import CATEGORY, update_products
 
 
 def set_data(state):
@@ -15,22 +15,33 @@ def set_data(state):
     state : dict
         The current state of the application.
     """
-    if not os.path.exists(state['parameter']['products']):
+    if not os.path.exists(state['parameter']['path']):
         get_products(state)
-    elif not os.path.exists(state['parameter']['prices']):
-        get_prices(state)
+        return
 
     state['flag']['updating'] = True
-
-    state['data'] = {
-        'products': pd.read_parquet(state['parameter']['products']),
-        'prices': pd.read_parquet(state['parameter']['prices']),
-    }
-
-    if state['data']['prices'].columns[-1] < pd.Timestamp.now() - pd.Timedelta(days=1):
-        state['flag']['fetch_allowed'] = True
-
+    state['data'] = pd.read_parquet(state['parameter']['path'])
     state['flag']['updating'] = False
+
+    _check_fetch_allowed(state)
+
+
+def _check_fetch_allowed(state):
+    """
+    Toggle flag if last update was within the last 24 hours.
+
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
+    now = pd.Timestamp.now()
+    if any([(now - pd.Timestamp(col.split(" ")[1])).days <= 1
+            for col in state['data'].columns
+            if col.startswith('price')]):
+        state['flag']['fetch_allowed'] = False
+    else:
+        state['flag']['fetch_allowed'] = True
 
 
 def set_category(state):
@@ -49,30 +60,8 @@ def set_category(state):
             'name': state['categories'][category],
             'value': category,
         },
-        'products': f"./storage/products_{category}.parquet",
-        'prices': f"./storage/prices_{category}.parquet",
+        'path': f"./storage/{category}.parquet",
     }
-
-    set_data(state)
-
-
-def get_prices(state):
-    """
-    Fetch the current prices from `vinmonopolet.no` and update the state with the newest data.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    """
-    state['flag']['fetching'] = True
-
-    update_prices(
-        CATEGORY[state['parameter']['category']['value']],
-        state['parameter']['prices']
-    )
-
-    state['flag']['fetching'] = False
 
     set_data(state)
 
@@ -88,12 +77,11 @@ def get_products(state):
     """
     state['flag']['fetching'] = True
 
-    store_products(
+    state['data'] = update_products(
         CATEGORY[state['parameter']['category']['value']],
-        state['parameter']['products'],
-        state['parameter']['prices']
+        state['parameter']['path'],
     )
 
     state['flag']['fetching'] = False
 
-    set_data(state)
+    _check_fetch_allowed(state)

@@ -1,13 +1,16 @@
-"""Fetches products from Vinmonopolet's website."""
+"""Scrape products from Vinmonopolet's website."""
 
+import os
 import enum
 import json
 import logging
 
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 
-LOGGER = logging.getLogger(__name__)
+
+_LOGGER = logging.getLogger(__name__)
 
 _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
         "search?searchType=product"
@@ -26,7 +29,7 @@ class CATEGORY(enum.Enum):
     """
     RED_WINE = "rødvin"
     WHITE_WINE = "hvitvin"
-    COGNAC = ("%3AmainSubCategory%3Abrennevin_druebrennevin"
+    COGNAC = ("brennevin%3AmainSubCategory%3Abrennevin_druebrennevin"
               "%3AmainSubSubCategory%3Abrennevin_druebrennevin_cognac_tradisjonell")
 
     ROSE_WINE = "rosévin"
@@ -56,15 +59,15 @@ def _get_proxy():
 
 def _get_code(keys: list, code: float) -> float:
     """Iteratively finds the next available code by adding `0.1` if duplicated."""
-    LOGGER.debug(f"Code {code} already exists, finding new code.")
+    _LOGGER.debug(f"Code {code} already exists, finding new code.")
     _code = int(code)
     while code in keys:
         code += 0.1 if code - _code < 0.9 else 0.01
-    LOGGER.debug(f"New code found: {code}.")
+    _LOGGER.debug(f"New code found: {code}.")
     return code
 
 
-def scrape_products(category: CATEGORY) -> dict:
+def _scrape_products(category: CATEGORY) -> dict:
     """
     Fetches all products from the given category.
 
@@ -79,7 +82,7 @@ def scrape_products(category: CATEGORY) -> dict:
         A dictionary containing the products fetched from the given category.
         The product ID is used as the key, and the product information is stored as a dictionary.
     """
-    LOGGER.info(f"Fetching products from category {category.value}.")
+    _LOGGER.info(f"Fetching products from category {category.value}.")
 
     items = {}
     session = requests.Session()
@@ -90,7 +93,7 @@ def scrape_products(category: CATEGORY) -> dict:
     # Assuming that there is less than 1000 pages.
 
     for page in range(1000):
-        LOGGER.debug(f"[Page] {page}.")
+        _LOGGER.debug(f"[Page] {page}.")
 
         # ------------------------------------------------------------------------------------------
         # Tries to fetch the page using the proxy.
@@ -104,16 +107,15 @@ def scrape_products(category: CATEGORY) -> dict:
                 response = session.get(_URL.format(page, category.value), proxies=proxy)
                 break
             except requests.exceptions.ProxyError:
-                LOGGER.debug(" [Proxy] Error, trying another proxy.")
+                _LOGGER.debug(" [Proxy] Error, trying another proxy.")
                 proxy = _get_proxy()
                 i += 1
             except Exception as e:
-                LOGGER.error(f"Error at page {page} (with proxy {proxy} at retry {i}).\n"
-                             f"{e}")
+                _LOGGER.error(f"Error at page {page} (with proxy {proxy} at retry {i}).\n{e}")
                 break
 
         if response is None or response.status_code != 200:
-            LOGGER.error(f"Failed to fetch page {page}.")
+            _LOGGER.error(f"Failed to fetch page {page}.")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -122,7 +124,7 @@ def scrape_products(category: CATEGORY) -> dict:
         soup = BeautifulSoup(response.text, "html.parser")
         products = json.loads(soup.string)["productSearchResult"]["products"]
         if not products:
-            LOGGER.info(f"No more products (got to page {page - 1}).")
+            _LOGGER.info(f"No more products (got to page {page - 1}).")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -151,75 +153,44 @@ def scrape_products(category: CATEGORY) -> dict:
     return items
 
 
-def scrape_prices(category: CATEGORY) -> dict:
+def update_products(
+        category: CATEGORY = CATEGORY.RED_WINE,
+        path: str = "./storage/RED_WINE.parquet",
+) -> pd.DataFrame:
     """
-    Fetches all prices from the given category.
+    Fetches all products from the given category and stores (appends) the results to file `path`.
+    The price column is suffixed with the current timestamp.
 
     Parameters
     ----------
-    category : CATEGORY
+    category : CATEGORY, optional
         The category of products to fetch.
+        See enumerator `CATEGORY` for available options.
+    path : str, optional
+        The name of the `parquet` file to store the products.
 
     Returns
     -------
-    dict
-        A dictionary containing the products fetched from the given category.
-        The product ID is used as the key, and the product information is stored as a dictionary.
+    pd.DataFrame
+        The (updated) products.
     """
-    LOGGER.info(f"Fetching prices from category {category.value}.")
+    _LOGGER.info(f"Storing products from category {category.value}.")
 
-    items = {}
-    session = requests.Session()
-    proxy = _get_proxy()
+    products = _scrape_products(category)
+    products = pd.DataFrame(products).T
+    products.rename(
+        columns={"price": f"price {pd.Timestamp.now().strftime('%Y-%m-%d')}"},
+        inplace=True
+    )
 
-    # ----------------------------------------------------------------------------------------------
-    # Loops through the pages of the category.
-    # Assuming that there is less than 1000 pages.
+    if not os.path.exists(path):
+        _LOGGER.debug(f"Creating new file: {path}.")
+        products.to_parquet(path)
+        return products
 
-    for page in range(1000):
-        LOGGER.debug(f"[Page] {page}.")
+    old = pd.read_parquet(path)
 
-        # ------------------------------------------------------------------------------------------
-        # Tries to fetch the page using the proxy.
-        # If it fails, it tries with a new proxy.
-        # Breaks if it fails 10 consecutive times.
+    updated = pd.concat([old, products], axis=1)
+    updated.to_parquet(path)
 
-        i = 0
-        response = None
-        while i < 10:
-            try:
-                response = session.get(_URL.format(page, category.value), proxies=proxy)
-                break
-            except requests.exceptions.ProxyError:
-                LOGGER.debug(" [Proxy] Error, trying another proxy.")
-                proxy = _get_proxy()
-                i += 1
-            except Exception as e:
-                LOGGER.error(f"Error at page {page} (with proxy {proxy} at retry {i}).\n"
-                             f"{e}")
-                break
-
-        if response is None or response.status_code != 200:
-            LOGGER.error(f"Failed to fetch page {page}.")
-            break
-
-        # ------------------------------------------------------------------------------------------
-        # Parses the response and extracts the products.
-
-        soup = BeautifulSoup(response.text, "html.parser")
-        products = json.loads(soup.string)["productSearchResult"]["products"]
-        if not products:
-            LOGGER.info(f"No more products (got to page {page - 1}).")
-            break
-
-        # ------------------------------------------------------------------------------------------
-        # Extracts the price information and stores it in the dictionary.
-
-        for product in products:
-            code = product.get("code", None)
-            price = product["price"].get("value", None)
-            items[code if code not in items else _get_code(list(items.keys()), float(code))] = {
-                "price": price,
-            }
-
-    return items
+    return updated

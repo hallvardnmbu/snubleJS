@@ -2,7 +2,7 @@
 
 import streamsync
 
-from getset import CATEGORY, set_data, set_category, get_prices, get_products
+from getset import CATEGORY, set_data, set_category, get_products
 
 
 STATE = streamsync.init_state({
@@ -16,35 +16,27 @@ STATE = streamsync.init_state({
             'name': 'Rødvin',
             'value': 'RED_WINE',
         },
-        'products': './storage/products_RED_WINE.parquet',
-        'prices': './storage/prices_RED_WINE.parquet',
+        'path': './storage/RED_WINE.parquet',
     },
 
-    'data': {
-        'products': None,
-        'prices': None,
-    },
+    'data': None,
 
     'plot': {
         'colours': {
-            'pink': '#c37892',
-            'brown': '#8a795d',
-            'purple': '#746cc0',
-            'red': 'red',
-            'background': '#AAD3DF',
-            'green': '#BCDAB1',
-            'black': '#143439',
-            'white': '#F3EFE8',
+            'background': '#F3F7F4',
+            'black': '#06070E',
+
+            'red': '#8E3B46',
+            'green': '#136F63',
         },
     },
 
     'flag': {
         'fetching': False,
-        'fetch_allowed': False,
         'updating': False,
+
+        'fetch_allowed': False,
     },
 })
-
-STATE.import_stylesheet("theme", "/stylesheet.css")
 
 set_data(STATE)
