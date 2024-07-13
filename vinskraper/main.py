@@ -19,7 +19,23 @@ STATE = streamsync.init_state({
         'path': './storage/RED_WINE.parquet',
     },
 
-    'data': None,
+    'selection': {
+        'id': None,
+        'name': None,
+        'volume': 'Alle',
+        'country': 'Alle',  # TODO: Handle volume change
+        'district': 'Alle',  # TODO: Handle country change
+        'sub_district': None,
+    },
+
+    'data': {
+        'data': None,
+        'names': None,
+
+        'volumes': None,
+        'countries': None,
+        'districts': None,
+    },
 
     'plot': {
         'colours': {
