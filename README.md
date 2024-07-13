@@ -2,7 +2,9 @@
 
 # Vinskraper
 
-Utforsk og sammenlikn [Vinmonopolets](vinmonopolet.no) utvalg og prisendringer.
+Utforsk og sammenlikn [Vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
+
+![Vinskraper](./vinskraper.jpg)
 
 ---
 
