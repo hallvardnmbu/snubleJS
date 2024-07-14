@@ -2,40 +2,71 @@
 
 import streamsync
 
-from getset import CATEGORY, set_data, set_category, get_products
+from scrape import scrape_all
+from getset import CATEGORY, set_data, set_selection, get_products, reset_selection
 
 
 STATE = streamsync.init_state({
-    'categories': {
-        v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
-        for k, v in CATEGORY.__dict__["_value2member_map_"].items()
-    },
 
-    'parameter': {
-        'category': {
-            'name': 'Rødvin',
-            'value': 'RED_WINE',
+    # dir
+    # ----------------------------------------------------------------------------------------------
+    # Directory for storing data.
+
+    'dir': './storage/',
+
+    # dropdown
+    # ----------------------------------------------------------------------------------------------
+    # Dictionaries containing unique values for the selected category.
+    # These are used to populate the selection dropdowns.
+    # Dynamically updated when the category is changed.
+
+    'dropdown': {
+        'categories': {
+            **{"Alle": "Alle kategorier"},
+            **{v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
+               for k, v in CATEGORY.__dict__["_value2member_map_"].items()}
         },
-        'path': './storage/RED_WINE.parquet',
-    },
 
-    'selection': {
-        'id': None,
-        'name': None,
-        'volume': 'Alle',
-        'country': 'Alle',  # TODO: Handle volume change
-        'district': 'Alle',  # TODO: Handle country change
-        'sub_district': None,
-    },
-
-    'data': {
-        'data': None,
-        'names': None,
-
+        # The following depends on the selected category (`['selection']['kategori']`).
+        # These are updated when the category is changed.
+        'subcategories': None,
         'volumes': None,
         'countries': None,
         'districts': None,
+        'subdistricts': None,
     },
+
+    # selection
+    # ----------------------------------------------------------------------------------------------
+    # Current selection for each dropdown.
+    # TODO: Handle selection change.
+    # TODO: Selection change should cascade.
+
+    'selection': {
+        'kategori': 'RED_WINE',  # Alle
+        'underkategori': 'Alle',
+        'volum': 'Alle',
+        'land': 'Alle',
+        'distrikt': 'Alle',
+        'underdistrikt': 'Alle',
+    },
+
+    # data
+    # ----------------------------------------------------------------------------------------------
+    # Dataframes containing all- and selected products for the chosen category and selection.
+
+    'data': {
+        'full': None,
+        'selected': None,
+
+        # Mapping from product ID (index) to product name.
+        'id_to_name': None,
+    },
+
+    # plot
+    # ----------------------------------------------------------------------------------------------
+    # Dictionary containing plot settings and figure data.
+    # TODO: Add figures.
 
     'plot': {
         'colours': {
@@ -47,10 +78,17 @@ STATE = streamsync.init_state({
         },
     },
 
+    # flag
+    # ----------------------------------------------------------------------------------------------
+    # Flags for fetching and updating data.
+    # These are used to hide/show buttons and spinners.
+
     'flag': {
+        # Spinners.
         'fetching': False,
         'updating': False,
 
+        # Buttons.
         'fetch_allowed': False,
     },
 })

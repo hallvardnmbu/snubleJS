@@ -35,34 +35,12 @@
             "handlers": {},
             "visible": true
         },
-        "n1bns18x494nl7q3": {
-            "id": "n1bns18x494nl7q3",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 3,
-            "parentId": "ccad7k7sc5oxy81l",
-            "handlers": {},
-            "visible": true
-        },
-        "ofj7d8hv9f34tr3x": {
-            "id": "ofj7d8hv9f34tr3x",
-            "type": "column",
-            "content": {
-                "width": "1"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "n1bns18x494nl7q3",
-            "handlers": {},
-            "visible": true
-        },
         "0h1zk1okn0ouaspi": {
             "id": "0h1zk1okn0ouaspi",
             "type": "selectinput",
             "content": {
                 "label": "",
-                "options": "@{categories}",
+                "options": "@{dropdown.categories}",
                 "placeholder": "Kategori",
                 "maximumCount": "1",
                 "cssClasses": "",
@@ -73,14 +51,14 @@
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "ofj7d8hv9f34tr3x",
+            "parentId": "eq2hgeuexj81cjqm",
             "handlers": {
-                "ss-option-change": "set_category"
+                "ss-option-change": "set_data"
             },
             "visible": true,
             "binding": {
                 "eventType": "ss-option-change",
-                "stateRef": "parameter.category.value"
+                "stateRef": "selection.kategori"
             }
         },
         "f2z440vk7btjnj01": {
@@ -113,7 +91,7 @@
             "id": "56a17g5y715knvqv",
             "type": "dataframe",
             "content": {
-                "dataframe": "@{data.data}",
+                "dataframe": "@{data.selected}",
                 "displayRowCount": "",
                 "dataframeBackgroundColor": "#FFFFFF",
                 "dataframeHeaderRowBackgroundColor": "#F3F7F4",
@@ -125,47 +103,12 @@
             "handlers": {},
             "visible": true
         },
-        "bsydyjlumqy0kcn1": {
-            "id": "bsydyjlumqy0kcn1",
-            "type": "column",
-            "content": {
-                "width": "1"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "n1bns18x494nl7q3",
-            "handlers": {},
-            "visible": true
-        },
-        "id94jbnwyzxe0qob": {
-            "id": "id94jbnwyzxe0qob",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{data.volumes}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Fokus"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "bsydyjlumqy0kcn1",
-            "handlers": {},
-            "visible": true,
-            "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.volume"
-            }
-        },
         "vaznagp19yxf5p1t": {
             "id": "vaznagp19yxf5p1t",
             "type": "selectinput",
             "content": {
                 "label": "",
-                "options": "@{data.districts}",
+                "options": "@{dropdown.districts}",
                 "accentColor": "#F3F7F4",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
@@ -176,16 +119,19 @@
             "isCodeManaged": false,
             "position": 0,
             "parentId": "q9wey9hyxj7b5u6t",
-            "handlers": {},
+            "handlers": {
+                "ss-option-change": "set_selection"
+            },
             "binding": {
                 "eventType": "ss-option-change",
-                "stateRef": "selection.district"
+                "stateRef": "selection.distrikt"
             }
         },
         "5bbu2zar2hsfg0ji": {
             "id": "5bbu2zar2hsfg0ji",
             "type": "columns",
             "content": {},
+            "isCodeManaged": false,
             "position": 4,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
@@ -197,6 +143,7 @@
             "content": {
                 "width": "1"
             },
+            "isCodeManaged": false,
             "position": 0,
             "parentId": "5bbu2zar2hsfg0ji",
             "handlers": {},
@@ -207,7 +154,7 @@
             "type": "selectinput",
             "content": {
                 "label": "",
-                "options": "@{data.volumes}",
+                "options": "@{dropdown.volumes}",
                 "accentColor": "#F3F7F4",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
@@ -215,13 +162,16 @@
                 "maximumCount": "1",
                 "placeholder": "Volum"
             },
+            "isCodeManaged": false,
             "position": 0,
             "parentId": "51tl972bnt47v99m",
-            "handlers": {},
+            "handlers": {
+                "ss-option-change": "set_selection"
+            },
             "visible": true,
             "binding": {
                 "eventType": "ss-option-change",
-                "stateRef": "selection.volume"
+                "stateRef": "selection.volum"
             }
         },
         "63adkqlwicr6le77": {
@@ -230,6 +180,7 @@
             "content": {
                 "width": "1"
             },
+            "isCodeManaged": false,
             "position": 1,
             "parentId": "5bbu2zar2hsfg0ji",
             "handlers": {},
@@ -240,7 +191,7 @@
             "type": "selectinput",
             "content": {
                 "label": "",
-                "options": "@{data.countries}",
+                "options": "@{dropdown.countries}",
                 "accentColor": "#F3F7F4",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
@@ -248,42 +199,172 @@
                 "maximumCount": "1",
                 "placeholder": "Land"
             },
+            "isCodeManaged": false,
             "position": 0,
             "parentId": "63adkqlwicr6le77",
-            "handlers": {},
+            "handlers": {
+                "ss-option-change": "set_selection"
+            },
             "visible": true,
             "binding": {
                 "eventType": "ss-option-change",
-                "stateRef": "selection.country"
+                "stateRef": "selection.land"
             }
         },
         "q9wey9hyxj7b5u6t": {
             "id": "q9wey9hyxj7b5u6t",
             "type": "column",
-            "parentId": "5bbu2zar2hsfg0ji",
             "content": {
                 "width": "1"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 2,
+            "parentId": "5bbu2zar2hsfg0ji",
+            "handlers": {},
             "visible": true
         },
         "w25od3p9ijg1p39x": {
             "id": "w25od3p9ijg1p39x",
             "type": "html",
-            "parentId": "ccad7k7sc5oxy81l",
             "content": {
                 "element": "",
-                "styles": "{\n  \"padding\": \"15px\",\n  \"min-height\": \"30px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(232, 215, 218)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(142, 59, 70)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"center\",\n  \"cursor\": \"pointer\"\n}",
+                "styles": "{\n  \"padding\": \"15px\",\n  \"min-height\": \"50px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(232, 215, 218)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(142, 59, 70)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"center\",\n  \"cursor\": \"pointer\"\n}",
                 "attrs": "",
                 "htmlInside": "Klikk her for \u00e5 hente ny data",
                 "cssClasses": ""
             },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ccad7k7sc5oxy81l",
             "handlers": {
                 "click": "get_products"
             },
-            "position": 0,
             "visible": "flag.fetch_allowed"
+        },
+        "t0ucteh3g2n1tjg5": {
+            "id": "t0ucteh3g2n1tjg5",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "eq2hgeuexj81cjqm": {
+            "id": "eq2hgeuexj81cjqm",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "t0ucteh3g2n1tjg5",
+            "handlers": {},
+            "visible": true
+        },
+        "qmzotw495x0zj859": {
+            "id": "qmzotw495x0zj859",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "t0ucteh3g2n1tjg5",
+            "handlers": {},
+            "visible": true
+        },
+        "7xo7jh2bheg9sci4": {
+            "id": "7xo7jh2bheg9sci4",
+            "type": "selectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.subcategories}",
+                "placeholder": "Underkategori",
+                "maximumCount": "1",
+                "cssClasses": "",
+                "selectedColor": "#FFFFFF",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qmzotw495x0zj859",
+            "handlers": {
+                "ss-option-change": "set_selection"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "ss-option-change",
+                "stateRef": "selection.underkategori"
+            }
+        },
+        "y5vjrvkstnbqggt3": {
+            "id": "y5vjrvkstnbqggt3",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "5bbu2zar2hsfg0ji",
+            "handlers": {},
+            "visible": true
+        },
+        "tk0d1kqmj1t3ikh0": {
+            "id": "tk0d1kqmj1t3ikh0",
+            "type": "selectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.subdistricts}",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "selectedColor": "#FFFFFF",
+                "primaryTextColor": "#136F63",
+                "maximumCount": "1",
+                "placeholder": "Underdistrikt"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "y5vjrvkstnbqggt3",
+            "handlers": {
+                "ss-option-change": "set_selection"
+            },
+            "binding": {
+                "eventType": "ss-option-change",
+                "stateRef": "selection.underdistrikt"
+            }
+        },
+        "fowmkftiui6qq6hp": {
+            "id": "fowmkftiui6qq6hp",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "t0ucteh3g2n1tjg5",
+            "handlers": {},
+            "visible": true
+        },
+        "9iawnoa3ho4sxkkp": {
+            "id": "9iawnoa3ho4sxkkp",
+            "type": "html",
+            "content": {
+                "element": "",
+                "styles": "{\n  \"padding\": \"15px\",\n  \"min-height\": \"50px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(232, 215, 218)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(142, 59, 70)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\"\n}",
+                "attrs": "",
+                "htmlInside": "Nullstill valg",
+                "cssClasses": ""
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "fowmkftiui6qq6hp",
+            "handlers": {
+                "click": "reset_selection"
+            }
         }
     }
 }

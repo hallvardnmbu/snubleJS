@@ -9,7 +9,6 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 
-
 _LOGGER = logging.getLogger(__name__)
 
 _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
@@ -73,11 +72,11 @@ def _get_code(keys: list, code: float) -> float:
     float
         The next available code.
     """
-    _LOGGER.debug(f"Code {code} already exists, finding new code.")
+    _LOGGER.debug(f"  [ID] Code {code} already exists, finding new code.")
     _code = int(code)
     while code in keys:
         code += 0.1 if code - _code < 0.9 else 0.01
-    _LOGGER.debug(f"New code found: {code}.")
+    _LOGGER.debug(f"   [ID] New code found: {code}.")
     return code
 
 
@@ -96,7 +95,7 @@ def _scrape_products(category: CATEGORY) -> dict:
         A dictionary containing the products fetched from the given category.
         The product ID is used as the key, and the product information is stored as a dictionary.
     """
-    _LOGGER.info(f"Fetching products from category {category.value}.")
+    _LOGGER.info(f" [Scraping] {category.value}.")
 
     items = {}
     session = requests.Session()
@@ -106,8 +105,10 @@ def _scrape_products(category: CATEGORY) -> dict:
     # Loops through the pages of the category.
     # Assuming that there is less than 1000 pages.
 
+    # TODO: Parallelise the fetching. Each session should use its own proxy.
+
     for page in range(1000):
-        _LOGGER.debug(f"[Page] {page}.")
+        _LOGGER.debug(f"  [Page] {page}.")
 
         # ------------------------------------------------------------------------------------------
         # Tries to fetch the page using the proxy.
@@ -121,15 +122,18 @@ def _scrape_products(category: CATEGORY) -> dict:
                 response = session.get(_URL.format(page, category.value), proxies=proxy)
                 break
             except requests.exceptions.ProxyError:
-                _LOGGER.debug(" [Proxy] Error, trying another proxy.")
+                _LOGGER.debug("   [Proxy] Error, trying another proxy.")
                 proxy = _get_proxy()
                 i += 1
             except Exception as e:
-                _LOGGER.error(f"Error at page {page} (with proxy {proxy} at retry {i}).\n{e}")
+                _LOGGER.error(f"[Error] Page {page} (with proxy {proxy} at retry {i}).\n{e}")
                 break
 
-        if response is None or response.status_code != 200:
-            _LOGGER.error(f"Failed to fetch page {page}.")
+        if response is None:
+            _LOGGER.error(f"[Failed] Got no response for page {page}.")
+            break
+        elif response.status_code != 200:
+            _LOGGER.error(f"[Failed] Got status code {response.status_code} for page {page}.")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -138,7 +142,7 @@ def _scrape_products(category: CATEGORY) -> dict:
         soup = BeautifulSoup(response.text, "html.parser")
         products = json.loads(soup.string).get("productSearchResult", {}).get("products", [])
         if not products:
-            _LOGGER.info(f"No more products (got to page {page - 1}).")
+            _LOGGER.info(f"  [Done] No more products (final page: {page - 1}).")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -147,19 +151,18 @@ def _scrape_products(category: CATEGORY) -> dict:
         for product in products:
             code = product.get("code", None)
             items[code if code not in items else _get_code(list(items.keys()), float(code))] = {
-                "name": product.get("name", None),
-                "price": product.get("price", {}).get("value", None),
-                "volume": product.get("volume", {}).get("value", None),
+                "navn": product.get("name", None),
+                "volum": product.get("volume", {}).get("value", None),
 
-                "country": product.get("main_country", {}).get("name", None),
-                "district": product.get("district", {}).get("name", None),
-                "sub_district": product.get("sub_District", {}).get("name", None),
-                "sub_category": product.get("main_sub_category", {}).get("name", None),
+                "land": product.get("main_country", {}).get("name", None),
+                "distrikt": product.get("district", {}).get("name", None),
+                "underdistrikt": product.get("sub_District", {}).get("name", None),
+                "underkategori": product.get("main_sub_category", {}).get("name", None),
 
                 "meta": {
                     "url": f"https://www.vinmonopolet.no{product.get('url', None)}",
 
-                    "image": {img['format']: img['url'] for img in product.get("images", [{
+                    "bilde": {img['format']: img['url'] for img in product.get("images", [{
                         "format": "thumbnail",
                         "url": "https://bilder.vinmonopolet.no/bottle.png"
                     }, {
@@ -167,10 +170,14 @@ def _scrape_products(category: CATEGORY) -> dict:
                         "url": "https://bilder.vinmonopolet.no/bottle.png"
                     }])},
 
-                    "buyable": product.get("buyable", False),
-                    "expired": product.get("expired", False),
-                    "can_order": product.get("storesAvailability", {}).get("infos", [{}])[0].get("readableValue", None),
+                    "kan kjøpes": product.get("buyable", False),
+                    "utgått": product.get("expired", False),
+                    "kan bestilles": product.get("storesAvailability", {}).get(
+                        "infos", [{}]
+                    )[0].get("readableValue", None),
                 },
+
+                "pris": product.get("price", {}).get("value", None),
             }
 
     return items
@@ -197,23 +204,67 @@ def update_products(
     pd.DataFrame
         The (updated) products.
     """
-    _LOGGER.info(f"Storing products from category {category.value}.")
+    _LOGGER.info(f"[Updating] {category.value}.")
 
     products = _scrape_products(category)
     products = pd.DataFrame(products).T
     products.rename(
-        columns={"price": f"price {pd.Timestamp.now().strftime('%Y-%m-%d')}"},
+        columns={"pris": f"pris {pd.Timestamp.now().strftime('%Y-%m-%d')}"},
         inplace=True
     )
 
     if not os.path.exists(path):
-        _LOGGER.debug(f"Creating new file: {path}.")
-        products.to_parquet(path)
+        _LOGGER.info(f" [File] No file found, creating new (here: {path}).")
+        try:
+            products.to_parquet(path)
+        except Exception as e:
+            for column in products.select_dtypes(include=['object']).columns:
+                # Print the unique types in each object column
+                print(f"Column: {column}")
+                print(products[column].apply(type).value_counts())
+            raise e
+
+        _LOGGER.info(f"[Updating] Success ({category.value}).")
         return products
 
     old = pd.read_parquet(path)
 
     updated = pd.concat([old, products], axis=1)
-    updated.to_parquet(path)
 
+    try:
+        updated.to_parquet(path)
+    except Exception as e:
+        for column in products.select_dtypes(include=['object']).columns:
+            # Print the unique types in each object column
+            print(f"Column: {column}")
+            print(products[column].apply(type).value_counts())
+        raise e
+
+    _LOGGER.info(f"[Updating] Success ({category.value}).")
     return updated
+
+
+def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
+    """
+    Vinmonopolet updates their prices monthly.
+    This function should therefore be called at the start of each month to fetch the new prices.
+
+    Parameters
+    ----------
+    directory : str, optional
+        The directory to store the products.
+
+    Notes
+    -----
+    Loops through all categories and updates all products for each category.
+    The products are stored in the `directory`, suffixed by the `CATEGORY` names.
+    """
+    _LOGGER.info("[Updating] All categories.")
+
+    dfs = []
+    for category in CATEGORY:
+        dfs.append(update_products(category, path=directory + category.name + ".parquet"))
+    dfs = pd.concat(dfs)
+
+    _LOGGER.info("[Updating] Success (all categories).")
+    return dfs
