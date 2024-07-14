@@ -58,7 +58,21 @@ def _get_proxy():
 
 
 def _get_code(keys: list, code: float) -> float:
-    """Iteratively finds the next available code by adding `0.1` if duplicated."""
+    """
+    Iteratively finds the next available code by adding `0.1` if duplicated.
+
+    Parameters
+    ----------
+    keys : list
+        A list of existing keys.
+    code : float
+        The current code to check for duplicates.
+
+    Returns
+    -------
+    float
+        The next available code.
+    """
     _LOGGER.debug(f"Code {code} already exists, finding new code.")
     _code = int(code)
     while code in keys:
@@ -122,7 +136,7 @@ def _scrape_products(category: CATEGORY) -> dict:
         # Parses the response and extracts the products.
 
         soup = BeautifulSoup(response.text, "html.parser")
-        products = json.loads(soup.string)["productSearchResult"]["products"]
+        products = json.loads(soup.string).get("productSearchResult", {}).get("products", [])
         if not products:
             _LOGGER.info(f"No more products (got to page {page - 1}).")
             break
@@ -132,22 +146,31 @@ def _scrape_products(category: CATEGORY) -> dict:
 
         for product in products:
             code = product.get("code", None)
-
-            name = product.get("name", None)
-            price = product["price"].get("value", None)
-            volume = product["volume"].get("value", None)
-            country = product["main_country"].get("name", None)
-
-            district = product["district"].get("name", None)
-            sub_district = product["sub_District"].get("name", None)
-
             items[code if code not in items else _get_code(list(items.keys()), float(code))] = {
-                "name": name,
-                "price": price,
-                "volume": volume,
-                "country": country,
-                "district": district,
-                "sub_district": sub_district
+                "name": product.get("name", None),
+                "price": product.get("price", {}).get("value", None),
+                "volume": product.get("volume", {}).get("value", None),
+
+                "country": product.get("main_country", {}).get("name", None),
+                "district": product.get("district", {}).get("name", None),
+                "sub_district": product.get("sub_District", {}).get("name", None),
+                "sub_category": product.get("main_sub_category", {}).get("name", None),
+
+                "meta": {
+                    "url": f"https://www.vinmonopolet.no{product.get('url', None)}",
+
+                    "image": {img['format']: img['url'] for img in product.get("images", [{
+                        "format": "thumbnail",
+                        "url": "https://bilder.vinmonopolet.no/bottle.png"
+                    }, {
+                        "format": "product",
+                        "url": "https://bilder.vinmonopolet.no/bottle.png"
+                    }])},
+
+                    "buyable": product.get("buyable", False),
+                    "expired": product.get("expired", False),
+                    "can_order": product.get("storesAvailability", {}).get("infos", [{}])[0].get("readableValue", None),
+                },
             }
 
     return items
