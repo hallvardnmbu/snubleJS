@@ -8,6 +8,7 @@ import logging
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+from pyarrow.lib import ArrowTypeError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -183,7 +184,7 @@ def _scrape_products(category: CATEGORY) -> dict:
     return items
 
 
-def update_products(
+def _update_products(
         category: CATEGORY = CATEGORY.RED_WINE,
         path: str = "./storage/RED_WINE.parquet",
 ) -> pd.DataFrame:
@@ -204,7 +205,7 @@ def update_products(
     pd.DataFrame
         The (updated) products.
     """
-    _LOGGER.info(f"[Updating] {category.value}.")
+    _LOGGER.info(f" {category.value}.")
 
     products = _scrape_products(category)
     products = pd.DataFrame(products).T
@@ -215,36 +216,28 @@ def update_products(
 
     if not os.path.exists(path):
         _LOGGER.info(f" [File] No file found, creating new (here: {path}).")
-        try:
-            products.to_parquet(path)
-        except Exception as e:
-            for column in products.select_dtypes(include=['object']).columns:
-                # Print the unique types in each object column
-                print(f"Column: {column}")
-                print(products[column].apply(type).value_counts())
-            raise e
-
-        _LOGGER.info(f"[Updating] Success ({category.value}).")
+        products.to_parquet(path)
+        _LOGGER.info(f" {category.value} successful.")
         return products
 
     old = pd.read_parquet(path)
 
-    updated = pd.concat([old, products], axis=1)
+    products["meta"] = products["meta"].apply(json.dumps)
+    old["meta"] = old["meta"].apply(json.dumps)
+    updated = pd.merge(
+        old, products,
+        on=[col for col in old.columns if not col.startswith("pris")],
+        how='outer'
+    )
+    updated["meta"] = updated["meta"].apply(json.loads)
 
-    try:
-        updated.to_parquet(path)
-    except Exception as e:
-        for column in products.select_dtypes(include=['object']).columns:
-            # Print the unique types in each object column
-            print(f"Column: {column}")
-            print(products[column].apply(type).value_counts())
-        raise e
+    updated.to_parquet(path)
 
     _LOGGER.info(f"[Updating] Success ({category.value}).")
     return updated
 
 
-def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
+def scrape_all(directory: str = "./storage/", category: bool = False) -> pd.DataFrame:
     """
     Vinmonopolet updates their prices monthly.
     This function should therefore be called at the start of each month to fetch the new prices.
@@ -253,6 +246,9 @@ def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
     ----------
     directory : str, optional
         The directory to store the products.
+    category : bool, optional
+        Whether to include category column to the dataframes.
+        Only used when the returned dataframe is wanted for further processing.
 
     Notes
     -----
@@ -261,9 +257,22 @@ def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
     """
     _LOGGER.info("[Updating] All categories.")
 
+    categories = [category for category in CATEGORY]
     dfs = []
-    for category in CATEGORY:
-        dfs.append(update_products(category, path=directory + category.name + ".parquet"))
+    for category in categories:
+        try:
+            df = _update_products(category, path=directory + category.name + ".parquet")
+            if category:
+                df['kategori'] = category.value.capitalize() if '%' not in category.value else 'Cognac'
+                df = df[['navn', 'volum', 'land',
+                         'distrikt', 'underdistrikt',
+                         'kategori', 'underkategori',
+                         'meta',
+                         *[col for col in df.columns if col.startswith('pris')]]]
+            dfs.append(df)
+        except ArrowTypeError as err:
+            categories.append(category)
+            _LOGGER.error(f"[Error] {err}.\nRetrying {category.name} after a while.")
     dfs = pd.concat(dfs)
 
     _LOGGER.info("[Updating] Success (all categories).")

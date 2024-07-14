@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 
-from scrape import CATEGORY, update_products
+from scrape import CATEGORY, scrape_all
 
 
 def set_data(state):
@@ -15,15 +15,34 @@ def set_data(state):
     state : dict
         The current state of the application.
     """
-    path = str(os.path.join(state['dir'], state['selection']['kategori'] + '.parquet'))
-
-    if not os.path.exists(path):
-        get_products(state)
-        return
-
     state['flag']['updating'] = True
 
-    state['data']['full'] = pd.read_parquet(path)
+    if state['selection']['kategori'] == 'Alle':
+        files = os.listdir(state['dir'])
+        if not files:
+            state['data']['full'] = scrape_all(state['dir'], category=True)
+        else:
+            dfs = []
+            for file in files:
+                if file.endswith('.parquet'):
+                    df = pd.read_parquet(os.path.join(state['dir'], file))
+                    name = getattr(CATEGORY, file.split('.')[0]).value
+                    df['kategori'] = name.capitalize() if '%' not in name else 'Cognac'
+                    df = df[['navn', 'volum', 'land',
+                             'distrikt', 'underdistrikt',
+                             'kategori', 'underkategori',
+                             'meta',
+                             *[col for col in df.columns if col.startswith('pris')]]]
+                    dfs.append(df)
+            state['data']['full'] = pd.concat(dfs)
+    else:
+        path = str(os.path.join(state['dir'], state['selection']['kategori'] + '.parquet'))
+        if not os.path.exists(path):
+            dfs = scrape_all(state['dir'])
+            state['data']['full'] = dfs[dfs['kategori'] == state['selection']['kategori']]
+        else:
+            state['data']['full'] = pd.read_parquet(path)
+
     state['data']['selected'] = state['data']['full'].copy()
 
     _refresh_dropdown(state)
@@ -36,15 +55,15 @@ def set_data(state):
 
 def _check_fetch_allowed(state):
     """
-    Toggle flag if last update was within the last 24 hours.
+    Toggle flag if last update was within the current month.
 
     Parameters
     ----------
     state : dict
         The current state of the application.
     """
-    now = pd.Timestamp.now()
-    if any([(now - pd.Timestamp(col.split(" ")[1])).days <= 1
+    now = pd.Timestamp.now().month
+    if any([now == pd.Timestamp(col.split(" ")[1]).month
             for col in state['data']['selected'].columns
             if col.startswith('pris')]):
         state['flag']['fetch_allowed'] = False
@@ -62,31 +81,10 @@ def get_products(state):
         The current state of the application.
     """
     state['flag']['fetching'] = True
-
-    if state['selection']['kategori'] == 'Alle':
-        dfs = []
-        for file in os.listdir(state['dir']):
-            if file.endswith('.parquet'):
-                df = pd.read_parquet(os.path.join(state['dir'], file))
-                df['kategori'] = getattr(CATEGORY, file.split('.')[0]).value
-                df = df[['navn', 'volum', 'land',
-                         'distrikt', 'underdistrikt',
-                         'kategori', 'underkategori',
-                         'meta',
-                         *[col for col in df.columns if col.startswith('pris')]]]
-                dfs.append(df)
-        state['data']['full'] = pd.concat(dfs)
-    else:
-        state['data']['full'] = update_products(
-            category=getattr(CATEGORY, state['selection']['kategori']),
-            path=str(os.path.join(state['dir'], state['selection']['kategori'] + '.parquet')),
-        )
-
-    set_selection(state)
-
+    _ = scrape_all(state['dir'])
     state['flag']['fetching'] = False
 
-    _check_fetch_allowed(state)
+    set_data(state)
 
 
 def _refresh_dropdown(state):

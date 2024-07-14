@@ -2,8 +2,8 @@
 
 import streamsync
 
-from scrape import scrape_all
-from getset import CATEGORY, set_data, set_selection, get_products, reset_selection
+from scrape import CATEGORY
+from getset import set_data, set_selection, get_products, reset_selection
 
 
 STATE = streamsync.init_state({
