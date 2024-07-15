@@ -1,12 +1,12 @@
 """State management and initialisation of the application."""
 
-import streamsync
+import writer
 
 from scrape import CATEGORY
 from getset import set_data, set_selection, get_products, reset_selection
 
 
-STATE = streamsync.init_state({
+STATE = writer.init_state({
 
     # dir
     # ----------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ STATE = streamsync.init_state({
                for k, v in CATEGORY.__dict__["_value2member_map_"].items()}
         },
 
-        # The following depends on the selected category (`['selection']['kategori']`).
+        # The following depends on the selected category (`['selection']['category']`).
         # These are updated when the category is changed.
         'subcategories': None,
         'volumes': None,
@@ -39,16 +39,14 @@ STATE = streamsync.init_state({
     # selection
     # ----------------------------------------------------------------------------------------------
     # Current selection for each dropdown.
-    # TODO: Handle selection change.
-    # TODO: Selection change should cascade.
 
     'selection': {
-        'kategori': 'RED_WINE',  # Alle
-        'underkategori': 'Alle',
-        'volum': 'Alle',
-        'land': 'Alle',
-        'distrikt': 'Alle',
-        'underdistrikt': 'Alle',
+        'category': 'Alle',
+        'subcategory': 'Alle',
+        'volume': 'Alle',
+        'country': 'Alle',
+        'district': 'Alle',
+        'subdistrict': 'Alle',
     },
 
     # data

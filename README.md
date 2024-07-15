@@ -19,7 +19,7 @@ pip install -r requirements.txt
 Deretter åpnes applikasjonen med
 
 ```bash
-streamsync run vinskraper
+writer run vinskraper
 ```
 
 i terminalen (fra hovedmappen).

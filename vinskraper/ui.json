@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "streamsync_version": "0.5.0"
+        "writer_version": "0.6.1"
     },
     "components": {
         "root": {
@@ -53,12 +53,12 @@
             "position": 0,
             "parentId": "eq2hgeuexj81cjqm",
             "handlers": {
-                "ss-option-change": "set_data"
+                "wf-option-change": "getset.set_data"
             },
             "visible": true,
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.kategori"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.category"
             }
         },
         "f2z440vk7btjnj01": {
@@ -95,7 +95,8 @@
                 "displayRowCount": "",
                 "dataframeBackgroundColor": "#FFFFFF",
                 "dataframeHeaderRowBackgroundColor": "#F3F7F4",
-                "fontStyle": "monospace"
+                "fontStyle": "",
+                "wrapText": ""
             },
             "isCodeManaged": false,
             "position": 5,
@@ -120,11 +121,11 @@
             "position": 0,
             "parentId": "q9wey9hyxj7b5u6t",
             "handlers": {
-                "ss-option-change": "set_selection"
+                "wf-option-change": "getset.set_selection"
             },
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.distrikt"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.district"
             }
         },
         "5bbu2zar2hsfg0ji": {
@@ -166,12 +167,12 @@
             "position": 0,
             "parentId": "51tl972bnt47v99m",
             "handlers": {
-                "ss-option-change": "set_selection"
+                "wf-option-change": "getset.set_selection"
             },
             "visible": true,
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.volum"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.volume"
             }
         },
         "63adkqlwicr6le77": {
@@ -203,12 +204,12 @@
             "position": 0,
             "parentId": "63adkqlwicr6le77",
             "handlers": {
-                "ss-option-change": "set_selection"
+                "wf-option-change": "getset.set_selection"
             },
             "visible": true,
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.land"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.country"
             }
         },
         "q9wey9hyxj7b5u6t": {
@@ -237,7 +238,7 @@
             "position": 0,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {
-                "click": "get_products"
+                "click": "getset.get_products"
             },
             "visible": "flag.fetch_allowed"
         },
@@ -293,12 +294,12 @@
             "position": 0,
             "parentId": "qmzotw495x0zj859",
             "handlers": {
-                "ss-option-change": "set_selection"
+                "wf-option-change": "getset.set_selection"
             },
             "visible": true,
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.underkategori"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.subcategory"
             }
         },
         "y5vjrvkstnbqggt3": {
@@ -330,11 +331,11 @@
             "position": 0,
             "parentId": "y5vjrvkstnbqggt3",
             "handlers": {
-                "ss-option-change": "set_selection"
+                "wf-option-change": "getset.set_selection"
             },
             "binding": {
-                "eventType": "ss-option-change",
-                "stateRef": "selection.underdistrikt"
+                "eventType": "wf-option-change",
+                "stateRef": "selection.subdistrict"
             }
         },
         "fowmkftiui6qq6hp": {
@@ -354,7 +355,7 @@
             "type": "html",
             "content": {
                 "element": "",
-                "styles": "{\n  \"padding\": \"15px\",\n  \"min-height\": \"50px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(232, 215, 218)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(142, 59, 70)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\"\n}",
+                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(232, 215, 218)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(142, 59, 70)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
                 "attrs": "",
                 "htmlInside": "Nullstill valg",
                 "cssClasses": ""
@@ -363,8 +364,20 @@
             "position": 0,
             "parentId": "fowmkftiui6qq6hp",
             "handlers": {
-                "click": "reset_selection"
+                "click": "getset.reset_selection"
             }
+        },
+        "p1zzhd4luac46qpn": {
+            "id": "p1zzhd4luac46qpn",
+            "type": "plotlygraph",
+            "content": {
+                "spec": "@{plot.fig}"
+            },
+            "isCodeManaged": false,
+            "position": 6,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
         }
     }
 }

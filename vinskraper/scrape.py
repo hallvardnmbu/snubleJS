@@ -237,7 +237,7 @@ def _update_products(
     return updated
 
 
-def scrape_all(directory: str = "./storage/", category: bool = False) -> pd.DataFrame:
+def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
     """
     Vinmonopolet updates their prices monthly.
     This function should therefore be called at the start of each month to fetch the new prices.
@@ -246,9 +246,6 @@ def scrape_all(directory: str = "./storage/", category: bool = False) -> pd.Data
     ----------
     directory : str, optional
         The directory to store the products.
-    category : bool, optional
-        Whether to include category column to the dataframes.
-        Only used when the returned dataframe is wanted for further processing.
 
     Notes
     -----

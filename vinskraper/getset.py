@@ -6,6 +6,15 @@ import pandas as pd
 from scrape import CATEGORY, scrape_all
 
 
+_EN_TO_NO = {
+    'subcategory': 'underkategori',
+    'volume': 'volum',
+    'country': 'land',
+    'district': 'distrikt',
+    'subdistrict': 'underdistrikt'
+}
+
+
 def set_data(state):
     """
     Updates the data in the state to correspond with the current category.
@@ -17,10 +26,10 @@ def set_data(state):
     """
     state['flag']['updating'] = True
 
-    if state['selection']['kategori'] == 'Alle':
+    if state['selection']['category'] == 'Alle':
         files = os.listdir(state['dir'])
         if not files:
-            state['data']['full'] = scrape_all(state['dir'], category=True)
+            state['data']['full'] = scrape_all(state['dir'])
         else:
             dfs = []
             for file in files:
@@ -36,10 +45,10 @@ def set_data(state):
                     dfs.append(df)
             state['data']['full'] = pd.concat(dfs)
     else:
-        path = str(os.path.join(state['dir'], state['selection']['kategori'] + '.parquet'))
+        path = str(os.path.join(state['dir'], state['selection']['category'] + '.parquet'))
         if not os.path.exists(path):
             dfs = scrape_all(state['dir'])
-            state['data']['full'] = dfs[dfs['kategori'] == state['selection']['kategori']]
+            state['data']['full'] = dfs[dfs['kategori'] == state['selection']['category']]
         else:
             state['data']['full'] = pd.read_parquet(path)
 
@@ -96,34 +105,43 @@ def _refresh_dropdown(state):
     state : dict
         The current state of the application.
     """
-    state['dropdown']['volumes'] = {
-        **{'Alle': 'Alle volum'},
-        **{str(volume): f'{volume:g} mL'
-           for volume in sorted([v for v in state['data']['selected']['volum'].unique() if v])}
-    }
-    state['dropdown']['countries'] = {
-        **{'Alle': 'Alle land'},
-        **{country: country
-           for country in sorted([c for c in state['data']['selected']['land'].unique().tolist() if c])}
-    }
-    state['dropdown']['districts'] = {
-        **{'Alle': 'Alle distrikter'},
-        **{district: district
-           for district in
-           sorted([d for d in state['data']['selected']['distrikt'].unique().tolist() if d])}
-    }
-    state['dropdown']['subdistricts'] = {
-        **{'Alle': 'Alle underdistrikter'},
-        **{district: district
-           for district in
-           sorted([d for d in state['data']['selected']['underdistrikt'].unique().tolist() if d])}
-    }
     state['dropdown']['subcategories'] = {
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['selected']['underkategori'].unique().tolist() if c])}
+           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
     }
+
+    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
+    state['dropdown']['volumes'] = {
+        **{'Alle': 'Alle volum'},
+        **{str(volume): f'{volume:g} mL'
+           for volume in sorted([v for v in state['data'][data]['volum'].unique() if v])}
+    }
+
+    data = 'selected' if state['selection']['volume'] != 'Alle' else data
+    state['dropdown']['countries'] = {
+        **{'Alle': 'Alle land'},
+        **{country: country
+           for country in sorted([c for c in state['data'][data]['land'].unique().tolist() if c])}
+    }
+
+    data = 'selected' if state['selection']['country'] != 'Alle' else data
+    state['dropdown']['districts'] = {
+        **{'Alle': 'Alle distrikter'},
+        **{district: district
+           for district in
+           sorted([d for d in state['data'][data]['distrikt'].unique().tolist() if d])}
+    }
+
+    data = 'selected' if state['selection']['district'] != 'Alle' else data
+    state['dropdown']['subdistricts'] = {
+        **{'Alle': 'Alle underdistrikter'},
+        **{district: district
+           for district in
+           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist() if d])}
+    }
+
     state['data']['id_to_name'] = state['data']['selected']['navn'].to_dict()
 
 
@@ -139,7 +157,7 @@ def set_selection(state):
     state['flag']['updating'] = True
 
     df = state['data']['full'].copy()
-    for feature in [feat for feat in state['selection'].to_dict() if feat != 'kategori']:
+    for feature in [feat for feat in state['selection'].to_dict() if feat != 'category']:
         df = _update_selection(state, df, feature)
 
     state['data']['selected'] = df
@@ -169,10 +187,10 @@ def _update_selection(state, df: pd.DataFrame, feature: str) -> pd.DataFrame:
     if state['selection'][feature] == 'Alle':
         return df
 
-    if feature == 'volum' and any(df[feature] == float(state['selection'][feature])):
-        df = df[df[feature] == float(state['selection'][feature])]
-    elif any(df[feature] == str(state['selection'][feature])):
-        df = df[df[feature] == state['selection'][feature]]
+    if feature == 'volume' and any(df[_EN_TO_NO[feature]] == float(state['selection'][feature])):
+        df = df[df[_EN_TO_NO[feature]] == float(state['selection'][feature])]
+    elif any(df[_EN_TO_NO[feature]] == str(state['selection'][feature])):
+        df = df[df[_EN_TO_NO[feature]] == state['selection'][feature]]
     else:
         state['selection'][feature] = 'Alle'
 
