@@ -5,6 +5,7 @@ urllib3
 requests
 beautifulsoup4
 pyarrow
+memoization
 
 # Application:
 writer

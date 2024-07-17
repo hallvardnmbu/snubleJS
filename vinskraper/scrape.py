@@ -4,6 +4,7 @@ import os
 import enum
 import json
 import logging
+from memoization import cached
 
 import requests
 import pandas as pd
@@ -11,12 +12,19 @@ from bs4 import BeautifulSoup
 from pyarrow.lib import ArrowTypeError
 
 _LOGGER = logging.getLogger(__name__)
+_COLOUR = {
+    "RED": "\033[31m",
+    "GREEN": "\033[32m",
+    "RESET": "\033[0m",
+}
 
 _URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
         "search?searchType=product"
         "&currentPage={}"
         "&q=%3Arelevance%3AmainCategory%3A{}")
+_SESSION = requests.Session()
 
+_PROXY = None
 _PROXIES = None
 _PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies"
               "&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000")
@@ -45,40 +53,59 @@ class CATEGORY(enum.Enum):
     MEAD = "mjød"
 
 
-def _get_proxy():
+def _renew_proxy():
     """Returns a proxy from the list of available proxies. Fetches new if the list is exhausted."""
-    global _PROXIES
+    global _PROXY, _PROXIES
 
     if _PROXIES is None:
         _PROXIES = [proxy for proxy in
                     requests.get(_PROXY_URL).text.split('\r\n')
                     if proxy and proxy.startswith("http")]
 
-    return {"http": _PROXIES.pop(0)}
+    _PROXY = {"http": _PROXIES.pop(0)}
 
 
-def _get_code(keys: list, code: float) -> float:
+@cached(ttl=60 * 60 * 10)
+def _scrape_page(
+        category: CATEGORY,
+        page: int
+) -> requests.models.Response:
     """
-    Iteratively finds the next available code by adding `0.1` if duplicated.
+    Scrape a single page of products from the given category.
 
     Parameters
     ----------
-    keys : list
-        A list of existing keys.
-    code : float
-        The current code to check for duplicates.
+    category : CATEGORY
+        The category of products to fetch.
+    page : int
+        The page number to fetch.
 
     Returns
     -------
-    float
-        The next available code.
+    requests.models.Response
+        The response from the page.
+
+    Notes
+    -----
+        Tries to fetch the page using the `_PROXY`.
+        If it fails, it renews the proxy (`_renew_proxy`) and retries.
+        Returns code `500` if it fails 10 consecutive times.
     """
-    _LOGGER.debug(f"  [ID] Code {code} already exists, finding new code.")
-    _code = int(code)
-    while code in keys:
-        code += 0.1 if code - _code < 0.9 else 0.01
-    _LOGGER.debug(f"   [ID] New code found: {code}.")
-    return code
+    for _ in range(10):
+        try:
+            response = _SESSION.get(_URL.format(page, category.value), proxies=_PROXY)
+            break
+        except Exception as err:
+            _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
+                          f"Page {page} (trying another proxy); {err}")
+            _renew_proxy()
+    else:
+        _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
+                      f"Failed to fetch page {page} after 10 attempts.")
+        response = requests.models.Response()
+        response.status_code = 500
+
+    return response
 
 
 def _scrape_products(category: CATEGORY) -> dict:
@@ -96,54 +123,31 @@ def _scrape_products(category: CATEGORY) -> dict:
         A dictionary containing the products fetched from the given category.
         The product ID is used as the key, and the product information is stored as a dictionary.
     """
-    _LOGGER.info(f" [Scraping] {category.value}.")
-
     items = {}
-    session = requests.Session()
-    proxy = _get_proxy()
+    _renew_proxy()
 
     # ----------------------------------------------------------------------------------------------
     # Loops through the pages of the category.
     # Assuming that there is less than 1000 pages.
 
     # TODO: Parallelise the fetching. Each session should use its own proxy.
-
     for page in range(1000):
-        _LOGGER.debug(f"  [Page] {page}.")
+        response = _scrape_page(category, page)
 
-        # ------------------------------------------------------------------------------------------
-        # Tries to fetch the page using the proxy.
-        # If it fails, it tries with a new proxy.
-        # Breaks if it fails 10 consecutive times.
-
-        i = 0
-        response = None
-        while i < 10:
-            try:
-                response = session.get(_URL.format(page, category.value), proxies=proxy)
-                break
-            except requests.exceptions.ProxyError:
-                _LOGGER.debug("   [Proxy] Error, trying another proxy.")
-                proxy = _get_proxy()
-                i += 1
-            except Exception as e:
-                _LOGGER.error(f"[Error] Page {page} (with proxy {proxy} at retry {i}).\n{e}")
-                break
-
-        if response is None:
-            _LOGGER.error(f"[Failed] Got no response for page {page}.")
-            break
-        elif response.status_code != 200:
-            _LOGGER.error(f"[Failed] Got status code {response.status_code} for page {page}.")
-            break
+        if response.status_code != 200:
+            _LOGGER.error(f"├─ {_COLOUR['RED']}Failed{_COLOUR['RESET']}: "
+                          f"Page {page} (status code {response.status_code}): "
+                          f"{response.text}.")
+            continue
 
         # ------------------------------------------------------------------------------------------
         # Parses the response and extracts the products.
 
         soup = BeautifulSoup(response.text, "html.parser")
         products = json.loads(soup.string).get("productSearchResult", {}).get("products", [])
+
         if not products:
-            _LOGGER.info(f"  [Done] No more products (final page: {page - 1}).")
+            _LOGGER.info(f"├─ No more products (final page: {page - 1}).")
             break
 
         # ------------------------------------------------------------------------------------------
@@ -151,17 +155,36 @@ def _scrape_products(category: CATEGORY) -> dict:
 
         for product in products:
             code = product.get("code", None)
-            items[code if code not in items else _get_code(list(items.keys()), float(code))] = {
-                "navn": product.get("name", None),
-                "volum": product.get("volume", {}).get("value", None),
+            if code is None:
+                _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
+                              f"Product without code: {product}. Skipping.")
+                continue
+            elif code in items:
+                _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
+                              f"Duplicate product code: {code}. Skipping.")
+                continue
+            items[code] = {
+                "navn": product.get("name", "-"),
+                "volum": product.get("volume", {}).get("value", 0.0),
 
-                "land": product.get("main_country", {}).get("name", None),
-                "distrikt": product.get("district", {}).get("name", None),
-                "underdistrikt": product.get("sub_District", {}).get("name", None),
-                "underkategori": product.get("main_sub_category", {}).get("name", None),
+                "land": product.get("main_country", {}).get("name", "-"),
+                "distrikt": product.get("district", {}).get("name", "-"),
+                "underdistrikt": product.get("sub_District", {}).get("name", "-"),
 
-                "meta": {
-                    "url": f"https://www.vinmonopolet.no{product.get('url', None)}",
+                "kategori": product.get("main_category", {}).get("name", "-") if category != CATEGORY.COGNAC else "Cognac",
+                "underkategori": product.get("main_sub_category", {}).get("name", "-"),
+
+                "meta": json.dumps({
+                    "url": f"https://www.vinmonopolet.no{product.get('url', '')}",
+
+                    "status": product.get("status", "-"),
+                    "kan kjøpes": product.get("buyable", False),
+                    "utgått": product.get("expired", False),
+                    "kan bestilles": product.get("storesAvailability", {}).get(
+                        "infos", [{}]
+                    )[0].get("readableValue", "-"),
+                    "produktutvalg": product.get("product_selection", "-"),
+                    "bærekraftig": product.get("sustainable", False),
 
                     "bilde": {img['format']: img['url'] for img in product.get("images", [{
                         "format": "thumbnail",
@@ -170,15 +193,9 @@ def _scrape_products(category: CATEGORY) -> dict:
                         "format": "product",
                         "url": "https://bilder.vinmonopolet.no/bottle.png"
                     }])},
+                }),
 
-                    "kan kjøpes": product.get("buyable", False),
-                    "utgått": product.get("expired", False),
-                    "kan bestilles": product.get("storesAvailability", {}).get(
-                        "infos", [{}]
-                    )[0].get("readableValue", None),
-                },
-
-                "pris": product.get("price", {}).get("value", None),
+                "pris": product.get("price", {}).get("value", "-"),
             }
 
     return items
@@ -205,7 +222,7 @@ def _update_products(
     pd.DataFrame
         The (updated) products.
     """
-    _LOGGER.info(f" {category.value}.")
+    _LOGGER.info(f"┌─ Fetching {category.name}")
 
     products = _scrape_products(category)
     products = pd.DataFrame(products).T
@@ -215,25 +232,18 @@ def _update_products(
     )
 
     if not os.path.exists(path):
-        _LOGGER.info(f" [File] No file found, creating new (here: {path}).")
+        _LOGGER.info(f"├─ No file found, creating new ({path}).")
         products.to_parquet(path)
-        _LOGGER.info(f" {category.value} successful.")
+        _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
+
         return products
 
+    _LOGGER.info(f"├─ Mergind new data with old.")
     old = pd.read_parquet(path)
-
-    products["meta"] = products["meta"].apply(json.dumps)
-    old["meta"] = old["meta"].apply(json.dumps)
-    updated = pd.merge(
-        old, products,
-        on=[col for col in old.columns if not col.startswith("pris")],
-        how='outer'
-    )
-    updated["meta"] = updated["meta"].apply(json.loads)
-
+    updated = products.combine_first(old)
     updated.to_parquet(path)
+    _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
 
-    _LOGGER.info(f"[Updating] Success ({category.value}).")
     return updated
 
 
@@ -252,25 +262,15 @@ def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
     Loops through all categories and updates all products for each category.
     The products are stored in the `directory`, suffixed by the `CATEGORY` names.
     """
-    _LOGGER.info("[Updating] All categories.")
-
     categories = [category for category in CATEGORY]
     dfs = []
     for category in categories:
         try:
-            df = _update_products(category, path=directory + category.name + ".parquet")
-            if category:
-                df['kategori'] = category.value.capitalize() if '%' not in category.value else 'Cognac'
-                df = df[['navn', 'volum', 'land',
-                         'distrikt', 'underdistrikt',
-                         'kategori', 'underkategori',
-                         'meta',
-                         *[col for col in df.columns if col.startswith('pris')]]]
-            dfs.append(df)
+            dfs.append(_update_products(category, path=directory + category.name + ".parquet"))
         except ArrowTypeError as err:
             categories.append(category)
-            _LOGGER.error(f"[Error] {err}.\nRetrying {category.name} after a while.")
+            _LOGGER.error(f"└─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
+                          f"Could not save. Retrying.")
+            raise err
     dfs = pd.concat(dfs)
-
-    _LOGGER.info("[Updating] Success (all categories).")
     return dfs

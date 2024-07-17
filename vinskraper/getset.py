@@ -1,9 +1,10 @@
 """Getters and setters used by the application."""
 
 import os
+import json
 import pandas as pd
 
-from scrape import CATEGORY, scrape_all
+from scrape import scrape_all
 
 
 _EN_TO_NO = {
@@ -34,15 +35,7 @@ def set_data(state):
             dfs = []
             for file in files:
                 if file.endswith('.parquet'):
-                    df = pd.read_parquet(os.path.join(state['dir'], file))
-                    name = getattr(CATEGORY, file.split('.')[0]).value
-                    df['kategori'] = name.capitalize() if '%' not in name else 'Cognac'
-                    df = df[['navn', 'volum', 'land',
-                             'distrikt', 'underdistrikt',
-                             'kategori', 'underkategori',
-                             'meta',
-                             *[col for col in df.columns if col.startswith('pris')]]]
-                    dfs.append(df)
+                    dfs.append(pd.read_parquet(os.path.join(state['dir'], file)))
             state['data']['full'] = pd.concat(dfs)
     else:
         path = str(os.path.join(state['dir'], state['selection']['category'] + '.parquet'))
@@ -51,6 +44,9 @@ def set_data(state):
             state['data']['full'] = dfs[dfs['kategori'] == state['selection']['category']]
         else:
             state['data']['full'] = pd.read_parquet(path)
+    state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
+
+    _sort_prices(state)
 
     state['data']['selected'] = state['data']['full'].copy()
 
@@ -60,6 +56,23 @@ def set_data(state):
 
     set_selection(state)
     _check_fetch_allowed(state)
+
+
+def _sort_prices(state):
+    """
+    Sort the price columns of the data in the state by date.
+
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
+    cols = [col for col in state['data']['full'].columns if col.startswith('pris')]
+    cols = sorted(cols, key=lambda x: pd.Timestamp(x.split(" ")[1]))
+    state['data']['full'] = state['data']['full'][
+        ['navn', 'volum', 'land', 'distrikt', 'underdistrikt', 'kategori', 'underkategori', 'meta']
+        + cols
+    ]
 
 
 def _check_fetch_allowed(state):
@@ -209,7 +222,7 @@ def reset_selection(state):
     state['flag']['updating'] = True
 
     for feature in state['selection'].to_dict():
-        state['selection'][feature] = 'Alle' if feature != 'kategori' else state['selection'][feature]
+        state['selection'][feature] = 'Alle' if feature != 'category' else state['selection'][feature]
 
     state['flag']['updating'] = False
     set_selection(state)
