@@ -57,8 +57,7 @@ STATE = writer.init_state({
         'full': None,
         'selected': None,
 
-        # Mapping from product ID (index) to product name.
-        'id_to_name': None,
+        'best': {str(i): {} for i in range(1, 6)}
     },
 
     # plot
@@ -88,6 +87,9 @@ STATE = writer.init_state({
 
         # Buttons.
         'fetch_allowed': False,
+
+        # Message.
+        'no_discounts': True,
     },
 })
 

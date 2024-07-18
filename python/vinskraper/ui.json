@@ -70,7 +70,7 @@
                 "primaryTextColor": "#F3F7F4"
             },
             "isCodeManaged": false,
-            "position": 0,
+            "position": 1,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.fetching"
@@ -84,7 +84,7 @@
                 "primaryTextColor": "#F3F7F4"
             },
             "isCodeManaged": false,
-            "position": 1,
+            "position": 2,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.updating"
@@ -95,7 +95,7 @@
             "content": {
                 "dataframe": "@{data.selected}",
                 "displayRowCount": "",
-                "dataframeBackgroundColor": "#FFFFFF",
+                "dataframeBackgroundColor": "#F3F7F4",
                 "dataframeHeaderRowBackgroundColor": "#F3F7F4",
                 "fontStyle": "",
                 "wrapText": "",
@@ -103,8 +103,8 @@
                 "enableDownload": ""
             },
             "isCodeManaged": false,
-            "position": 2,
-            "parentId": "ccad7k7sc5oxy81l",
+            "position": 0,
+            "parentId": "ksg9945lomky63dl",
             "handlers": {},
             "visible": true
         },
@@ -280,37 +280,1234 @@
         "6ptvht9wuwo5r4qf": {
             "id": "6ptvht9wuwo5r4qf",
             "type": "section",
-            "parentId": "ccad7k7sc5oxy81l",
             "content": {
-                "title": "Prisendring"
+                "title": "St\u00f8rst prisendring"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 3,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {}
+        },
+        "mzjqlwp1uf90rl3m": {
+            "id": "mzjqlwp1uf90rl3m",
+            "type": "tabs",
+            "content": {
+                "containerBackgroundColor": "#ffffff"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6ptvht9wuwo5r4qf",
+            "handlers": {},
+            "visible": "data.best.1.prisendring"
+        },
+        "glt5tyjz694talj1": {
+            "id": "glt5tyjz694talj1",
+            "type": "tab",
+            "content": {
+                "name": "1. @{data.best.1.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "mzjqlwp1uf90rl3m",
+            "handlers": {},
+            "visible": "data.best.1.prisendring"
+        },
+        "k8buzh63javhuafw": {
+            "id": "k8buzh63javhuafw",
+            "type": "image",
+            "content": {
+                "caption": "",
+                "src": "@{data.best.1.meta.bilde.product}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "sh4cutfm7l3eoahb",
+            "handlers": {},
             "visible": true
         },
-        "y89v3yqndlnd1gkg": {
-            "id": "y89v3yqndlnd1gkg",
-            "type": "metric",
-            "parentId": "6ptvht9wuwo5r4qf",
+        "h6jv96h57tn671me": {
+            "id": "h6jv96h57tn671me",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "glt5tyjz694talj1",
+            "handlers": {},
+            "visible": true
+        },
+        "sh4cutfm7l3eoahb": {
+            "id": "sh4cutfm7l3eoahb",
+            "type": "column",
             "content": {
-                "note": "+Pass"
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "h6jv96h57tn671me",
+            "handlers": {},
+            "visible": true
+        },
+        "wbgc4un34kdnbqr3": {
+            "id": "wbgc4un34kdnbqr3",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "h6jv96h57tn671me",
+            "handlers": {},
+            "visible": true
+        },
+        "s01s6mord67iufpc": {
+            "id": "s01s6mord67iufpc",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.1.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "wbgc4un34kdnbqr3",
+            "handlers": {},
+            "visible": true
+        },
+        "g76lb12r0ij3hg4r": {
+            "id": "g76lb12r0ij3hg4r",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.1.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "wbgc4un34kdnbqr3",
+            "handlers": {},
+            "visible": true
+        },
+        "9tqatjaokhybfjib": {
+            "id": "9tqatjaokhybfjib",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.prisendring} %",
+                "primaryTextColor": "#136F63",
+                "headingType": "h1",
+                "alignment": "right"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "g76lb12r0ij3hg4r",
+            "handlers": {},
+            "visible": true
+        },
+        "pjvxqzpamtxrn091": {
+            "id": "pjvxqzpamtxrn091",
+            "type": "link",
+            "content": {
+                "url": "@{data.best.1.meta.url}",
+                "rel": "",
+                "text": "Direktelenke",
+                "target": "_blank"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "wbgc4un34kdnbqr3",
+            "handlers": {},
+            "visible": true
+        },
+        "fxu3jqbo96pwdjoe": {
+            "id": "fxu3jqbo96pwdjoe",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.volum} cL"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "s01s6mord67iufpc",
+            "handlers": {},
+            "visible": true
+        },
+        "l919mt8csh1v673a": {
+            "id": "l919mt8csh1v673a",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.land}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ze4hfl0hnn85fmjz",
+            "handlers": {},
+            "visible": true
+        },
+        "tebdw7omqsk33ujg": {
+            "id": "tebdw7omqsk33ujg",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.distrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "jkflhqu55mkbquwz",
+            "handlers": {},
+            "visible": "data.best.1.distrikt"
+        },
+        "cjwxfv473ud1ameh": {
+            "id": "cjwxfv473ud1ameh",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "wbgc4un34kdnbqr3",
+            "handlers": {},
+            "visible": "data.best.1.underkategori"
+        },
+        "h7wynclezrarg6nz": {
+            "id": "h7wynclezrarg6nz",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "wbgc4un34kdnbqr3",
+            "handlers": {},
+            "visible": true
+        },
+        "ze4hfl0hnn85fmjz": {
+            "id": "ze4hfl0hnn85fmjz",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "h7wynclezrarg6nz",
+            "handlers": {},
+            "visible": true
+        },
+        "jkflhqu55mkbquwz": {
+            "id": "jkflhqu55mkbquwz",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "h7wynclezrarg6nz",
+            "handlers": {},
+            "visible": true
+        },
+        "p2v981w7ey7siwb7": {
+            "id": "p2v981w7ey7siwb7",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.1.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "jkflhqu55mkbquwz",
+            "handlers": {},
+            "visible": "data.best.1.underdistrikt"
+        },
+        "qgo3m9pjlvqurlsm": {
+            "id": "qgo3m9pjlvqurlsm",
+            "type": "tab",
+            "content": {
+                "name": "2. @{data.best.2.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "mzjqlwp1uf90rl3m",
+            "handlers": {},
+            "visible": "data.best.2.prisendring"
+        },
+        "mlnajk1fdcvpvjhs": {
+            "id": "mlnajk1fdcvpvjhs",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qgo3m9pjlvqurlsm",
+            "handlers": {},
+            "visible": true
+        },
+        "8m9ai9a7zabl6tdr": {
+            "id": "8m9ai9a7zabl6tdr",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "mlnajk1fdcvpvjhs",
+            "handlers": {},
+            "visible": true
+        },
+        "3fvy204xw65u3i1g": {
+            "id": "3fvy204xw65u3i1g",
+            "type": "image",
+            "content": {
+                "caption": "",
+                "src": "@{data.best.2.meta.bilde.product}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "8m9ai9a7zabl6tdr",
+            "handlers": {},
+            "visible": true
+        },
+        "u659yf6qhtcvh2kz": {
+            "id": "u659yf6qhtcvh2kz",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "mlnajk1fdcvpvjhs",
+            "handlers": {},
+            "visible": true
+        },
+        "6winjuy6efsb3l74": {
+            "id": "6winjuy6efsb3l74",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.2.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "u659yf6qhtcvh2kz",
+            "handlers": {},
+            "visible": true
+        },
+        "1ssq8jscc5r5uf2v": {
+            "id": "1ssq8jscc5r5uf2v",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.volum} cL"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6winjuy6efsb3l74",
+            "handlers": {},
+            "visible": true
+        },
+        "11tmhx01vy34dwrl": {
+            "id": "11tmhx01vy34dwrl",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.2.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "u659yf6qhtcvh2kz",
+            "handlers": {},
+            "visible": true
+        },
+        "nl3waekw19suekjy": {
+            "id": "nl3waekw19suekjy",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.prisendring} %",
+                "primaryTextColor": "#136F63",
+                "headingType": "h1",
+                "alignment": "right"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "11tmhx01vy34dwrl",
+            "handlers": {},
+            "visible": true
+        },
+        "b6ajpf980lqcw940": {
+            "id": "b6ajpf980lqcw940",
+            "type": "link",
+            "content": {
+                "url": "@{data.best.2.meta.url}",
+                "rel": "",
+                "text": "Direktelenke",
+                "target": "_blank"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "u659yf6qhtcvh2kz",
+            "handlers": {},
+            "visible": true
+        },
+        "hsb89kbdkpj2lac7": {
+            "id": "hsb89kbdkpj2lac7",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "u659yf6qhtcvh2kz",
+            "handlers": {},
+            "visible": "data.best.2.underkategori"
+        },
+        "a8w9c6gu8ktlducy": {
+            "id": "a8w9c6gu8ktlducy",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "u659yf6qhtcvh2kz",
+            "handlers": {},
+            "visible": true
+        },
+        "09ep3o4pfd0qryex": {
+            "id": "09ep3o4pfd0qryex",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "a8w9c6gu8ktlducy",
+            "handlers": {},
+            "visible": true
+        },
+        "t449n89oevfjx310": {
+            "id": "t449n89oevfjx310",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.land}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "09ep3o4pfd0qryex",
+            "handlers": {},
+            "visible": true
+        },
+        "5jvzx7px1vd7fixm": {
+            "id": "5jvzx7px1vd7fixm",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "a8w9c6gu8ktlducy",
+            "handlers": {},
+            "visible": true
+        },
+        "lre8az63uzjloidn": {
+            "id": "lre8az63uzjloidn",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.distrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "5jvzx7px1vd7fixm",
+            "handlers": {},
+            "visible": "data.best.2.distrikt"
+        },
+        "0aby5srwj6mpeiu7": {
+            "id": "0aby5srwj6mpeiu7",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.2.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "5jvzx7px1vd7fixm",
+            "handlers": {},
+            "visible": "data.best.2.underdistrikt"
+        },
+        "vlaitjkq0xdrbwe0": {
+            "id": "vlaitjkq0xdrbwe0",
+            "type": "tab",
+            "content": {
+                "name": "3. @{data.best.3.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "mzjqlwp1uf90rl3m",
+            "handlers": {},
+            "visible": "data.best.3.prisendring"
+        },
+        "wfzdsxa95es1mu3h": {
+            "id": "wfzdsxa95es1mu3h",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "vlaitjkq0xdrbwe0",
+            "handlers": {},
+            "visible": true
+        },
+        "e5s125gu5dev8ksz": {
+            "id": "e5s125gu5dev8ksz",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "wfzdsxa95es1mu3h",
+            "handlers": {},
+            "visible": true
+        },
+        "8gk0obrj9z7v9bp9": {
+            "id": "8gk0obrj9z7v9bp9",
+            "type": "image",
+            "content": {
+                "caption": "",
+                "src": "@{data.best.3.meta.bilde.product}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "e5s125gu5dev8ksz",
+            "handlers": {},
+            "visible": true
+        },
+        "8ebs6xoj6ffjy1wf": {
+            "id": "8ebs6xoj6ffjy1wf",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "wfzdsxa95es1mu3h",
+            "handlers": {},
+            "visible": true
+        },
+        "azqlpxdf17p4zzvt": {
+            "id": "azqlpxdf17p4zzvt",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.3.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "8ebs6xoj6ffjy1wf",
+            "handlers": {},
+            "visible": true
+        },
+        "cfger65e9fyp1rbn": {
+            "id": "cfger65e9fyp1rbn",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.volum} cL"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "azqlpxdf17p4zzvt",
+            "handlers": {},
+            "visible": true
+        },
+        "92k4nacdaihruejv": {
+            "id": "92k4nacdaihruejv",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.3.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "8ebs6xoj6ffjy1wf",
+            "handlers": {},
+            "visible": true
+        },
+        "n80m8h1xhcfg0lgo": {
+            "id": "n80m8h1xhcfg0lgo",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.prisendring} %",
+                "primaryTextColor": "#136F63",
+                "headingType": "h1",
+                "alignment": "right"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "92k4nacdaihruejv",
+            "handlers": {},
+            "visible": true
+        },
+        "gcnvvphmny2bbyj1": {
+            "id": "gcnvvphmny2bbyj1",
+            "type": "link",
+            "content": {
+                "url": "@{data.best.3.meta.url}",
+                "rel": "",
+                "text": "Direktelenke",
+                "target": "_blank"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "8ebs6xoj6ffjy1wf",
+            "handlers": {},
+            "visible": true
+        },
+        "44jvcsvo7ug73o2c": {
+            "id": "44jvcsvo7ug73o2c",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "8ebs6xoj6ffjy1wf",
+            "handlers": {},
+            "visible": "data.best.3.underkategori"
+        },
+        "47k7g1gz6oxa11b0": {
+            "id": "47k7g1gz6oxa11b0",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "8ebs6xoj6ffjy1wf",
+            "handlers": {},
+            "visible": true
+        },
+        "fgns6k1lfvnvn3tp": {
+            "id": "fgns6k1lfvnvn3tp",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "47k7g1gz6oxa11b0",
+            "handlers": {},
+            "visible": true
+        },
+        "wtzqdwcj81kp9pfv": {
+            "id": "wtzqdwcj81kp9pfv",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.land}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "fgns6k1lfvnvn3tp",
+            "handlers": {},
+            "visible": true
+        },
+        "mmvg00fw4957l8nw": {
+            "id": "mmvg00fw4957l8nw",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "47k7g1gz6oxa11b0",
+            "handlers": {},
+            "visible": true
+        },
+        "p1bw5ko2sobakd0g": {
+            "id": "p1bw5ko2sobakd0g",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.distrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "mmvg00fw4957l8nw",
+            "handlers": {},
+            "visible": "data.best.3.distrikt"
+        },
+        "7j66ayghjt4fnszk": {
+            "id": "7j66ayghjt4fnszk",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.3.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "mmvg00fw4957l8nw",
+            "handlers": {},
+            "visible": "data.best.3.underdistrikt"
+        },
+        "csva0r3s0sa18v86": {
+            "id": "csva0r3s0sa18v86",
+            "type": "tab",
+            "content": {
+                "name": "4. @{data.best.4.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "mzjqlwp1uf90rl3m",
+            "handlers": {},
+            "visible": "data.best.4.prisendring"
+        },
+        "fcp8pcanwj92ccqr": {
+            "id": "fcp8pcanwj92ccqr",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "csva0r3s0sa18v86",
+            "handlers": {},
+            "visible": true
+        },
+        "9jcdovczga05mlc1": {
+            "id": "9jcdovczga05mlc1",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "fcp8pcanwj92ccqr",
+            "handlers": {},
+            "visible": true
+        },
+        "rkpignait2gjvp8e": {
+            "id": "rkpignait2gjvp8e",
+            "type": "image",
+            "content": {
+                "caption": "",
+                "src": "@{data.best.4.meta.bilde.product}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "9jcdovczga05mlc1",
+            "handlers": {},
+            "visible": true
+        },
+        "wg19s2x59nrftpdt": {
+            "id": "wg19s2x59nrftpdt",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "fcp8pcanwj92ccqr",
+            "handlers": {},
+            "visible": true
+        },
+        "63vse9k97oti3r6j": {
+            "id": "63vse9k97oti3r6j",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.4.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "wg19s2x59nrftpdt",
+            "handlers": {},
+            "visible": true
+        },
+        "xng29bq54ekspu1o": {
+            "id": "xng29bq54ekspu1o",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.volum} cL"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "63vse9k97oti3r6j",
+            "handlers": {},
+            "visible": true
+        },
+        "6yufvfav6ljwsdef": {
+            "id": "6yufvfav6ljwsdef",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.4.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "wg19s2x59nrftpdt",
+            "handlers": {},
+            "visible": true
+        },
+        "0zzbqakxkg2dodwd": {
+            "id": "0zzbqakxkg2dodwd",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.prisendring} %",
+                "primaryTextColor": "#136F63",
+                "headingType": "h1",
+                "alignment": "right"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6yufvfav6ljwsdef",
+            "handlers": {},
+            "visible": true
+        },
+        "5lphs5v33a3db4ot": {
+            "id": "5lphs5v33a3db4ot",
+            "type": "link",
+            "content": {
+                "url": "@{data.best.4.meta.url}",
+                "rel": "",
+                "text": "Direktelenke",
+                "target": "_blank"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "wg19s2x59nrftpdt",
+            "handlers": {},
+            "visible": true
+        },
+        "8jcqhyqzjo80xc6m": {
+            "id": "8jcqhyqzjo80xc6m",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "wg19s2x59nrftpdt",
+            "handlers": {},
+            "visible": "data.best.4.underkategori"
+        },
+        "ry0mnahs9ff6fxrv": {
+            "id": "ry0mnahs9ff6fxrv",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "wg19s2x59nrftpdt",
+            "handlers": {},
+            "visible": true
+        },
+        "l6h5b51cpnu2bhzb": {
+            "id": "l6h5b51cpnu2bhzb",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ry0mnahs9ff6fxrv",
+            "handlers": {},
+            "visible": true
+        },
+        "oph1pzxc5qxladn6": {
+            "id": "oph1pzxc5qxladn6",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.land}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "l6h5b51cpnu2bhzb",
+            "handlers": {},
+            "visible": true
+        },
+        "lkd3etwaomkqqv56": {
+            "id": "lkd3etwaomkqqv56",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "ry0mnahs9ff6fxrv",
+            "handlers": {},
+            "visible": true
+        },
+        "oj2uc15itmxfxzww": {
+            "id": "oj2uc15itmxfxzww",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.distrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "lkd3etwaomkqqv56",
+            "handlers": {},
+            "visible": "data.best.4.distrikt"
+        },
+        "qptyz9pirtycgy21": {
+            "id": "qptyz9pirtycgy21",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.4.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "lkd3etwaomkqqv56",
+            "handlers": {},
+            "visible": "data.best.4.underdistrikt"
+        },
+        "abfn3t0rculno7lg": {
+            "id": "abfn3t0rculno7lg",
+            "type": "tab",
+            "content": {
+                "name": "5. @{data.best.5.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "mzjqlwp1uf90rl3m",
+            "handlers": {},
+            "visible": "data.best.5.prisendring"
+        },
+        "x1o2n4jsn4wnkagn": {
+            "id": "x1o2n4jsn4wnkagn",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "abfn3t0rculno7lg",
+            "handlers": {},
+            "visible": true
+        },
+        "qf8xs8cxrl3gxlgh": {
+            "id": "qf8xs8cxrl3gxlgh",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "x1o2n4jsn4wnkagn",
+            "handlers": {},
+            "visible": true
+        },
+        "wwauxi6rukggc4ka": {
+            "id": "wwauxi6rukggc4ka",
+            "type": "image",
+            "content": {
+                "caption": "",
+                "src": "@{data.best.5.meta.bilde.product}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qf8xs8cxrl3gxlgh",
+            "handlers": {},
+            "visible": true
+        },
+        "do6il2ppcbgqgv51": {
+            "id": "do6il2ppcbgqgv51",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "x1o2n4jsn4wnkagn",
+            "handlers": {},
+            "visible": true
+        },
+        "3upbph0tnwrzvkn2": {
+            "id": "3upbph0tnwrzvkn2",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.5.navn}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "do6il2ppcbgqgv51",
+            "handlers": {},
+            "visible": true
+        },
+        "1cxpy32xoq7ql2dn": {
+            "id": "1cxpy32xoq7ql2dn",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.volum} cL"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "3upbph0tnwrzvkn2",
+            "handlers": {},
+            "visible": true
+        },
+        "pghteekatvfdmvu9": {
+            "id": "pghteekatvfdmvu9",
+            "type": "header",
+            "content": {
+                "text": "@{data.best.5.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "do6il2ppcbgqgv51",
+            "handlers": {},
+            "visible": true
+        },
+        "zqd8sfwaj7wext73": {
+            "id": "zqd8sfwaj7wext73",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.prisendring} %",
+                "primaryTextColor": "#136F63",
+                "headingType": "h1",
+                "alignment": "right"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "pghteekatvfdmvu9",
+            "handlers": {},
+            "visible": true
+        },
+        "fold8qbi8jh5ywae": {
+            "id": "fold8qbi8jh5ywae",
+            "type": "link",
+            "content": {
+                "url": "@{data.best.5.meta.url}",
+                "rel": "",
+                "text": "Direktelenke",
+                "target": "_blank"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "do6il2ppcbgqgv51",
+            "handlers": {},
+            "visible": true
+        },
+        "f5skmuo3hbecx88z": {
+            "id": "f5skmuo3hbecx88z",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "do6il2ppcbgqgv51",
+            "handlers": {},
+            "visible": "data.best.5.underkategori"
+        },
+        "y4gdtvicma7dlbgv": {
+            "id": "y4gdtvicma7dlbgv",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "do6il2ppcbgqgv51",
+            "handlers": {},
+            "visible": true
+        },
+        "91jvzxnv1oommalr": {
+            "id": "91jvzxnv1oommalr",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "y4gdtvicma7dlbgv",
+            "handlers": {},
+            "visible": true
+        },
+        "zzbzgvzrtzbah7ek": {
+            "id": "zzbzgvzrtzbah7ek",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.land}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "91jvzxnv1oommalr",
+            "handlers": {},
+            "visible": true
+        },
+        "cylu1dikrhafzzoj": {
+            "id": "cylu1dikrhafzzoj",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "y4gdtvicma7dlbgv",
+            "handlers": {},
+            "visible": true
+        },
+        "14y2v1gbuxka1jb3": {
+            "id": "14y2v1gbuxka1jb3",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.distrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "cylu1dikrhafzzoj",
+            "handlers": {},
+            "visible": "data.best.5.distrikt"
+        },
+        "w6wqsiixc43bdi7k": {
+            "id": "w6wqsiixc43bdi7k",
+            "type": "heading",
+            "content": {
+                "text": "@{data.best.5.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "cylu1dikrhafzzoj",
+            "handlers": {},
+            "visible": "data.best.5.underdistrikt"
+        },
+        "6cgt024mbprah9lo": {
+            "id": "6cgt024mbprah9lo",
+            "type": "message",
+            "content": {
+                "message": "Ingen prisendringer innenfor denne valg-kombinasjonen.",
+                "infoColor": "#ffffff",
+                "primaryTextColor": "#8E3B46"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "6ptvht9wuwo5r4qf",
+            "handlers": {},
+            "visible": "flag.no_discounts"
+        },
+        "sxn7pxxbzwxa7yql": {
+            "id": "sxn7pxxbzwxa7yql",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/logo.jpg",
+                "caption": ""
+            },
+            "isCodeManaged": false,
+            "position": 8,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {},
+            "visible": true
+        },
+        "0n1wtnww0mv93adl": {
+            "id": "0n1wtnww0mv93adl",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/vinskraper.jpg",
+                "caption": ""
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "cqsbzzzn2dwx0szq": {
+            "id": "cqsbzzzn2dwx0szq",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/informasjon.jpg",
+                "caption": "",
+                "maxWidth": "500"
+            },
+            "isCodeManaged": false,
+            "position": 6,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "x1njvm9e7u0tnto4": {
+            "id": "x1njvm9e7u0tnto4",
+            "type": "separator",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 5,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "zxqxqmoju7cki85x": {
+            "id": "zxqxqmoju7cki85x",
+            "type": "section",
+            "content": {
+                "title": ""
+            },
+            "isCodeManaged": false,
+            "position": 7,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "hm3tyjnczbem2eqb": {
+            "id": "hm3tyjnczbem2eqb",
+            "type": "text",
+            "content": {
+                "text": "Hver m\u00e5ned oppdaterer [vinmonopolet](www.vinmonopolet.no) priser. Mens noen priser forblir uendret, kan s\u00e5kalt _skjulte_ tilbud fremtre (samt pris\u00f8kninger).\n\nM\u00e5let med denne enkle siden er \u00e5 analysere disse prisendringene, samt holde styr p\u00e5 [vinmonopolets](www.vinmonopolet.no) utvalg.",
+                "useMarkdown": "yes"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "zxqxqmoju7cki85x",
+            "handlers": {},
+            "visible": true
+        },
+        "n7q1p1an4ef1jtjr": {
+            "id": "n7q1p1an4ef1jtjr",
+            "type": "separator",
+            "content": {},
+            "position": 8,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "gv036384uttkj99k": {
+            "id": "gv036384uttkj99k",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/data.jpg",
+                "caption": "",
+                "maxWidth": "500"
+            },
+            "position": 9,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "ksg9945lomky63dl": {
+            "id": "ksg9945lomky63dl",
+            "type": "section",
+            "content": {
+                "title": ""
+            },
+            "position": 10,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "7ki4xzmvxgncvaf9": {
+            "id": "7ki4xzmvxgncvaf9",
+            "type": "separator",
+            "parentId": "zxqxqmoju7cki85x",
+            "content": {
+                "separatorColor": "#136F63"
             },
             "handlers": {},
             "position": 1,
             "visible": true
         },
-        "ngv84b1mxurls8o0": {
-            "id": "ngv84b1mxurls8o0",
-            "type": "numberinput",
-            "parentId": "6ptvht9wuwo5r4qf",
+        "t5waoy3znn5mmqif": {
+            "id": "t5waoy3znn5mmqif",
+            "type": "text",
+            "parentId": "zxqxqmoju7cki85x",
             "content": {
-                "label": "",
-                "placeholder": "Antall produkter som vises",
-                "minValue": "1",
-                "maxValue": "100"
+                "text": "I menyen til venstre kan brukeren fylle inn \u00f8nskede valg.\n\nDe fem produktene med st\u00f8rst prisendring vil deretter vises p\u00e5 hovedsiden.",
+                "useMarkdown": "yes"
             },
             "handlers": {},
-            "position": 0,
+            "position": 2,
             "visible": true
         }
     }
