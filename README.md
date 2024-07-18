@@ -3,7 +3,7 @@
 
 ![Vinskraper](./static/vinskraper.jpg)
 
-Utforsk og sammenlikn [Vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
+Utforsk og sammenlikn [vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
 <div style="text-align: center;">
     <img src="./static/logo.jpg" style="width: 50%;">

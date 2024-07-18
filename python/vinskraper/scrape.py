@@ -1,4 +1,4 @@
-"""Scrape products from Vinmonopolet's website."""
+"""Scrape products from vinmonopolet's website."""
 
 import os
 import enum
@@ -32,7 +32,7 @@ _PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displa
 
 class CATEGORY(enum.Enum):
     """
-    Enum class for (some of) the different categories of products available at Vinmonopolet.
+    Enum class for (some of) the different categories of products available at vinmonopolet.
     Extends the `_URL` with the category value.
     """
     RED_WINE = "rødvin"

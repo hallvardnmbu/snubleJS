@@ -1369,8 +1369,8 @@
             "id": "6cgt024mbprah9lo",
             "type": "message",
             "content": {
-                "message": "Ingen prisendringer innenfor denne valg-kombinasjonen.",
-                "infoColor": "#ffffff",
+                "message": "Ingen prisendringer innenfor dennekombinasjonen av valg.",
+                "infoColor": "#F3F7F4",
                 "primaryTextColor": "#8E3B46"
             },
             "isCodeManaged": false,
@@ -1419,16 +1419,6 @@
             "handlers": {},
             "visible": true
         },
-        "x1njvm9e7u0tnto4": {
-            "id": "x1njvm9e7u0tnto4",
-            "type": "separator",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 5,
-            "parentId": "ccad7k7sc5oxy81l",
-            "handlers": {},
-            "visible": true
-        },
         "zxqxqmoju7cki85x": {
             "id": "zxqxqmoju7cki85x",
             "type": "section",
@@ -1445,21 +1435,12 @@
             "id": "hm3tyjnczbem2eqb",
             "type": "text",
             "content": {
-                "text": "Hver m\u00e5ned oppdaterer [vinmonopolet](www.vinmonopolet.no) priser. Mens noen priser forblir uendret, kan s\u00e5kalt _skjulte_ tilbud fremtre (samt pris\u00f8kninger).\n\nM\u00e5let med denne enkle siden er \u00e5 analysere disse prisendringene, samt holde styr p\u00e5 [vinmonopolets](www.vinmonopolet.no) utvalg.",
+                "text": "Hver m\u00e5ned oppdaterer [vinmonopolets](https://www.vinmonopolet.no) priser. Mens noen priser forblir uendret, kan s\u00e5kalt _skjulte_ tilbud fremtre.\n\nM\u00e5let med denne enkle siden er \u00e5 analysere disse prisendringene, samt holde styr p\u00e5 [vinmonopolets](https://www.vinmonopolet.no) utvalg.",
                 "useMarkdown": "yes"
             },
             "isCodeManaged": false,
             "position": 0,
             "parentId": "zxqxqmoju7cki85x",
-            "handlers": {},
-            "visible": true
-        },
-        "n7q1p1an4ef1jtjr": {
-            "id": "n7q1p1an4ef1jtjr",
-            "type": "separator",
-            "content": {},
-            "position": 8,
-            "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
         },
@@ -1471,6 +1452,7 @@
                 "caption": "",
                 "maxWidth": "500"
             },
+            "isCodeManaged": false,
             "position": 9,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
@@ -1482,6 +1464,7 @@
             "content": {
                 "title": ""
             },
+            "isCodeManaged": false,
             "position": 10,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
@@ -1490,24 +1473,50 @@
         "7ki4xzmvxgncvaf9": {
             "id": "7ki4xzmvxgncvaf9",
             "type": "separator",
-            "parentId": "zxqxqmoju7cki85x",
             "content": {
                 "separatorColor": "#136F63"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 1,
+            "parentId": "zxqxqmoju7cki85x",
+            "handlers": {},
             "visible": true
         },
         "t5waoy3znn5mmqif": {
             "id": "t5waoy3znn5mmqif",
             "type": "text",
-            "parentId": "zxqxqmoju7cki85x",
             "content": {
                 "text": "I menyen til venstre kan brukeren fylle inn \u00f8nskede valg.\n\nDe fem produktene med st\u00f8rst prisendring vil deretter vises p\u00e5 hovedsiden.",
                 "useMarkdown": "yes"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 2,
+            "parentId": "zxqxqmoju7cki85x",
+            "handlers": {},
+            "visible": true
+        },
+        "ngtydfg8j47yop60": {
+            "id": "ngtydfg8j47yop60",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/deler.jpg",
+                "caption": ""
+            },
+            "position": 5,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "lc8r0kz5mmuhdemk": {
+            "id": "lc8r0kz5mmuhdemk",
+            "type": "image",
+            "content": {
+                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/deler.jpg",
+                "caption": ""
+            },
+            "position": 8,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
             "visible": true
         }
     }
