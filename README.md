@@ -4,7 +4,9 @@
 
 Utforsk og sammenlikn [Vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
-![Vinskraper](./vinskraper.jpg)
+<div style="text-align: center;">
+    <img src="./vinskraper.jpg" style="width: 50%;">
+</div>
 
 ---
 

@@ -98,7 +98,9 @@
                 "dataframeBackgroundColor": "#FFFFFF",
                 "dataframeHeaderRowBackgroundColor": "#F3F7F4",
                 "fontStyle": "",
-                "wrapText": ""
+                "wrapText": "",
+                "enableSearch": "",
+                "enableDownload": ""
             },
             "isCodeManaged": false,
             "position": 2,
@@ -270,9 +272,45 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 3,
+            "position": 4,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
+            "visible": true
+        },
+        "6ptvht9wuwo5r4qf": {
+            "id": "6ptvht9wuwo5r4qf",
+            "type": "section",
+            "parentId": "ccad7k7sc5oxy81l",
+            "content": {
+                "title": "Prisendring"
+            },
+            "handlers": {},
+            "position": 3,
+            "visible": true
+        },
+        "y89v3yqndlnd1gkg": {
+            "id": "y89v3yqndlnd1gkg",
+            "type": "metric",
+            "parentId": "6ptvht9wuwo5r4qf",
+            "content": {
+                "note": "+Pass"
+            },
+            "handlers": {},
+            "position": 1,
+            "visible": true
+        },
+        "ngv84b1mxurls8o0": {
+            "id": "ngv84b1mxurls8o0",
+            "type": "numberinput",
+            "parentId": "6ptvht9wuwo5r4qf",
+            "content": {
+                "label": "",
+                "placeholder": "Antall produkter som vises",
+                "minValue": "1",
+                "maxValue": "100"
+            },
+            "handlers": {},
+            "position": 0,
             "visible": true
         }
     }

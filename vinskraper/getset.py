@@ -4,7 +4,7 @@ import os
 import json
 import pandas as pd
 
-from scrape import scrape_all
+from scrape import calculate_discount, scrape_all
 
 
 _EN_TO_NO = {
@@ -46,6 +46,9 @@ def set_data(state):
             state['data']['full'] = pd.read_parquet(path)
     state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
 
+    if 'tilbud' not in state['data']['full'].columns:
+        state['data']['full'] = calculate_discount(state['data']['full'])
+
     _sort_prices(state)
 
     state['data']['selected'] = state['data']['full'].copy()
@@ -70,7 +73,9 @@ def _sort_prices(state):
     cols = [col for col in state['data']['full'].columns if col.startswith('pris')]
     cols = sorted(cols, key=lambda x: pd.Timestamp(x.split(" ")[1]))
     state['data']['full'] = state['data']['full'][
-        ['navn', 'volum', 'land', 'distrikt', 'underdistrikt', 'kategori', 'underkategori', 'meta']
+        ['navn', 'volum', 'land',
+         'distrikt', 'underdistrikt', 'kategori', 'underkategori',
+         'meta', 'tilbud']
         + cols
     ]
 
@@ -122,21 +127,24 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
+           sorted([c for c in state['data']['full']['underkategori'].unique().tolist()
+                   if c and c != '-'])}
     }
 
     data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
     state['dropdown']['volumes'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
-           for volume in sorted([v for v in state['data'][data]['volum'].unique() if v])}
+           for volume in sorted([v for v in state['data'][data]['volum'].unique()
+                                 if v and v != '-' and v != 0 and v != 0.0])}
     }
 
     data = 'selected' if state['selection']['volume'] != 'Alle' else data
     state['dropdown']['countries'] = {
         **{'Alle': 'Alle land'},
         **{country: country
-           for country in sorted([c for c in state['data'][data]['land'].unique().tolist() if c])}
+           for country in sorted([c for c in state['data'][data]['land'].unique().tolist()
+                                  if c and c != '-'])}
     }
 
     data = 'selected' if state['selection']['country'] != 'Alle' else data
@@ -144,7 +152,8 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle distrikter'},
         **{district: district
            for district in
-           sorted([d for d in state['data'][data]['distrikt'].unique().tolist() if d])}
+           sorted([d for d in state['data'][data]['distrikt'].unique().tolist()
+                   if d and d != '-'])}
     }
 
     data = 'selected' if state['selection']['district'] != 'Alle' else data
@@ -152,7 +161,8 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underdistrikter'},
         **{district: district
            for district in
-           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist() if d])}
+           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist()
+                   if d and d != '-'])}
     }
 
     state['data']['id_to_name'] = state['data']['selected']['navn'].to_dict()
@@ -227,3 +237,16 @@ def reset_selection(state):
     state['flag']['updating'] = False
     set_selection(state)
     _check_fetch_allowed(state)
+
+
+def get_discounts(state):
+    """
+    Calculates the discount
+    Parameters
+    ----------
+    state
+
+    Returns
+    -------
+
+    """

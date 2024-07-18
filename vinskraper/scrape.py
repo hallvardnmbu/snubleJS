@@ -233,6 +233,7 @@ def _update_products(
 
     if not os.path.exists(path):
         _LOGGER.info(f"├─ No file found, creating new ({path}).")
+        products = calculate_discount(products)
         products.to_parquet(path)
         _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
 
@@ -241,10 +242,51 @@ def _update_products(
     _LOGGER.info(f"├─ Mergind new data with old.")
     old = pd.read_parquet(path)
     updated = products.combine_first(old)
+    updated = calculate_discount(updated)
     updated.to_parquet(path)
     _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
 
     return updated
+
+
+def calculate_discount(
+        df: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Calculate the discount for the given DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame with the price columns to calculate the discount for.
+
+    Returns
+    -------
+    pd.DataFrame
+        The DataFrame with the (updated) discount column.
+
+    Notes
+    -----
+        The discount is calculated as the percentage difference between the two latest price-columns.
+        If there is only one price-column, the discount is set to `'-'`.
+        If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
+    """
+    prices = [col for col in df.columns if col.startswith('pris')]
+    prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(" ")[1]))
+    if len(prices) > 1:
+        prices = prices[-2:]
+        df[prices[0]] = df[prices[0]].fillna(0)
+        df[prices[1]] = df[prices[1]].fillna(0)
+        df['tilbud'] = df.apply(
+            lambda row:
+            (row[prices[1]] - row[prices[0]]) / row[prices[0]] * 100
+            if (row[prices[0]] != 0 and row[prices[1]] != 0) else '-',
+            axis=1
+        )
+    else:
+        df['tilbud'] = '-'
+
+    return df
 
 
 def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
