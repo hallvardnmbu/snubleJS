@@ -271,20 +271,20 @@ def calculate_discount(
         If there is only one price-column, the discount is set to `'-'`.
         If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
     """
-    prices = [col for col in df.columns if col.startswith('pris')]
+    prices = [col for col in df.columns if col.startswith('pris ')]
     prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(" ")[1]))
     if len(prices) > 1:
         prices = prices[-2:]
         df[prices[0]] = df[prices[0]].fillna(0)
         df[prices[1]] = df[prices[1]].fillna(0)
-        df['tilbud'] = df.apply(
+        df['prisendring'] = df.apply(
             lambda row:
             (row[prices[1]] - row[prices[0]]) / row[prices[0]] * 100
             if (row[prices[0]] != 0 and row[prices[1]] != 0) else '-',
             axis=1
         )
     else:
-        df['tilbud'] = '-'
+        df['prisendring'] = '-'
 
     return df
 

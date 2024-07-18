@@ -46,8 +46,11 @@ def set_data(state):
             state['data']['full'] = pd.read_parquet(path)
     state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
 
-    if 'tilbud' not in state['data']['full'].columns:
+    if 'prisendring' not in state['data']['full'].columns:
         state['data']['full'] = calculate_discount(state['data']['full'])
+
+    state['data']['full'].replace('-', None, inplace=True)
+    state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
 
     _sort_prices(state)
 
@@ -70,12 +73,12 @@ def _sort_prices(state):
     state : dict
         The current state of the application.
     """
-    cols = [col for col in state['data']['full'].columns if col.startswith('pris')]
+    cols = [col for col in state['data']['full'].columns if col.startswith('pris ')]
     cols = sorted(cols, key=lambda x: pd.Timestamp(x.split(" ")[1]))
     state['data']['full'] = state['data']['full'][
         ['navn', 'volum', 'land',
          'distrikt', 'underdistrikt', 'kategori', 'underkategori',
-         'meta', 'tilbud']
+         'meta', 'prisendring']
         + cols
     ]
 
@@ -92,7 +95,7 @@ def _check_fetch_allowed(state):
     now = pd.Timestamp.now().month
     if any([now == pd.Timestamp(col.split(" ")[1]).month
             for col in state['data']['selected'].columns
-            if col.startswith('pris')]):
+            if col.startswith('pris ')]):
         state['flag']['fetch_allowed'] = False
     else:
         state['flag']['fetch_allowed'] = True
@@ -127,24 +130,21 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['full']['underkategori'].unique().tolist()
-                   if c and c != '-'])}
+           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
     }
 
     data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
     state['dropdown']['volumes'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
-           for volume in sorted([v for v in state['data'][data]['volum'].unique()
-                                 if v and v != '-' and v != 0 and v != 0.0])}
+           for volume in sorted([v for v in state['data'][data]['volum'].unique() if v])}
     }
 
     data = 'selected' if state['selection']['volume'] != 'Alle' else data
     state['dropdown']['countries'] = {
         **{'Alle': 'Alle land'},
         **{country: country
-           for country in sorted([c for c in state['data'][data]['land'].unique().tolist()
-                                  if c and c != '-'])}
+           for country in sorted([c for c in state['data'][data]['land'].unique().tolist() if c])}
     }
 
     data = 'selected' if state['selection']['country'] != 'Alle' else data
@@ -152,8 +152,7 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle distrikter'},
         **{district: district
            for district in
-           sorted([d for d in state['data'][data]['distrikt'].unique().tolist()
-                   if d and d != '-'])}
+           sorted([d for d in state['data'][data]['distrikt'].unique().tolist() if d])}
     }
 
     data = 'selected' if state['selection']['district'] != 'Alle' else data
@@ -161,11 +160,8 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underdistrikter'},
         **{district: district
            for district in
-           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist()
-                   if d and d != '-'])}
+           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist() if d])}
     }
-
-    state['data']['id_to_name'] = state['data']['selected']['navn'].to_dict()
 
 
 def set_selection(state):
@@ -182,8 +178,20 @@ def set_selection(state):
     df = state['data']['full'].copy()
     for feature in [feat for feat in state['selection'].to_dict() if feat != 'category']:
         df = _update_selection(state, df, feature)
-
     state['data']['selected'] = df
+
+    price = sorted([col for col in df.columns if col.startswith('pris ')],
+                   key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
+    state['data']['best'] = {
+        str(i): {
+            k if k != price else 'pris': v
+            for k, v in df.iloc[i].to_dict().items()
+        }
+        for i in range(1, 6)
+    }
+    if state['data']['best']['1']['prisendring']:
+        state['flag']['no_discounts'] = False
+
     _refresh_dropdown(state)
 
     state['flag']['updating'] = False
