@@ -1,34 +1,53 @@
 <body style="font-family:monospace;">
 
-# Vinskraper
+
+![Vinskraper](../static/vinskraper.jpg)
 
 Utforsk og sammenlikn [Vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
 <div style="text-align: center;">
-    <img src="./vinskraper.jpg" style="width: 50%;">
+    <img src="../static/logo.jpg" style="width: 50%;">
 </div>
 
 ---
 
-## Veiledning
+![Veiledning](../static/veiledning.jpg)
 
-For å kjøre applikasjonen lokalt må først de nødvendige pakkene installeres;
+![Python](../static/python.jpg)
+
+For å kjøre Python-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
+
+```bash
+cd python
+```
+
+For å kunne kjøre applikasjonen lokalt må de nødvendige pakkene installeres. Dette gjøres ved å kjøre;
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Deretter åpnes applikasjonen med
+i terminalen. Deretter åpnes applikasjonen med
 
 ```bash
 writer run vinskraper
 ```
 
-i terminalen (fra hovedmappen).
+fra terminalen.
+
+![Rust](../static/rust.jpg)
+
+For å kjøre Rust-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
+
+```bash
+cd rust
+```
+
+_Under arbeid._
 
 ---
 
-### Henting og oppdatering av data
+![Informasjon](../static/informasjon.jpg)
 
 Dersom ingen data finnes fra før av, vil programmet automatisk hente ny data for den valgte 
 kategorien. 
