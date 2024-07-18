@@ -1,19 +1,19 @@
 <body style="font-family:monospace;">
 
 
-![Vinskraper](../static/vinskraper.jpg)
+![Vinskraper](./static/vinskraper.jpg)
 
 Utforsk og sammenlikn [Vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
 <div style="text-align: center;">
-    <img src="../static/logo.jpg" style="width: 50%;">
+    <img src="./static/logo.jpg" style="width: 50%;">
 </div>
 
 ---
 
-![Veiledning](../static/veiledning.jpg)
+![Veiledning](./static/veiledning.jpg)
 
-![Python](../static/python.jpg)
+![Python](./static/python.jpg)
 
 For å kjøre Python-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
 
@@ -35,7 +35,7 @@ writer run vinskraper
 
 fra terminalen.
 
-![Rust](../static/rust.jpg)
+![Rust](./static/rust.jpg)
 
 For å kjøre Rust-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
 
@@ -47,7 +47,7 @@ _Under arbeid._
 
 ---
 
-![Informasjon](../static/informasjon.jpg)
+![Informasjon](./static/informasjon.jpg)
 
 Dersom ingen data finnes fra før av, vil programmet automatisk hente ny data for den valgte 
 kategorien. 
