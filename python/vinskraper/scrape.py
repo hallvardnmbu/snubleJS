@@ -195,7 +195,7 @@ def _scrape_products(category: CATEGORY) -> dict:
                     }])},
                 }),
 
-                "pris": product.get("price", {}).get("value", "-"),
+                "pris": product.get("price", {}).get("value", 0.0),
             }
 
     return items
@@ -227,7 +227,7 @@ def _update_products(
     products = _scrape_products(category)
     products = pd.DataFrame(products).T
     products.rename(
-        columns={"pris": f"pris {pd.Timestamp.now().strftime('%Y-%m-%d')}"},
+        columns={"pris": f"pris {pd.Timestamp.now().strftime('%Y-%m-01')}"},
         inplace=True
     )
 
@@ -275,16 +275,16 @@ def calculate_discount(
     prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(" ")[1]))
     if len(prices) > 1:
         prices = prices[-2:]
-        df[prices[0]] = df[prices[0]].fillna(0)
-        df[prices[1]] = df[prices[1]].fillna(0)
+        df[prices[0]] = df[prices[0]].fillna(0.0).infer_objects(copy=False)
+        df[prices[1]] = df[prices[1]].fillna(0.0).infer_objects(copy=False)
         df['prisendring'] = df.apply(
             lambda row:
             (row[prices[1]] - row[prices[0]]) / row[prices[0]] * 100
-            if (row[prices[0]] != 0 and row[prices[1]] != 0) else '-',
+            if (row[prices[0]] != 0.0 and row[prices[1]] != 0.0) else 0.0,
             axis=1
         )
     else:
-        df['prisendring'] = '-'
+        df['prisendring'] = 0.0
 
     return df
 
