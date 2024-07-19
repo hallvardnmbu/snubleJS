@@ -68,11 +68,14 @@ STATE = writer.init_state({
     'plot': {
         'colours': {
             'background': '#F3F7F4',
+            'white': '#FFFFFF',
             'black': '#06070E',
 
             'red': '#8E3B46',
             'green': '#136F63',
         },
+
+        'best': {}
     },
 
     # flag

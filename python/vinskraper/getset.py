@@ -5,6 +5,7 @@ import json
 import pandas as pd
 
 from scrape import calculate_discount, scrape_all
+from visualise import graph_best_prices
 
 
 _EN_TO_NO = {
@@ -49,7 +50,9 @@ def set_data(state):
     if 'prisendring' not in state['data']['full'].columns:
         state['data']['full'] = calculate_discount(state['data']['full'])
 
-    state['data']['full'].replace('-', None, inplace=True)
+    state['data']['full'] = state['data']['full'].replace('-', None)
+    for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
+        state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
     state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
 
     _sort_prices(state)
@@ -180,17 +183,19 @@ def set_selection(state):
         df = _update_selection(state, df, feature)
     state['data']['selected'] = df
 
-    price = sorted([col for col in df.columns if col.startswith('pris ')],
-                   key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
-    state['data']['best'] = {
-        str(i): {
-            k if k != price else 'pris': v
-            for k, v in df.iloc[i].to_dict().items()
+    for i in range(1, 6):
+        state['data']['best'][str(i)] = {
+            k: v for k, v in df.iloc[i].to_dict().items()
         }
-        for i in range(1, 6)
-    }
+
+        price = sorted([col for col in df.columns if col.startswith('pris ')],
+                       key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
+        state['data']['best'][str(i)]['pris'] = state['data']['best'][str(i)][price]
+
     if state['data']['best']['1']['prisendring']:
         state['flag']['no_discounts'] = False
+    else:
+        graph_best_prices(state)
 
     _refresh_dropdown(state)
 
@@ -245,16 +250,3 @@ def reset_selection(state):
     state['flag']['updating'] = False
     set_selection(state)
     _check_fetch_allowed(state)
-
-
-def get_discounts(state):
-    """
-    Calculates the discount
-    Parameters
-    ----------
-    state
-
-    Returns
-    -------
-
-    """
