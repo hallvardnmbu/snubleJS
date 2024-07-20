@@ -4,12 +4,13 @@ import os
 import enum
 import json
 import logging
-from memoization import cached
 
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+from memoization import cached
 from pyarrow.lib import ArrowTypeError
+
 
 _LOGGER = logging.getLogger(__name__)
 _COLOUR = {

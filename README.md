@@ -15,12 +15,6 @@ Utforsk og sammenlikn [vinmonopolets](https://www.vinmonopolet.no) utvalg og pri
 
 ![Python](./static/python.jpg)
 
-For å kjøre Python-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
-
-```bash
-cd python
-```
-
 For å kunne kjøre applikasjonen lokalt må de nødvendige pakkene installeres. Dette gjøres ved å kjøre;
 
 ```bash
@@ -30,20 +24,14 @@ pip install -r requirements.txt
 i terminalen. Deretter åpnes applikasjonen med
 
 ```bash
-writer run vinskraper
+writer run .
 ```
 
 fra terminalen.
 
 ![Rust](./static/rust.jpg)
 
-For å kjøre Rust-versjonen av `vinskraper`, beveger du deg først til riktig mappe:
-
-```bash
-cd rust
-```
-
-_Under arbeid._
+_Kommer._
 
 ---
 
