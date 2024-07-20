@@ -55,6 +55,7 @@ STATE = writer.init_state({
 
     'data': {
         'full': None,
+        'categorized': None,
         'selected': None,
 
         'best': {str(i): {} for i in range(1, 6)}

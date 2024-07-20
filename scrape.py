@@ -36,16 +36,9 @@ class CATEGORY(enum.Enum):
     """
     Enum class for the different categories of products available at vinmonopolet.
     Extends the `_URL` with the category value.
-
-    Notes
-    -----
-    The `COGNAC` category is a special case, as it a sub-category of the `BRENNEVIN` category.
-    Other sub-categories are not included in this enumeration, but can be filtered for in the data.
     """
     RED_WINE = "rødvin"
     WHITE_WINE = "hvitvin"
-    COGNAC = ("brennevin%3AmainSubCategory%3Abrennevin_druebrennevin"
-              "%3AmainSubSubCategory%3Abrennevin_druebrennevin_cognac_tradisjonell")
 
     ROSE_WINE = "rosévin"
     SPARKLING_WINE = "musserende_vin"

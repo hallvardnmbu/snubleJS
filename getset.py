@@ -1,10 +1,9 @@
 """Getters and setters used by the application."""
 
-import os
 import json
 import pandas as pd
 
-from scrape import scrape
+from scrape import CATEGORY, scrape
 from database import db_load
 from visualise import graph_best_prices
 
@@ -28,10 +27,9 @@ def init_data(state):
         The current state of the application.
     """
     state['flag']['updating'] = True
+
     state['data']['full'] = db_load()
-
     state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
-
     state['data']['full'] = state['data']['full'].replace('-', None)
     for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
         state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
@@ -48,7 +46,7 @@ def _categorize(state) -> pd.DataFrame:
     df = state['data']['full'].copy()
     if state['selection']['category'] == 'Alle':
         return df
-    return df[df['kategori'] == state['selection']['category']]
+    return df[df['kategori'] == CATEGORY[state['selection']['category']].value.replace(' ', '_').capitalize()]
 
 
 def set_data(state):
@@ -62,7 +60,8 @@ def set_data(state):
     """
     state['flag']['updating'] = True
 
-    state['data']['selected'] = _categorize(state)
+    state['data']['categorized'] = _categorize(state)
+    state['data']['selected'] = state['data']['categorized'].copy()
 
     _refresh_dropdown(state)
 
@@ -140,10 +139,10 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
+           sorted([c for c in state['data']['categorized']['underkategori'].unique().tolist() if c])}
     }
 
-    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
+    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'categorized'
     state['dropdown']['volumes'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
@@ -191,9 +190,13 @@ def set_selection(state):
     state['data']['selected'] = df
 
     for i in range(1, 6):
-        state['data']['best'][str(i)] = {
-            k: v for k, v in df.iloc[i].to_dict().items()
-        }
+        try:
+            state['data']['best'][str(i)] = {
+                k: v for k, v in df.iloc[i].to_dict().items()
+            }
+        except IndexError:
+            state['data']['best'][str(i)] = {'prisendring': 0}
+            break
 
         price = sorted([col for col in df.columns if col.startswith('pris ')],
                        key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
