@@ -1,0 +1,12 @@
+pandas
+
+# Application:
+writer
+plotly
+
+# Web scraping:
+urllib3
+requests
+beautifulsoup4
+memoization
+pyarrow
