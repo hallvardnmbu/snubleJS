@@ -196,7 +196,7 @@
             "position": 0,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "click": "getset.get_products"
+                "click": "getset.scrape_products"
             },
             "visible": "flag.fetch_allowed"
         },

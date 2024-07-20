@@ -1,15 +1,16 @@
 """Scrape products from vinmonopolet's website."""
 
-import os
 import enum
 import json
 import logging
+from typing import List
 
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-from memoization import cached
-from pyarrow.lib import ArrowTypeError
+from pymongo.errors import BulkWriteError
+
+from database import db_upsert, db_discounts
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,8 +34,13 @@ _PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displa
 
 class CATEGORY(enum.Enum):
     """
-    Enum class for (some of) the different categories of products available at vinmonopolet.
+    Enum class for the different categories of products available at vinmonopolet.
     Extends the `_URL` with the category value.
+
+    Notes
+    -----
+    The `COGNAC` category is a special case, as it a sub-category of the `BRENNEVIN` category.
+    Other sub-categories are not included in this enumeration, but can be filtered for in the data.
     """
     RED_WINE = "rødvin"
     WHITE_WINE = "hvitvin"
@@ -55,10 +61,13 @@ class CATEGORY(enum.Enum):
 
 
 def _renew_proxy():
-    """Returns a proxy from the list of available proxies. Fetches new if the list is exhausted."""
+    """
+    Updates the `_PROXY` with the head of `_PROXIES`.
+    Updates the `_PROXIES`-list when it's empty.
+    """
     global _PROXY, _PROXIES
 
-    if _PROXIES is None:
+    if not _PROXIES:
         _PROXIES = [proxy for proxy in
                     requests.get(_PROXY_URL).text.split('\r\n')
                     if proxy and proxy.startswith("http")]
@@ -66,7 +75,6 @@ def _renew_proxy():
     _PROXY = {"http": _PROXIES.pop(0)}
 
 
-@cached(ttl=60 * 60 * 10)
 def _scrape_page(
         category: CATEGORY,
         page: int
@@ -109,7 +117,7 @@ def _scrape_page(
     return response
 
 
-def _scrape_products(category: CATEGORY) -> dict:
+def _scrape_category(category: CATEGORY) -> List[dict]:
     """
     Fetches all products from the given category.
 
@@ -120,12 +128,19 @@ def _scrape_products(category: CATEGORY) -> dict:
 
     Returns
     -------
-    dict
-        A dictionary containing the products fetched from the given category.
-        The product ID is used as the key, and the product information is stored as a dictionary.
+    List of dict
+        A list containing the products fetched from the given category.
+
+    Notes
+    -----
+        Loops through the pages of the category.
+        Assumes that there is less than 1000 pages.
+        Parses the response and extracts the products.
+        Extracts the product information and stores it in the dictionary.
+        The price key is suffixed with the current (year-month)timestamp (%Y-%m-01).
     """
-    items = {}
-    _renew_proxy()
+    items = []
+    today = pd.Timestamp.now().strftime('%Y-%m-01')
 
     # ----------------------------------------------------------------------------------------------
     # Loops through the pages of the category.
@@ -160,11 +175,9 @@ def _scrape_products(category: CATEGORY) -> dict:
                 _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
                               f"Product without code: {product}. Skipping.")
                 continue
-            elif code in items:
-                _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                              f"Duplicate product code: {code}. Skipping.")
-                continue
-            items[code] = {
+
+            items.append({
+                "index": code,
                 "navn": product.get("name", "-"),
                 "volum": product.get("volume", {}).get("value", 0.0),
 
@@ -196,124 +209,63 @@ def _scrape_products(category: CATEGORY) -> dict:
                     }])},
                 }),
 
-                "pris": product.get("price", {}).get("value", 0.0),
-            }
+                f"pris {today}": product.get("price", {}).get("value", 0.0),
+            })
 
     return items
 
 
-def _update_products(
-        category: CATEGORY = CATEGORY.RED_WINE,
-        path: str = "./storage/RED_WINE.parquet",
-) -> pd.DataFrame:
+def _update_products(category: CATEGORY = CATEGORY.RED_WINE):
     """
-    Fetches all products from the given category and stores (appends) the results to file `path`.
-    The price column is suffixed with the current timestamp.
+    Fetches all products from the given category and stores (appends) the results to the MongoDB
+    collection.
 
     Parameters
     ----------
     category : CATEGORY, optional
         The category of products to fetch.
         See enumerator `CATEGORY` for available options.
-    path : str, optional
-        The name of the `parquet` file to store the products.
 
-    Returns
-    -------
-    pd.DataFrame
-        The (updated) products.
+    Raises
+    ------
+    BulkWriteError
+        If there is an issue with the bulk write operation.
+        This is printed out in `scrape()`, and retried later.
     """
     _LOGGER.info(f"┌─ Fetching {category.name}")
-
-    products = _scrape_products(category)
-    products = pd.DataFrame(products).T
-    products.rename(
-        columns={"pris": f"pris {pd.Timestamp.now().strftime('%Y-%m-01')}"},
-        inplace=True
-    )
-
-    if not os.path.exists(path):
-        _LOGGER.info(f"├─ No file found, creating new ({path}).")
-        products = calculate_discount(products)
-        products.to_parquet(path)
-        _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
-
-        return products
-
-    _LOGGER.info(f"├─ Mergind new data with old.")
-    old = pd.read_parquet(path)
-    updated = products.combine_first(old)
-    updated = calculate_discount(updated)
-    updated.to_parquet(path)
+    products = _scrape_category(category)
+    _LOGGER.info(f"├─ Inserting into database.")
+    result = db_upsert(products)
+    _LOGGER.info(f"├─ Modified {result.modified_count} records")
+    _LOGGER.info(f"├─ Upserted {result.upserted_count} records")
     _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
 
-    return updated
 
-
-def calculate_discount(
-        df: pd.DataFrame,
-) -> pd.DataFrame:
-    """
-    Calculate the discount for the given DataFrame.
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        The DataFrame with the price columns to calculate the discount for.
-
-    Returns
-    -------
-    pd.DataFrame
-        The DataFrame with the (updated) discount column.
-
-    Notes
-    -----
-        The discount is calculated as the percentage difference between the two latest price-columns.
-        If there is only one price-column, the discount is set to `'-'`.
-        If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
-    """
-    prices = [col for col in df.columns if col.startswith('pris ')]
-    prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(" ")[1]))
-    if len(prices) > 1:
-        prices = prices[-2:]
-        df[prices[0]] = df[prices[0]].fillna(0.0).infer_objects(copy=False)
-        df[prices[1]] = df[prices[1]].fillna(0.0).infer_objects(copy=False)
-        df['prisendring'] = df.apply(
-            lambda row:
-            (row[prices[1]] - row[prices[0]]) / row[prices[0]] * 100
-            if (row[prices[0]] != 0.0 and row[prices[1]] != 0.0) else 0.0,
-            axis=1
-        )
-    else:
-        df['prisendring'] = 0.0
-
-    return df
-
-
-def scrape_all(directory: str = "./storage/") -> pd.DataFrame:
+def scrape():
     """
     Vinmonopolet updates their prices monthly.
     This function should therefore be called at the start of each month to fetch the new prices.
-
-    Parameters
-    ----------
-    directory : str, optional
-        The directory to store the products.
+    Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
 
     Notes
     -----
     Loops through all categories and updates all products for each category.
     The products are stored in the `directory`, suffixed by the `CATEGORY` names.
     """
+    _renew_proxy()
+
+    retries = 0
     categories = [category for category in CATEGORY]
-    dfs = []
     for category in categories:
         try:
-            dfs.append(_update_products(category, path=directory + category.name + ".parquet"))
-        except ArrowTypeError as err:
-            categories.append(category)
+            _update_products(category)
+        except BulkWriteError as bwe:
+            retries += 1
+            categories.append(category) if retries < 9 else None
             _LOGGER.error(f"└─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                          f"Could not save. Retrying.")
-            raise err
-    dfs = pd.concat(dfs)
-    return dfs
+                          f"Bulk write operation; {bwe.details}."
+                          f"{'Retrying.' if retries < 9 else ''}")
+
+    _LOGGER.info(f"┌─ Updating discounts.")
+    db_discounts()
+    _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")

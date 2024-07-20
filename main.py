@@ -3,7 +3,7 @@
 import writer
 
 from scrape import CATEGORY
-from getset import set_data, set_selection, get_products, reset_selection
+from getset import init_data, set_data, set_selection, scrape_products, reset_selection
 
 
 STATE = writer.init_state({
@@ -96,4 +96,4 @@ STATE = writer.init_state({
     },
 })
 
-set_data(STATE)
+init_data(STATE)
