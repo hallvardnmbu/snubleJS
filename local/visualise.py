@@ -6,9 +6,6 @@ import plotly.graph_objects as go
 
 def graph_best_prices(state):
     for idx, product in state['data']['best'].to_dict().items():
-        if product['prisendring'] == 0.0:
-            break
-
         dates = [pd.Timestamp(price.split(' ')[1])
                  for price in product.keys()
                  if price.startswith('pris ')]
