@@ -13,14 +13,20 @@ Utforsk og sammenlikn [vinmonopolets](https://www.vinmonopolet.no) utvalg og pri
 
 ![Veiledning](./static/veiledning.jpg)
 
-![Lokalt](./static/lokalt.jpg)
-
 Applikasjonen bruker [Writer Framework](https://dev.writer.com/framework/introduction) 
 (tidligere [StreamSync](https://pypi.org/project/streamsync/)). Python brukes dermed for 
 funksjonaliteten til `vinskraper`.
 
+![Lokalt](./static/lokalt.jpg)
+
 For å kunne kjøre applikasjonen lokalt må (Python eksistere, og) de nødvendige pakkene 
-installeres. Dette gjøres ved å kjøre;
+installeres. Dette gjøres ved å først navigere seg til riktig mappe:
+
+```bash
+cd local
+```
+
+for så å kjøre;
 
 ```bash
 pip install -r requirements.txt
@@ -32,7 +38,7 @@ i terminalen. Deretter åpnes applikasjonen med
 writer run .
 ```
 
-fra terminalen.
+(også fra terminalen).
 
 ![DigitalOcean](./static/DigitalOcean.jpg)
 
@@ -65,6 +71,8 @@ For å gjøre ting enda mere komplisert, brukes en ekstern database for "sky"-ap
 om det vel å merke er mulig å bruke "lokale" `parquet`-filer her også). 
 
 I lik linje er dette gjort for å få en bedre forståelse for sammenkoblede tjenester i "skyen".
+
+Her brukes [MongoDB](https://www.mongodb.com) som vert.
 
 ---
 

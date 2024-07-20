@@ -1,10 +1,10 @@
 """Getters and setters used by the application."""
 
+import os
 import json
 import pandas as pd
 
-from scrape import CATEGORY, scrape
-from database import db_load
+from scrape import calculate_discount, scrape_all
 from visualise import graph_best_prices
 
 
@@ -15,38 +15,6 @@ _EN_TO_NO = {
     'district': 'distrikt',
     'subdistrict': 'underdistrikt'
 }
-
-
-def init_data(state):
-    """
-    Initialise the data in the state.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    """
-    state['flag']['updating'] = True
-
-    state['data']['full'] = db_load()
-    state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
-    state['data']['full'] = state['data']['full'].replace('-', None)
-    for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
-        state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
-    state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
-
-    _sort_prices(state)
-
-    state['flag']['updating'] = False
-
-    set_data(state)
-
-
-def _categorize(state) -> pd.DataFrame:
-    df = state['data']['full'].copy()
-    if state['selection']['category'] == 'Alle':
-        return df
-    return df[df['kategori'] == CATEGORY[state['selection']['category']].value.replace(' ', '_').capitalize()]
 
 
 def set_data(state):
@@ -60,14 +28,43 @@ def set_data(state):
     """
     state['flag']['updating'] = True
 
-    state['data']['categorized'] = _categorize(state)
-    state['data']['selected'] = state['data']['categorized'].copy()
+    if state['selection']['category'] == 'Alle':
+        files = os.listdir(state['dir'])
+        if not files:
+            state['data']['full'] = scrape_all(state['dir'])
+        else:
+            dfs = []
+            for file in files:
+                if file.endswith('.parquet'):
+                    dfs.append(pd.read_parquet(os.path.join(state['dir'], file)))
+            state['data']['full'] = pd.concat(dfs)
+    else:
+        path = str(os.path.join(state['dir'], state['selection']['category'] + '.parquet'))
+        if not os.path.exists(path):
+            dfs = scrape_all(state['dir'])
+            state['data']['full'] = dfs[dfs['kategori'] == state['selection']['category']]
+        else:
+            state['data']['full'] = pd.read_parquet(path)
+    state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
+
+    if 'prisendring' not in state['data']['full'].columns:
+        state['data']['full'] = calculate_discount(state['data']['full'])
+
+    state['data']['full'] = state['data']['full'].replace('-', None)
+    for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
+        state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
+    state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
+
+    _sort_prices(state)
+
+    state['data']['selected'] = state['data']['full'].copy()
 
     _refresh_dropdown(state)
 
     state['flag']['updating'] = False
 
     set_selection(state)
+    _check_fetch_allowed(state)
 
 
 def _sort_prices(state):
@@ -79,39 +76,35 @@ def _sort_prices(state):
     state : dict
         The current state of the application.
     """
-    price = [col for col in state['data']['full'].columns if col.startswith('pris ')]
-    price = sorted(price, key=lambda x: pd.Timestamp(x.split(" ")[1]))
-
-    cols = ['navn', 'volum', 'land',
-            'distrikt', 'underdistrikt', 'kategori', 'underkategori',
-            'meta', 'prisendring']
-
+    cols = [col for col in state['data']['full'].columns if col.startswith('pris ')]
+    cols = sorted(cols, key=lambda x: pd.Timestamp(x.split(" ")[1]))
     state['data']['full'] = state['data']['full'][
-        cols
-        + list(set(state['data']['full'].columns) - set(cols) - set(price))
-        + price
+        ['navn', 'volum', 'land',
+         'distrikt', 'underdistrikt', 'kategori', 'underkategori',
+         'meta', 'prisendring']
+        + cols
     ]
 
 
-# def _check_fetch_allowed(state):
-#     """
-#     Toggle flag if last update was within the current month.
-#
-#     Parameters
-#     ----------
-#     state : dict
-#         The current state of the application.
-#     """
-#     now = pd.Timestamp.now().month
-#     if any([now == pd.Timestamp(col.split(" ")[1]).month
-#             for col in state['data']['selected'].columns
-#             if col.startswith('pris ')]):
-#         state['flag']['fetch_allowed'] = False
-#     else:
-#         state['flag']['fetch_allowed'] = True
+def _check_fetch_allowed(state):
+    """
+    Toggle flag if last update was within the current month.
+
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
+    now = pd.Timestamp.now().month
+    if any([now == pd.Timestamp(col.split(" ")[1]).month
+            for col in state['data']['selected'].columns
+            if col.startswith('pris ')]):
+        state['flag']['fetch_allowed'] = False
+    else:
+        state['flag']['fetch_allowed'] = True
 
 
-def scrape_products(state):
+def get_products(state):
     """
     Fetch the current products from `vinmonopolet.no` and update the state with the newest data.
 
@@ -121,9 +114,10 @@ def scrape_products(state):
         The current state of the application.
     """
     state['flag']['fetching'] = True
-    scrape()
+    _ = scrape_all(state['dir'])
     state['flag']['fetching'] = False
-    init_data(state)
+
+    set_data(state)
 
 
 def _refresh_dropdown(state):
@@ -139,10 +133,10 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['categorized']['underkategori'].unique().tolist() if c])}
+           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
     }
 
-    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'categorized'
+    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
     state['dropdown']['volumes'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
@@ -184,19 +178,15 @@ def set_selection(state):
     """
     state['flag']['updating'] = True
 
-    df = _categorize(state)
+    df = state['data']['full'].copy()
     for feature in [feat for feat in state['selection'].to_dict() if feat != 'category']:
         df = _update_selection(state, df, feature)
     state['data']['selected'] = df
 
     for i in range(1, 6):
-        try:
-            state['data']['best'][str(i)] = {
-                k: v for k, v in df.iloc[i].to_dict().items()
-            }
-        except IndexError:
-            state['data']['best'][str(i)] = {'prisendring': 0}
-            break
+        state['data']['best'][str(i)] = {
+            k: v for k, v in df.iloc[i].to_dict().items()
+        }
 
         price = sorted([col for col in df.columns if col.startswith('pris ')],
                        key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
@@ -259,3 +249,4 @@ def reset_selection(state):
 
     state['flag']['updating'] = False
     set_selection(state)
+    _check_fetch_allowed(state)

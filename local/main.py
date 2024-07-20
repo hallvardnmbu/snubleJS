@@ -3,7 +3,7 @@
 import writer
 
 from scrape import CATEGORY
-from getset import init_data, set_data, set_selection, scrape_products, reset_selection
+from getset import set_data, set_selection, get_products, reset_selection
 
 
 STATE = writer.init_state({
@@ -55,7 +55,6 @@ STATE = writer.init_state({
 
     'data': {
         'full': None,
-        'categorized': None,
         'selected': None,
 
         'best': {str(i): {} for i in range(1, 6)}
@@ -97,4 +96,4 @@ STATE = writer.init_state({
     },
 })
 
-init_data(STATE)
+set_data(STATE)
