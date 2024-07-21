@@ -50,30 +50,16 @@
                 "primaryTextColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 1,
+            "position": 0,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_data"
+                "wf-option-change": "getset.get_data"
             },
             "visible": true,
             "binding": {
                 "eventType": "wf-option-change",
                 "stateRef": "selection.category"
             }
-        },
-        "f2z440vk7btjnj01": {
-            "id": "f2z440vk7btjnj01",
-            "type": "message",
-            "content": {
-                "message": "%Henter data (dette tar noen minutter).",
-                "loadingColor": "#136F63",
-                "primaryTextColor": "#F3F7F4"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "ccad7k7sc5oxy81l",
-            "handlers": {},
-            "visible": "flag.fetching"
         },
         "ep60i50awfyxuux2": {
             "id": "ep60i50awfyxuux2",
@@ -84,7 +70,7 @@
                 "primaryTextColor": "#F3F7F4"
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.updating"
@@ -122,10 +108,10 @@
                 "placeholder": "Distrikt"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 4,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_selection"
+                "wf-option-change": "getset.set_data"
             },
             "binding": {
                 "eventType": "wf-option-change",
@@ -146,10 +132,10 @@
                 "placeholder": "Volum"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 2,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_selection"
+                "wf-option-change": "getset.set_data"
             },
             "visible": true,
             "binding": {
@@ -171,34 +157,16 @@
                 "placeholder": "Land"
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 3,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_selection"
+                "wf-option-change": "getset.set_data"
             },
             "visible": true,
             "binding": {
                 "eventType": "wf-option-change",
                 "stateRef": "selection.country"
             }
-        },
-        "w25od3p9ijg1p39x": {
-            "id": "w25od3p9ijg1p39x",
-            "type": "html",
-            "content": {
-                "element": "",
-                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(19, 111, 99)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(243 , 247 , 244)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
-                "attrs": "",
-                "htmlInside": "Hent m\u00e5nedens data",
-                "cssClasses": ""
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "click": "getset.scrape_products"
-            },
-            "visible": "flag.fetch_allowed"
         },
         "7xo7jh2bheg9sci4": {
             "id": "7xo7jh2bheg9sci4",
@@ -215,10 +183,10 @@
                 "primaryTextColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_selection"
+                "wf-option-change": "getset.set_data"
             },
             "visible": true,
             "binding": {
@@ -240,10 +208,10 @@
                 "placeholder": "Underdistrikt"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 5,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
-                "wf-option-change": "getset.set_selection"
+                "wf-option-change": "getset.set_data"
             },
             "binding": {
                 "eventType": "wf-option-change",
@@ -261,7 +229,7 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 6,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {
                 "click": "getset.reset_selection"
@@ -272,7 +240,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 5,
+            "position": 4,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -284,7 +252,7 @@
                 "title": "St\u00f8rst prisendring"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 2,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {}
         },
@@ -293,7 +261,7 @@
             "type": "tabs",
             "content": {
                 "containerBackgroundColor": "#ffffff",
-                "cssClasses": "data.best.1.prisendring"
+                "cssClasses": ""
             },
             "isCodeManaged": false,
             "position": 0,
@@ -503,7 +471,7 @@
                 "caption": ""
             },
             "isCodeManaged": false,
-            "position": 8,
+            "position": 7,
             "parentId": "a0xov3f0jw9m5rp3",
             "handlers": {},
             "visible": true
@@ -530,7 +498,7 @@
                 "maxWidth": "500"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 5,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -542,7 +510,7 @@
                 "title": ""
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 6,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -569,7 +537,7 @@
                 "maxWidth": "500"
             },
             "isCodeManaged": false,
-            "position": 9,
+            "position": 8,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -581,7 +549,7 @@
                 "title": ""
             },
             "isCodeManaged": false,
-            "position": 10,
+            "position": 9,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -616,7 +584,7 @@
             "type": "separator",
             "content": {},
             "isCodeManaged": false,
-            "position": 4,
+            "position": 3,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -626,7 +594,7 @@
             "type": "separator",
             "content": {},
             "isCodeManaged": false,
-            "position": 8,
+            "position": 7,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -1862,6 +1830,7 @@
             "content": {
                 "separatorColor": "#136F63"
             },
+            "isCodeManaged": false,
             "position": 1,
             "parentId": "ksg9945lomky63dl",
             "handlers": {},

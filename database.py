@@ -8,13 +8,14 @@ import pandas as pd
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
 
+from category import CATEGORY
 
-_CLIENT = MongoClient(
+
+CLIENT = MongoClient(
     f"mongodb+srv://{os.environ.get('mongodb_username')}:{os.environ.get('mongodb_password')}"
     f"@vinskraper.wykjrgz.mongodb.net/"
     f"?retryWrites=true&w=majority&appName=vinskraper"
 )
-MONGODB = _CLIENT['vinskraper']['vinskraper']
 
 
 def _calculate_discount(record):
@@ -28,9 +29,21 @@ def _calculate_discount(record):
     return 0.0
 
 
-def db_discounts():
+def discounts(category: CATEGORY):
     """
     Calculate the discount for the data in the database.
+
+    Parameters
+    ----------
+    category : CATEGORY
+        The category of products to calculate the discount for.
+        See enumerator `CATEGORY` for available options.
+        Modifies the database in-place.
+
+    Raises
+    ------
+    ValueError
+        If the category is set to `CATEGORY.ALLE`.
 
     Notes
     -----
@@ -38,7 +51,12 @@ def db_discounts():
         If there is only one price-column, the discount is set to `'-'`.
         If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
     """
-    records = list(MONGODB.find({}))
+    if category == CATEGORY.ALLE:
+        raise ValueError("Cannot calculate discounts for all categories at once. Please specify a single category.")
+
+    collection = CLIENT['vinskraper'][category.name]
+
+    records = list(collection.find({}))
     operations = [
         pymongo.UpdateOne(
             {'index': record['index']},
@@ -47,10 +65,10 @@ def db_discounts():
         )
         for record in records
     ]
-    MONGODB.bulk_write(operations)
+    collection.bulk_write(operations)
 
 
-def db_upsert(data: List[dict]) -> BulkWriteResult:
+def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
     """
     Upsert the given data into the database.
 
@@ -58,7 +76,25 @@ def db_upsert(data: List[dict]) -> BulkWriteResult:
     ----------
     data : List[dict]
         The data to insert into the database.
+    category : CATEGORY
+        The category of products to calculate the discount for.
+        See enumerator `CATEGORY` for available options.
+        Modifies the database in-place.
+
+    Returns
+    -------
+    BulkWriteResult
+
+    Raises
+    ------
+    ValueError
+        If the category is set to `CATEGORY.ALLE`.
     """
+    if category == CATEGORY.ALLE:
+        raise ValueError("Cannot upsert all categories at once. Please specify a single category.")
+
+    collection = CLIENT['vinskraper'][category.name]
+
     operations = [
         pymongo.UpdateOne(
             {'index': record['index']},
@@ -67,18 +103,51 @@ def db_upsert(data: List[dict]) -> BulkWriteResult:
         )
         for record in data
     ]
-    result = MONGODB.bulk_write(operations)
+    result = collection.bulk_write(operations)
+
     return result
 
 
-def db_load() -> pd.DataFrame:
+
+def load(category: CATEGORY) -> pd.DataFrame:
     """
     Load the data from the database.
+
+    Parameters
+    ----------
+    category : str
+        The category of products to calculate the discount for.
+        See enumerator `CATEGORY` for available options.
+        Modifies the database in-place.
 
     Returns
     -------
     pd.DataFrame
         The data from the database.
     """
-    data = pd.DataFrame(list(MONGODB.find())).set_index('index').drop(columns=['_id'])
+    if category == CATEGORY.ALLE:
+        return _load_all()
+
+    collection = CLIENT['vinskraper'][category.name]
+
+    data = pd.DataFrame(list(collection.find())).set_index('index').drop(columns=['_id'])
+
     return data
+
+
+def _load_all() -> pd.DataFrame:
+    """
+    Load all data from the database.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    dfs = []
+    for category in [cat for cat in CATEGORY if cat != CATEGORY.ALLE]:
+        df = load(category)
+        df['kategori'] = category.value.capitalize().replace("_", " ") if "%" not in category.value else "Cognac"
+        dfs.append(df)
+    dfs = pd.concat(dfs)
+
+    return dfs

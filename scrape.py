@@ -1,6 +1,5 @@
 """Scrape products from vinmonopolet's website."""
 
-import enum
 import json
 import logging
 from typing import List
@@ -10,7 +9,8 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from pymongo.errors import BulkWriteError
 
-from database import db_upsert, db_discounts
+from category import CATEGORY
+from database import upsert, discounts
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,27 +30,6 @@ _PROXY = None
 _PROXIES = None
 _PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies"
               "&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000")
-
-
-class CATEGORY(enum.Enum):
-    """
-    Enum class for the different categories of products available at vinmonopolet.
-    Extends the `_URL` with the category value.
-    """
-    RED_WINE = "rødvin"
-    WHITE_WINE = "hvitvin"
-
-    ROSE_WINE = "rosévin"
-    SPARKLING_WINE = "musserende_vin"
-    PEARLING_WINE = "perlende_vin"
-    FORTIFIED_WINE = "sterkvin"
-    AROMATIC_WINE = "aromatisert_vin"
-    FRUIT_WINE = "fruktvin"
-    SPIRIT = "brennevin"
-    BEER = "øl"
-    CIDER = "sider"
-    SAKE = "sake"
-    MEAD = "mjød"
 
 
 def _renew_proxy():
@@ -208,14 +187,14 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
     return items
 
 
-def _update_products(category: CATEGORY = CATEGORY.RED_WINE):
+def _update_products(category: CATEGORY):
     """
     Fetches all products from the given category and stores (appends) the results to the MongoDB
     collection.
 
     Parameters
     ----------
-    category : CATEGORY, optional
+    category : CATEGORY
         The category of products to fetch.
         See enumerator `CATEGORY` for available options.
 
@@ -226,11 +205,13 @@ def _update_products(category: CATEGORY = CATEGORY.RED_WINE):
         This is printed out in `scrape()`, and retried later.
     """
     _LOGGER.info(f"┌─ Fetching {category.name}")
-    products = _scrape_category(category)
+    items = _scrape_category(category)
     _LOGGER.info(f"├─ Inserting into database.")
-    result = db_upsert(products)
-    _LOGGER.info(f"├─ Modified {result.modified_count} records")
-    _LOGGER.info(f"├─ Upserted {result.upserted_count} records")
+    result = upsert(items, category)
+    _LOGGER.info(f"│ ├─ Modified {result.modified_count} records")
+    _LOGGER.info(f"│ └─ Upserted {result.upserted_count} records")
+    _LOGGER.info(f"├─Updating discounts.")
+    discounts(category)
     _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
 
 
@@ -248,17 +229,17 @@ def scrape():
     _renew_proxy()
 
     retries = 0
-    categories = [category for category in CATEGORY]
+    categories = [cat for cat in CATEGORY if cat != CATEGORY.ALLE]
     for category in categories:
         try:
             _update_products(category)
         except BulkWriteError as bwe:
             retries += 1
-            categories.append(category) if retries < 9 else None
+            categories.append(category) if retries < 10 else None
             _LOGGER.error(f"└─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
                           f"Bulk write operation; {bwe.details}."
-                          f"{'Retrying.' if retries < 9 else ''}")
+                          f"{'Retrying.' if retries < 10 else ''}")
 
-    _LOGGER.info(f"┌─ Updating discounts.")
-    db_discounts()
-    _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
+
+if __name__ == "__main__":
+    scrape()

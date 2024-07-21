@@ -3,8 +3,9 @@
 import json
 import pandas as pd
 
-from scrape import CATEGORY, scrape
-from database import db_load
+from scrape import scrape
+from database import load
+from category import CATEGORY
 from visualise import graph_best_prices
 
 
@@ -17,9 +18,10 @@ _EN_TO_NO = {
 }
 
 
-def init_data(state):
+def get_data(state):
     """
-    Initialise the data in the state.
+    Updates the data in the state to correspond with the current category.
+    This function should only be called when the category is changed.
 
     Parameters
     ----------
@@ -28,50 +30,33 @@ def init_data(state):
     """
     state['flag']['updating'] = True
 
-    state['data']['full'] = db_load()
+    # Loading data for the selected category from the database.
+    state['data']['full'] = load(CATEGORY[state['selection']['category']])
+
+    # Parsing the JSON metadata.
     state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
+
+    # Replacing missing values (`'-'` and `0.0`) with `None`.
     state['data']['full'] = state['data']['full'].replace('-', None)
     for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
         state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
     state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
 
-    _sort_prices(state)
+    # Rearranging the columns of the `full` data.
+    # Updating the selected data to correspond with the full data.
+    # Refreshing the valid dropdown values.
+    _rearrange(state)
+    state['data']['selected'] = state['data']['full'].copy()
+    _dropdown(state)
 
     state['flag']['updating'] = False
 
     set_data(state)
 
 
-def _categorize(state) -> pd.DataFrame:
-    df = state['data']['full'].copy()
-    if state['selection']['category'] == 'Alle':
-        return df
-    return df[df['kategori'] == CATEGORY[state['selection']['category']].value.replace(' ', '_').capitalize()]
-
-
-def set_data(state):
+def _rearrange(state):
     """
-    Updates the data in the state to correspond with the current category.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    """
-    state['flag']['updating'] = True
-
-    state['data']['categorized'] = _categorize(state)
-    state['data']['selected'] = state['data']['categorized'].copy()
-
-    _refresh_dropdown(state)
-
-    state['flag']['updating'] = False
-
-    set_selection(state)
-
-
-def _sort_prices(state):
-    """
+    Rearrange the columns of the data in the state.
     Sort the price columns of the data in the state by date.
 
     Parameters
@@ -109,24 +94,24 @@ def _sort_prices(state):
 #         state['flag']['fetch_allowed'] = False
 #     else:
 #         state['flag']['fetch_allowed'] = True
+#
+#
+# def scrape_products(state):
+#     """
+#     Fetch the current products from `vinmonopolet.no` and update the state with the newest data.
+
+#     Parameters
+#     ----------
+#     state : dict
+#         The current state of the application.
+#     """
+#     state['flag']['fetching'] = True
+#     scrape()
+#     state['flag']['fetching'] = False
+#     set_data(state)
 
 
-def scrape_products(state):
-    """
-    Fetch the current products from `vinmonopolet.no` and update the state with the newest data.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    """
-    state['flag']['fetching'] = True
-    scrape()
-    state['flag']['fetching'] = False
-    init_data(state)
-
-
-def _refresh_dropdown(state):
+def _dropdown(state):
     """
     Refreshes the valid dropdown values of the state to correspond with the current selection.
 
@@ -139,10 +124,10 @@ def _refresh_dropdown(state):
         **{'Alle': 'Alle underkategorier'},
         **{category: category
            for category in
-           sorted([c for c in state['data']['categorized']['underkategori'].unique().tolist() if c])}
+           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
     }
 
-    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'categorized'
+    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
     state['dropdown']['volumes'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
@@ -173,9 +158,10 @@ def _refresh_dropdown(state):
     }
 
 
-def set_selection(state):
+def set_data(state):
     """
     Updates the selected data in the state to correspond with the current selection.
+    This function should be called when dropdown values (except `category`) are changed.
 
     Parameters
     ----------
@@ -184,9 +170,9 @@ def set_selection(state):
     """
     state['flag']['updating'] = True
 
-    df = _categorize(state)
+    df = state['data']['full'].copy()
     for feature in [feat for feat in state['selection'].to_dict() if feat != 'category']:
-        df = _update_selection(state, df, feature)
+        df = _selection(state, df, feature)
     state['data']['selected'] = df
 
     for i in range(1, 6):
@@ -207,14 +193,15 @@ def set_selection(state):
     else:
         graph_best_prices(state)
 
-    _refresh_dropdown(state)
+    _dropdown(state)
 
     state['flag']['updating'] = False
 
 
-def _update_selection(state, df: pd.DataFrame, feature: str) -> pd.DataFrame:
+def _selection(state, df: pd.DataFrame, column: str) -> pd.DataFrame:
     """
-    Updates the selection for the given feature.
+    Updates the data with respect to the given column.
+    The values are filtered according to the current selection.
 
     Parameters
     ----------
@@ -222,23 +209,23 @@ def _update_selection(state, df: pd.DataFrame, feature: str) -> pd.DataFrame:
         The current state of the application.
     df : pd.DataFrame
         The current data.
-    feature : str
-        The feature to update.
+    column : str
+        The column to update.
 
     Returns
     -------
     pd.DataFrame
         The updated data.
     """
-    if state['selection'][feature] == 'Alle':
+    if state['selection'][column] == 'Alle':
         return df
 
-    if feature == 'volume' and any(df[_EN_TO_NO[feature]] == float(state['selection'][feature])):
-        df = df[df[_EN_TO_NO[feature]] == float(state['selection'][feature])]
-    elif any(df[_EN_TO_NO[feature]] == str(state['selection'][feature])):
-        df = df[df[_EN_TO_NO[feature]] == state['selection'][feature]]
+    if column == 'volume' and any(df[_EN_TO_NO[column]] == float(state['selection'][column])):
+        df = df[df[_EN_TO_NO[column]] == float(state['selection'][column])]
+    elif any(df[_EN_TO_NO[column]] == str(state['selection'][column])):
+        df = df[df[_EN_TO_NO[column]] == state['selection'][column]]
     else:
-        state['selection'][feature] = 'Alle'
+        state['selection'][column] = 'Alle'
 
     return df
 
@@ -258,4 +245,4 @@ def reset_selection(state):
         state['selection'][feature] = 'Alle' if feature != 'category' else state['selection'][feature]
 
     state['flag']['updating'] = False
-    set_selection(state)
+    set_data(state)
