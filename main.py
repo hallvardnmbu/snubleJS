@@ -3,16 +3,10 @@
 import writer
 
 from scrape import CATEGORY
-from getset import init_data, set_data, set_selection, scrape_products, reset_selection
+from getset import get_data, set_data, reset_selection
 
 
 STATE = writer.init_state({
-
-    # dir
-    # ----------------------------------------------------------------------------------------------
-    # Directory for storing data.
-
-    'dir': './storage/',
 
     # dropdown
     # ----------------------------------------------------------------------------------------------
@@ -22,9 +16,8 @@ STATE = writer.init_state({
 
     'dropdown': {
         'categories': {
-            **{"Alle": "Alle kategorier"},
-            **{v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
-               for k, v in CATEGORY.__dict__["_value2member_map_"].items()}
+            v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
+            for k, v in CATEGORY.__dict__["_value2member_map_"].items()
         },
 
         # The following depends on the selected category (`['selection']['category']`).
@@ -41,7 +34,7 @@ STATE = writer.init_state({
     # Current selection for each dropdown.
 
     'selection': {
-        'category': 'Alle',
+        'category': 'ALLE',
         'subcategory': 'Alle',
         'volume': 'Alle',
         'country': 'Alle',
@@ -52,10 +45,10 @@ STATE = writer.init_state({
     # data
     # ----------------------------------------------------------------------------------------------
     # Dataframes containing all- and selected products for the chosen category and selection.
+    # TODO: Remove data once the necessary data is plotted/found, to save memory.
 
     'data': {
         'full': None,
-        'categorized': None,
         'selected': None,
 
         'best': {str(i): {} for i in range(1, 6)}
@@ -86,15 +79,11 @@ STATE = writer.init_state({
 
     'flag': {
         # Spinners.
-        'fetching': False,
         'updating': False,
-
-        # Buttons.
-        'fetch_allowed': False,
 
         # Message.
         'no_discounts': True,
     },
 })
 
-init_data(STATE)
+get_data(STATE)
