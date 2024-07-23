@@ -53,7 +53,7 @@ bli bedre kjent med fjern-løsninger.
 
 For å få tilgang til nettsiden; gi lyd.
 
-Hver månedsskifte kjøres en jobb som henter ny data for alle kategorier, og lagrer oppdateringene til databasen.
+Hver månedsskifte kjøres en jobb som henter ny data for alle kategorier, og lagrer oppdateringene til databasen. Lokalt må dette kjøres manuelt (`python scrape.py` i terminalen).
 
 ---
 
