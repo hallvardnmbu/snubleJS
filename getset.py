@@ -1,21 +1,22 @@
 """Getters and setters used by the application."""
 
-import json
+import logging
+
 import pandas as pd
 
-from scrape import scrape
-from database import load
+from database import load, plots
 from category import CATEGORY
-from visualise import graph_best_prices
 
 
-_EN_TO_NO = {
+_LOGGER = logging.getLogger(__name__)
+_NOR = {
     'subcategory': 'underkategori',
     'volume': 'volum',
     'country': 'land',
     'district': 'distrikt',
     'subdistrict': 'underdistrikt'
 }
+_ENG = {v: k for k, v in _NOR.items()}
 
 
 def get_data(state):
@@ -28,30 +29,82 @@ def get_data(state):
     state : dict
         The current state of the application.
     """
+    # Loading data for the selected category from the database.
+    state['data'] = load(CATEGORY[state['selection']['category']])
+
+    # Remove duplicates if any.
+    if state['data'].index.duplicated().any():
+        _LOGGER.error('Found duplicates! Removing them.')
+        state['data'] = state['data'][~state['data'].index.duplicated(keep='first')]
+
+    # Rearranging the columns of the data.
+    _rearrange(state)
+
+    # Setting the possible dropdown values for the current category.
+    state['dropdown']['possible'] = {
+        _ENG[col]: sorted([c for c in list(state['data'][col].unique()) if c and c != '-'])
+        for col in state['data']
+        if col in _NOR.values()
+    }
+
+    # Refreshing the selected dropdown values.
+    _dropdown(state, state['data'])
+
+    # Setting the discount data for the current selection.
+    set_discounts(state)
+
+
+def set_discounts(state):
+    """
+    Updates the discount data in the state to correspond with the current selection.
+
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
     state['flag']['updating'] = True
 
-    # Loading data for the selected category from the database.
-    state['data']['full'] = load(CATEGORY[state['selection']['category']])
+    products = _selection(state)
+    _dropdown(state, products)
 
-    # Parsing the JSON metadata.
-    state['data']['full']['meta'] = state['data']['full']['meta'].apply(json.loads)
+    prices = sorted([col for col in products.columns
+                     if col.startswith('pris ')],
+                    key=lambda x: pd.Timestamp(x.split(' ')[1]))
+    products = products.rename(columns={prices[-1]: 'pris'}).replace({'-': None})
 
-    # Replacing missing values (`'-'` and `0.0`) with `None`.
-    state['data']['full'] = state['data']['full'].replace('-', None)
-    for price in [col for col in state['data']['full'].columns if col.startswith('pris ')]:
-        state['data']['full'][price] = state['data']['full'][price].replace(0.0, None)
-    state['data']['full'].sort_values('prisendring', ascending=True, inplace=True)
+    products = products.sort_values(
+        by=state['discount']['feature'],
+        ascending=state['discount']['ascending']
+    ).head(int(state['discount']['top']))
 
-    # Rearranging the columns of the `full` data.
-    # Updating the selected data to correspond with the full data.
-    # Refreshing the valid dropdown values.
-    _rearrange(state)
-    state['data']['selected'] = state['data']['full'].copy()
-    _dropdown(state)
+    plot = plots(list(products.index))
+
+    df = pd.concat([products, plot], axis=1)
+
+    if len(prices) < 2:
+        df['pris_gammel'] = df['pris'].copy()
+    else:
+        df = df.rename(columns={prices[-2]: 'pris_gammel'})
+
+    state['discount']['data'] = {str(k): v for k, v in df.reset_index().T.to_dict().items()}
 
     state['flag']['updating'] = False
 
-    set_data(state)
+
+def reset_selection(state):
+    """
+    Resets the selection to 'Alle'.
+
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
+    for feature in state['selection'].to_dict():
+        state['selection'][feature] = 'Alle' if feature != 'category' else state['selection'][feature]
+
+    set_discounts(state)
 
 
 def _rearrange(state):
@@ -64,54 +117,21 @@ def _rearrange(state):
     state : dict
         The current state of the application.
     """
-    price = [col for col in state['data']['full'].columns if col.startswith('pris ')]
-    price = sorted(price, key=lambda x: pd.Timestamp(x.split(" ")[1]))
+    price = [col for col in state['data'].columns if col.startswith('pris ')]
+    price = sorted(price, key=lambda x: pd.Timestamp(x.split(' ')[1]))
 
     cols = ['navn', 'volum', 'land',
             'distrikt', 'underdistrikt', 'kategori', 'underkategori',
             'meta', 'prisendring']
 
-    state['data']['full'] = state['data']['full'][
+    state['data'] = state['data'][
         cols
-        + list(set(state['data']['full'].columns) - set(cols) - set(price))
+        + list(set(state['data'].columns) - set(cols) - set(price))
         + price
     ]
 
 
-# def _check_fetch_allowed(state):
-#     """
-#     Toggle flag if last update was within the current month.
-#
-#     Parameters
-#     ----------
-#     state : dict
-#         The current state of the application.
-#     """
-#     now = pd.Timestamp.now().month
-#     if any([now == pd.Timestamp(col.split(" ")[1]).month
-#             for col in state['data']['selected'].columns
-#             if col.startswith('pris ')]):
-#         state['flag']['fetch_allowed'] = False
-#     else:
-#         state['flag']['fetch_allowed'] = True
-#
-#
-# def scrape_products(state):
-#     """
-#     Fetch the current products from `vinmonopolet.no` and update the state with the newest data.
-
-#     Parameters
-#     ----------
-#     state : dict
-#         The current state of the application.
-#     """
-#     state['flag']['fetching'] = True
-#     scrape()
-#     state['flag']['fetching'] = False
-#     set_data(state)
-
-
-def _dropdown(state):
+def _dropdown(state, df: pd.DataFrame):
     """
     Refreshes the valid dropdown values of the state to correspond with the current selection.
 
@@ -119,130 +139,76 @@ def _dropdown(state):
     ----------
     state : dict
         The current state of the application.
+    df : pd.DataFrame
+        The currently selected data.
     """
-    state['dropdown']['subcategories'] = {
+    # Update the possible dropdown values for the current category.
+    state['dropdown']['selected'] = {
+        _ENG[col]: sorted([c for c in list(df[col].unique()) if c and c != '-'])
+        for col in df
+        if col in _NOR.values()
+    }
+
+    state['dropdown']['selected']['subcategory'] = {
         **{'Alle': 'Alle underkategorier'},
         **{category: category
-           for category in
-           sorted([c for c in state['data']['full']['underkategori'].unique().tolist() if c])}
+           for category in state['dropdown']['possible']['subcategory']}
     }
 
-    data = 'selected' if state['selection']['subcategory'] != 'Alle' else 'full'
-    state['dropdown']['volumes'] = {
+    which = 'selected' if state['selection']['subcategory'] != 'Alle' else 'possible'
+    state['dropdown']['selected']['volume'] = {
         **{'Alle': 'Alle volum'},
         **{str(volume): f'{volume:g} mL'
-           for volume in sorted([v for v in state['data'][data]['volum'].unique() if v])}
+           for volume in state['dropdown'][which]['volume']}
     }
 
-    data = 'selected' if state['selection']['volume'] != 'Alle' else data
-    state['dropdown']['countries'] = {
+    which = 'selected' if state['selection']['volume'] != 'Alle' else which
+    state['dropdown']['selected']['country'] = {
         **{'Alle': 'Alle land'},
         **{country: country
-           for country in sorted([c for c in state['data'][data]['land'].unique().tolist() if c])}
+           for country in state['dropdown'][which]['country']}
     }
 
-    data = 'selected' if state['selection']['country'] != 'Alle' else data
-    state['dropdown']['districts'] = {
+    which = 'selected' if state['selection']['country'] != 'Alle' else which
+    state['dropdown']['selected']['district'] = {
         **{'Alle': 'Alle distrikter'},
         **{district: district
-           for district in
-           sorted([d for d in state['data'][data]['distrikt'].unique().tolist() if d])}
+           for district in state['dropdown'][which]['district']}
     }
 
-    data = 'selected' if state['selection']['district'] != 'Alle' else data
-    state['dropdown']['subdistricts'] = {
+    which = 'selected' if state['selection']['district'] != 'Alle' else which
+    state['dropdown']['selected']['subdistrict'] = {
         **{'Alle': 'Alle underdistrikter'},
         **{district: district
-           for district in
-           sorted([d for d in state['data'][data]['underdistrikt'].unique().tolist() if d])}
+           for district in state['dropdown'][which]['subdistrict']}
     }
 
 
-def set_data(state):
+def _selection(state) -> pd.DataFrame:
     """
-    Updates the selected data in the state to correspond with the current selection.
-    This function should be called when dropdown values (except `category`) are changed.
+    Filter the category data based on current selection.
 
     Parameters
     ----------
     state : dict
         The current state of the application.
-    """
-    state['flag']['updating'] = True
-
-    df = state['data']['full'].copy()
-    for feature in [feat for feat in state['selection'].to_dict() if feat != 'category']:
-        df = _selection(state, df, feature)
-    state['data']['selected'] = df
-
-    for i in range(1, 6):
-        try:
-            state['data']['best'][str(i)] = {
-                k: v for k, v in df.iloc[i].to_dict().items()
-            }
-        except IndexError:
-            state['data']['best'][str(i)] = {'prisendring': 0}
-            break
-
-        price = sorted([col for col in df.columns if col.startswith('pris ')],
-                       key=lambda x: pd.Timestamp(x.split(" ")[1]))[-1]
-        state['data']['best'][str(i)]['pris'] = state['data']['best'][str(i)][price]
-
-    if state['data']['best']['1']['prisendring']:
-        state['flag']['no_discounts'] = False
-    else:
-        graph_best_prices(state)
-
-    _dropdown(state)
-
-    state['flag']['updating'] = False
-
-
-def _selection(state, df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """
-    Updates the data with respect to the given column.
-    The values are filtered according to the current selection.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    df : pd.DataFrame
-        The current data.
-    column : str
-        The column to update.
 
     Returns
     -------
-    pd.DataFrame
-        The updated data.
+    df : pd.DataFrame
+        The filtered data based on the current selection.
     """
-    if state['selection'][column] == 'Alle':
-        return df
-
-    if column == 'volume' and any(df[_EN_TO_NO[column]] == float(state['selection'][column])):
-        df = df[df[_EN_TO_NO[column]] == float(state['selection'][column])]
-    elif any(df[_EN_TO_NO[column]] == str(state['selection'][column])):
-        df = df[df[_EN_TO_NO[column]] == state['selection'][column]]
-    else:
-        state['selection'][column] = 'Alle'
-
-    return df
-
-
-def reset_selection(state):
-    """
-    Resets the selection to 'Alle'.
-
-    Parameters
-    ----------
-    state : dict
-        The current state of the application.
-    """
-    state['flag']['updating'] = True
+    df = state['data'].copy()
 
     for feature in state['selection'].to_dict():
-        state['selection'][feature] = 'Alle' if feature != 'category' else state['selection'][feature]
+        if feature == 'category' or state['selection'][feature] == 'Alle':
+            continue
 
-    state['flag']['updating'] = False
-    set_data(state)
+        if feature == 'volume' and any(df[_NOR[feature]] == float(state['selection'][feature])):
+            df = df[df[_NOR[feature]] == float(state['selection'][feature])]
+        elif any(df[_NOR[feature]] == str(state['selection'][feature])):
+            df = df[df[_NOR[feature]] == state['selection'][feature]]
+        else:
+            state['selection'][feature] = 'Alle'
+
+    return df

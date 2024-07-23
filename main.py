@@ -3,7 +3,7 @@
 import writer
 
 from scrape import CATEGORY
-from getset import get_data, set_data, reset_selection
+from getset import get_data, set_discounts, reset_selection
 
 
 STATE = writer.init_state({
@@ -12,21 +12,34 @@ STATE = writer.init_state({
     # ----------------------------------------------------------------------------------------------
     # Dictionaries containing unique values for the selected category.
     # These are used to populate the selection dropdowns.
-    # Dynamically updated when the category is changed.
+    # Dynamically updated when the category (etc.) is changed.
 
     'dropdown': {
-        'categories': {
-            v.name: k.capitalize().replace("_", " ") if "%" not in k else "Cognac"
-            for k, v in CATEGORY.__dict__["_value2member_map_"].items()
+        'category': {
+            v.name: k.capitalize().replace('_', ' ') if '%' not in k else 'Cognac'
+            for k, v in CATEGORY.__dict__['_value2member_map_'].items()
+        },
+
+        # The following are the unique values for each dropdown.
+        # These are statically updated when the category is changed.
+        'possible': {
+            'subcategory': None,
+            'volume': None,
+            'country': None,
+            'district': None,
+            'subdistrict': None,
         },
 
         # The following depends on the selected category (`['selection']['category']`).
-        # These are updated when the category is changed.
-        'subcategories': None,
-        'volumes': None,
-        'countries': None,
-        'districts': None,
-        'subdistricts': None,
+        # These are dynamically updated when the category is changed.
+        # See `getset._dropdown` for more information.
+        'selected': {
+            'subcategory': None,
+            'volume': None,
+            'country': None,
+            'district': None,
+            'subdistrict': None,
+        },
     },
 
     # selection
@@ -44,46 +57,42 @@ STATE = writer.init_state({
 
     # data
     # ----------------------------------------------------------------------------------------------
-    # Dataframes containing all- and selected products for the chosen category and selection.
-    # TODO: Remove data once the necessary data is plotted/found, to save memory.
+    # DataFrame
+    #   Contains the data for the current category.
 
-    'data': {
-        'full': None,
-        'selected': None,
+    'data': None,
 
-        'best': {str(i): {} for i in range(1, 6)}
-    },
-
-    # plot
+    # discount
     # ----------------------------------------------------------------------------------------------
-    # Dictionary containing plot settings and figure data.
-    # TODO: Add figures.
+    # Dictionary containing the discount data for the current selection.
+    # Dynamically updated when the selection is changed.
+    # Ordered by the discount percentage.
 
-    'plot': {
-        'colours': {
-            'background': '#F3F7F4',
-            'white': '#FFFFFF',
-            'black': '#06070E',
-
-            'red': '#8E3B46',
-            'green': '#136F63',
+    'discount': {
+        'top': '10',
+        'ascending': True,
+        'feature': 'prisendring',
+        'dropdown': {
+            'prisendring': 'prisendring',
+            'pris': 'pris',
+            'navn': 'navn',
+            'kategori': 'kategori',
+            'underkategori': 'underkategori',
+            'land': 'land',
+            'distrikt': 'distrikt',
+            'underdistrikt': 'underdistrikt',
+            'volum': 'volum',
         },
-
-        'best': {}
+        'data': None
     },
 
     # flag
     # ----------------------------------------------------------------------------------------------
-    # Flags for fetching and updating data.
-    # These are used to hide/show buttons and spinners.
+    # Flag to indicate when data is being updated.
 
     'flag': {
-        # Spinners.
-        'updating': False,
-
-        # Message.
-        'no_discounts': True,
-    },
+        'updating': False
+    }
 })
 
 get_data(STATE)

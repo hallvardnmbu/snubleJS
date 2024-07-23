@@ -10,26 +10,26 @@ from bs4 import BeautifulSoup
 from pymongo.errors import BulkWriteError
 
 from category import CATEGORY
-from database import upsert, discounts
+from database import upsert, derive
 
 
 _LOGGER = logging.getLogger(__name__)
 _COLOUR = {
-    "RED": "\033[31m",
-    "GREEN": "\033[32m",
-    "RESET": "\033[0m",
+    'RED': '\033[31m',
+    'GREEN': '\033[32m',
+    'RESET': '\033[0m',
 }
 
-_URL = ("https://www.vinmonopolet.no/vmpws/v2/vmp/"
-        "search?searchType=product"
-        "&currentPage={}"
-        "&q=%3Arelevance%3AmainCategory%3A{}")
+_URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
+        'search?searchType=product'
+        '&currentPage={}'
+        '&q=%3Arelevance%3AmainCategory%3A{}')
 _SESSION = requests.Session()
 
 _PROXY = None
 _PROXIES = None
-_PROXY_URL = ("https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies"
-              "&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000")
+_PROXY_URL = ('https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies'
+              '&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000')
 
 
 def _renew_proxy():
@@ -42,9 +42,9 @@ def _renew_proxy():
     if not _PROXIES:
         _PROXIES = [proxy for proxy in
                     requests.get(_PROXY_URL).text.split('\r\n')
-                    if proxy and proxy.startswith("http")]
+                    if proxy and proxy.startswith('http')]
 
-    _PROXY = {"http": _PROXIES.pop(0)}
+    _PROXY = {'http': _PROXIES.pop(0)}
 
 
 def _scrape_page(
@@ -77,12 +77,12 @@ def _scrape_page(
             response = _SESSION.get(_URL.format(page, category.value), proxies=_PROXY)
             break
         except Exception as err:
-            _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                          f"Page {page} (trying another proxy); {err}")
+            _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                          f'Page {page} (trying another proxy); {err}')
             _renew_proxy()
     else:
-        _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                      f"Failed to fetch page {page} after 10 attempts.")
+        _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                      f'Failed to fetch page {page} after 10 attempts.')
         response = requests.models.Response()
         response.status_code = 500
 
@@ -123,71 +123,75 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
         response = _scrape_page(category, page)
 
         if response.status_code != 200:
-            _LOGGER.error(f"├─ {_COLOUR['RED']}Failed{_COLOUR['RESET']}: "
-                          f"Page {page} (status code {response.status_code}): "
-                          f"{response.text}.")
+            _LOGGER.error(f'├─ {_COLOUR["RED"]}Failed{_COLOUR["RESET"]}: '
+                          f'Page {page} (status code {response.status_code}): '
+                          f'{response.text}.')
             continue
 
         # ------------------------------------------------------------------------------------------
         # Parses the response and extracts the products.
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        products = json.loads(soup.string).get("productSearchResult", {}).get("products", [])
+        soup = BeautifulSoup(response.text, 'html.parser')
+        if soup.string is None:
+            _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                          f'Page {page} (no JSON found).')
+            continue
+        products = json.loads(soup.string).get('productSearchResult', {}).get('products', [])
 
         if not products:
-            _LOGGER.info(f"├─ No more products (final page: {page - 1}).")
+            _LOGGER.info(f'├─ No more products (final page: {page - 1}).')
             break
 
         # ------------------------------------------------------------------------------------------
         # Extracts the product information and stores it in the dictionary.
 
         for product in products:
-            code = product.get("code", None)
+            code = product.get('code', None)
             if code is None:
-                _LOGGER.error(f"├─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                              f"Product without code: {product}. Skipping.")
+                _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                              f'Product without code: {product}. Skipping.')
                 continue
 
             items.append({
-                "index": code,
-                "navn": product.get("name", "-"),
-                "volum": product.get("volume", {}).get("value", 0.0),
+                'index': code,
+                'navn': product.get('name', '-'),
+                'volum': product.get('volume', {}).get('value', 0.0),
 
-                "land": product.get("main_country", {}).get("name", "-"),
-                "distrikt": product.get("district", {}).get("name", "-"),
-                "underdistrikt": product.get("sub_District", {}).get("name", "-"),
+                'land': product.get('main_country', {}).get('name', '-'),
+                'distrikt': product.get('district', {}).get('name', '-'),
+                'underdistrikt': product.get('sub_District', {}).get('name', '-'),
 
-                "kategori": product.get("main_category", {}).get("name", "-") if category != CATEGORY.COGNAC else "Cognac",
-                "underkategori": product.get("main_sub_category", {}).get("name", "-"),
+                'kategori': product.get('main_category', {}).get('name', '-') if category != CATEGORY.COGNAC else 'Cognac',
+                'underkategori': product.get('main_sub_category', {}).get('name', '-'),
 
-                "meta": json.dumps({
-                    "url": f"https://www.vinmonopolet.no{product.get('url', '')}",
+                'meta': {
+                    'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
 
-                    "status": product.get("status", "-"),
-                    "kan kjøpes": product.get("buyable", False),
-                    "utgått": product.get("expired", False),
-                    "kan bestilles": product.get("storesAvailability", {}).get(
-                        "infos", [{}]
-                    )[0].get("readableValue", "-"),
-                    "produktutvalg": product.get("product_selection", "-"),
-                    "bærekraftig": product.get("sustainable", False),
+                    'status': product.get('status', '-'),
+                    'kan kjøpes': product.get('buyable', False),
+                    'utgått': product.get('expired', False),
+                    'kan bestilles': product.get('storesAvailability', {}).get(
+                        'infos', [{}]
+                    )[0].get('readableValue', '-'),
+                    'produktutvalg': product.get('product_selection', '-'),
+                    'bærekraftig': product.get('sustainable', False),
 
-                    "bilde": {img['format']: img['url'] for img in product.get("images", [{
-                        "format": "thumbnail",
-                        "url": "https://bilder.vinmonopolet.no/bottle.png"
+                    'bilde': {img['format']: img['url'] for img in product.get('images', [{
+                        'format': 'thumbnail',
+                        'url': 'https://bilder.vinmonopolet.no/bottle.png'
                     }, {
-                        "format": "product",
-                        "url": "https://bilder.vinmonopolet.no/bottle.png"
+                        'format': 'product',
+                        'url': 'https://bilder.vinmonopolet.no/bottle.png'
                     }])},
-                }),
+                },
 
-                f"pris {today}": product.get("price", {}).get("value", 0.0),
+                f'pris {today}': product.get('price', {}).get('value', 0.0),
             })
 
     return items
 
 
-def _update_products(category: CATEGORY):
+def _update(category: CATEGORY):
     """
     Fetches all products from the given category and stores (appends) the results to the MongoDB
     collection.
@@ -204,15 +208,18 @@ def _update_products(category: CATEGORY):
         If there is an issue with the bulk write operation.
         This is printed out in `scrape()`, and retried later.
     """
-    _LOGGER.info(f"┌─ Fetching {category.name}")
+    _LOGGER.info(f'┌─ Fetching {category.name}')
     items = _scrape_category(category)
-    _LOGGER.info(f"├─ Inserting into database.")
+    _LOGGER.info(f'├─ Inserting into database.')
     result = upsert(items, category)
-    _LOGGER.info(f"│ ├─ Modified {result.modified_count} records")
-    _LOGGER.info(f"│ └─ Upserted {result.upserted_count} records")
-    _LOGGER.info(f"├─Updating discounts.")
-    discounts(category)
-    _LOGGER.info(f"└─ {_COLOUR['GREEN']}Success{_COLOUR['RESET']}.")
+    _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
+    _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
+    _LOGGER.info(f'├─ Deriving discounts and plotting prices.')
+    results = derive(category)
+    for which, result in results.items():
+        _LOGGER.info(f'│ ├─ Modified {result.modified_count} records when {which}')
+        _LOGGER.info(f'│ {"└" if which.startswith("p") else "├"}─ Upserted {result.upserted_count} records when {which}')
+    _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
 
 
 def scrape():
@@ -232,14 +239,14 @@ def scrape():
     categories = [cat for cat in CATEGORY if cat != CATEGORY.ALLE]
     for category in categories:
         try:
-            _update_products(category)
+            _update(category)
         except BulkWriteError as bwe:
             retries += 1
             categories.append(category) if retries < 10 else None
-            _LOGGER.error(f"└─ {_COLOUR['RED']}Error{_COLOUR['RESET']}: "
-                          f"Bulk write operation; {bwe.details}."
-                          f"{'Retrying.' if retries < 10 else ''}")
+            _LOGGER.error(f'└─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                          f'Bulk write operation; {bwe.details}.'
+                          f'{"Retrying." if retries < 10 else ""}')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     scrape()
