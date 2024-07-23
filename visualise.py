@@ -1,37 +1,108 @@
 """Visualisation module for vinskraper."""
 
+from typing import Optional
+
 import pandas as pd
+import plotly.io as pio
 import plotly.graph_objects as go
 
 
-def graph_best_prices(state):
-    for idx, product in state['data']['best'].to_dict().items():
-        if product['prisendring'] == 0.0:
-            break
+# Colour scheme for the application.
+# Used for the style of the application and the plots.
+_COLOUR = {
+    'black': '#06070E',
+    'white': '#FFFFFF',
 
-        dates = [pd.Timestamp(price.split(' ')[1])
-                 for price in product.keys()
-                 if price.startswith('pris ')]
-        prices = [product[f'pris {date.strftime("%Y-%m-%d")}'] for date in dates]
+    'red': '#8E3B46',
+    'green': '#136F63',
+    'greenish': '#F3F7F4',
+}
 
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=dates + [pd.Timestamp.now()],
-            y=prices + [product['pris']],
-            mode='lines',
-            line={'shape': 'hv', 'width': 3, 'color': state['plot']['colours']['green']},
-            name=product['navn'],
-        ))
 
-        fig.update_layout(
-            title='Prisutvikling',
-            plot_bgcolor=state['plot']['colours']['white'],
-            height=350,
-        )
-        fig.update_xaxes(
-            showgrid=False,
-            tickangle=45, tickvals=dates, ticktext=[date.strftime('%y-%m-%d') for date in dates]
-        )
-        fig.update_yaxes(showgrid=False)
+def graph(record, columns) -> Optional[str]:
+    """
+    Return a JSON-string of the plotly graph for the given record.
 
-        state['plot']['best'][idx] = fig
+    Parameters
+    ----------
+    record : dict
+        The record to plot.
+    columns : List[str]
+        The (price) columns to plot.
+    """
+    prices = [record[price] for price in columns] + [record[columns[-1]]]
+    dates = [pd.Timestamp(price.split(' ')[1]) for price in columns] + [pd.Timestamp.now()]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        name=record['navn'],
+
+        x=dates,
+        y=prices,
+
+        mode='lines',
+        line={'shape': 'hv', 'width': 3, 'color': _COLOUR['green']},
+
+        fill='tozeroy',
+        fillcolor=_COLOUR['greenish'],
+    ))
+
+    fig.update_layout(
+        plot_bgcolor=_COLOUR['white'],
+        height=300,
+
+        margin={
+            't': 10,
+            'b': 0,
+            'l': 0,
+            'r': 0,
+        },
+
+        title={
+            'text': '',
+            'font': {
+                'family': 'Poppins, sans-serif',
+                'color': _COLOUR['black'],
+            }
+        },
+
+        xaxis={
+            'title': {
+                'text': '',
+                'font': {
+                    'size': 16,
+                    'weight': 'bold',
+                    'family': 'Poppins, sans-serif',
+                    'color': _COLOUR['black'],
+                },
+            },
+            'tickfont': {
+                'size': 12,
+                'family': 'Poppins, sans-serif',
+                'color': _COLOUR['black'],
+            },
+            'showgrid': False,
+        },
+
+        yaxis={
+            'title': {
+                'text': '',
+                'font': {
+                    'size': 16,
+                    'weight': 'bold',
+                    'family': 'Poppins, sans-serif',
+                    'color': _COLOUR['black'],
+                },
+            },
+            'tickfont': {
+                'size': 12,
+                'family': 'Poppins, sans-serif',
+                'color': _COLOUR['black'],
+            },
+            'ticksuffix': ' kr',
+            'tickvals': sorted(set(prices)),
+            'showgrid': False,
+        },
+    )
+
+    return pio.to_json(fig)
