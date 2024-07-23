@@ -20,25 +20,28 @@ funksjonaliteten til `vinskraper`.
 ![Lokalt](./static/lokalt.jpg)
 
 For å kunne kjøre applikasjonen lokalt må (Python eksistere, og) de nødvendige pakkene
-installeres. Dette gjøres ved å først navigere seg til riktig mappe:
-
-```bash
-cd local
-```
-
-for så å kjøre;
+installeres. Dette gjøres ved;
 
 ```bash
 pip install -r requirements.txt
 ```
 
-i terminalen. Deretter åpnes applikasjonen med
+i terminalen, for så å åpne applikasjonen med
 
 ```bash
 writer run .
 ```
 
 (også fra terminalen).
+
+OBS: For å kunne kjøres lokalt må enkelte miljøvariabler settes. Dette gjøres ved å kjøre;
+
+```bash
+export mongodb_username=<username>
+export mongodb_password=<password>
+```
+
+(eller tilsvarende for ditt operativsystem). Hvor `<username>` og `<password>` er brukernavn og passord til din [MongoDB](https://www.mongodb.com)-database (hvilket kan opprettes gratis).
 
 ![DigitalOcean](./static/DigitalOcean.jpg)
 
@@ -49,29 +52,6 @@ Baktanken her er å gjøre applikasjonen tilgjengelig for navngitte personer via
 bli bedre kjent med fjern-løsninger.
 
 For å få tilgang til nettsiden; gi lyd.
-
----
-
-![Data](./static/data.jpg)
-
-![Lokalt](./static/lokalt.jpg)
-
-Dersom ingen data finnes fra før av, vil programmet automatisk hente ny data for den valgte
-kategorien.
-
-For historikkens skyld, lagres all hentet data i respektive `parquet`-filer. Dersom disse
-slettes vil ikke tilbud kunne utreknes (iom. at de baseres på historisk pris).
-
-Dersom historisk data eksisterer (i kategoriens respektive `parquet`-fil), vil den nye prisen
-bli lagt til som en egen kolonne. Alle pris-kolonner har datoen de ble hentet som _suffix_.
-
-![DigitalOcean](./static/DigitalOcean.jpg)
-
-For å gjøre ting enda mere komplisert, brukes en ekstern database for "sky"-applikasjonen (selv om det vel å merke er mulig å bruke "lokale" `parquet`-filer her også).
-
-I lik linje er dette gjort for å få en bedre forståelse for sammenkoblede tjenester i "skyen".
-
-Her brukes [MongoDB](https://www.mongodb.com) som vert.
 
 Hver månedsskifte kjøres en jobb som henter ny data for alle kategorier, og lagrer oppdateringene til databasen.
 
