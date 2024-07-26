@@ -28,39 +28,13 @@
                 "cssClasses": "",
                 "buttonColor": "#F3F7F4",
                 "buttonTextColor": "#136F63",
-                "key": "hovedside"
+                "key": ""
             },
             "isCodeManaged": false,
             "position": 0,
             "parentId": "root",
             "handlers": {},
             "visible": true
-        },
-        "0h1zk1okn0ouaspi": {
-            "id": "0h1zk1okn0ouaspi",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.category}",
-                "placeholder": "Kategori",
-                "maximumCount": "1",
-                "cssClasses": "",
-                "selectedColor": "#FFFFFF",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.get_data"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.category"
-            }
         },
         "ep60i50awfyxuux2": {
             "id": "ep60i50awfyxuux2",
@@ -72,134 +46,10 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 3,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": "flag.updating"
-        },
-        "vaznagp19yxf5p1t": {
-            "id": "vaznagp19yxf5p1t",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.district}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Distrikt"
-            },
-            "isCodeManaged": false,
-            "position": 4,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.district"
-            }
-        },
-        "bd0zn8letpvhkv9o": {
-            "id": "bd0zn8letpvhkv9o",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.volume}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Volum"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.volume"
-            }
-        },
-        "tvhm5fpw18gt2mhy": {
-            "id": "tvhm5fpw18gt2mhy",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.country}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Land"
-            },
-            "isCodeManaged": false,
-            "position": 3,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.country"
-            }
-        },
-        "7xo7jh2bheg9sci4": {
-            "id": "7xo7jh2bheg9sci4",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.subcategory}",
-                "placeholder": "Underkategori",
-                "maximumCount": "1",
-                "cssClasses": "",
-                "selectedColor": "#FFFFFF",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.subcategory"
-            }
-        },
-        "tk0d1kqmj1t3ikh0": {
-            "id": "tk0d1kqmj1t3ikh0",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.subdistrict}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Underdistrikt"
-            },
-            "isCodeManaged": false,
-            "position": 5,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.subdistrict"
-            }
         },
         "9iawnoa3ho4sxkkp": {
             "id": "9iawnoa3ho4sxkkp",
@@ -223,7 +73,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 4,
+            "position": 6,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
@@ -254,188 +104,19 @@
             "handlers": {},
             "visible": true
         },
-        "vjq79b6mddm1jn3y": {
-            "id": "vjq79b6mddm1jn3y",
-            "type": "page",
-            "content": {
-                "key": "informasjon",
-                "accentColor": "#F3F7F4",
-                "primaryTextColor": "#06070E",
-                "secondaryTextColor": "#136F63",
-                "emptinessColor": "#FFFFFF",
-                "containerBackgroundColor": "#F3F7F4",
-                "separatorColor": "#06070E",
-                "buttonColor": "#F3F7F4",
-                "buttonTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "root",
-            "handlers": {},
-            "visible": true
-        },
-        "zxqxqmoju7cki85x": {
-            "id": "zxqxqmoju7cki85x",
-            "type": "section",
-            "content": {
-                "title": ""
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "vjq79b6mddm1jn3y",
-            "handlers": {},
-            "visible": true
-        },
-        "hm3tyjnczbem2eqb": {
-            "id": "hm3tyjnczbem2eqb",
-            "type": "text",
-            "content": {
-                "text": "Hver m\u00e5ned oppdaterer [vinmonopolets](https://www.vinmonopolet.no) priser. Mens noen priser forblir uendret, kan s\u00e5kalt _skjulte_ tilbud fremtre.\n\nM\u00e5let med denne enkle siden er \u00e5 analysere disse prisendringene, samt holde styr p\u00e5 [vinmonopolets](https://www.vinmonopolet.no) utvalg.",
-                "useMarkdown": "yes"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "zxqxqmoju7cki85x",
-            "handlers": {},
-            "visible": true
-        },
-        "7ki4xzmvxgncvaf9": {
-            "id": "7ki4xzmvxgncvaf9",
-            "type": "separator",
-            "content": {
-                "separatorColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "zxqxqmoju7cki85x",
-            "handlers": {},
-            "visible": true
-        },
-        "t5waoy3znn5mmqif": {
-            "id": "t5waoy3znn5mmqif",
-            "type": "text",
-            "content": {
-                "text": "I menyen til venstre kan brukeren fylle inn \u00f8nskede valg.\n\nDe fem produktene med st\u00f8rst prisendring vil deretter vises p\u00e5 hovedsiden.",
-                "useMarkdown": "yes"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "zxqxqmoju7cki85x",
-            "handlers": {},
-            "visible": true
-        },
-        "ksg9945lomky63dl": {
-            "id": "ksg9945lomky63dl",
-            "type": "section",
-            "content": {
-                "title": ""
-            },
-            "isCodeManaged": false,
-            "position": 3,
-            "parentId": "vjq79b6mddm1jn3y",
-            "handlers": {},
-            "visible": true
-        },
-        "56a17g5y715knvqv": {
-            "id": "56a17g5y715knvqv",
-            "type": "dataframe",
-            "content": {
-                "dataframe": "@{data}",
-                "displayRowCount": "",
-                "dataframeBackgroundColor": "#F3F7F4",
-                "dataframeHeaderRowBackgroundColor": "#F3F7F4",
-                "fontStyle": "",
-                "wrapText": "",
-                "enableSearch": "",
-                "enableDownload": ""
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "ksg9945lomky63dl",
-            "handlers": {},
-            "visible": true
-        },
-        "1lkwjiodgzj5hkq0": {
-            "id": "1lkwjiodgzj5hkq0",
-            "type": "text",
-            "content": {
-                "text": "Her finner du r\u00e5dataen for valgt kategori."
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "ksg9945lomky63dl",
-            "handlers": {},
-            "visible": true
-        },
-        "wvpv216bk5vwn6t1": {
-            "id": "wvpv216bk5vwn6t1",
-            "type": "separator",
-            "content": {
-                "separatorColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "ksg9945lomky63dl",
-            "handlers": {},
-            "visible": true
-        },
-        "gv036384uttkj99k": {
-            "id": "gv036384uttkj99k",
-            "type": "image",
-            "content": {
-                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/data.jpg",
-                "caption": "",
-                "maxWidth": "500"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "vjq79b6mddm1jn3y",
-            "handlers": {},
-            "visible": true
-        },
-        "wjpa3sw38cabtr3j": {
-            "id": "wjpa3sw38cabtr3j",
-            "type": "image",
-            "content": {
-                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/informasjon.jpg",
-                "caption": "",
-                "maxWidth": "500"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "vjq79b6mddm1jn3y",
-            "handlers": {}
-        },
-        "674fstgdvx5dtaar": {
-            "id": "674fstgdvx5dtaar",
-            "type": "html",
-            "content": {
-                "element": "",
-                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(19, 111, 99)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
-                "attrs": "",
-                "htmlInside": "Informasjon",
-                "cssClasses": ""
-            },
-            "isCodeManaged": false,
-            "position": 8,
-            "parentId": "a0xov3f0jw9m5rp3",
-            "handlers": {
-                "click": "$goToPage_informasjon"
-            }
-        },
         "jhf3nj6con5h7ib6": {
             "id": "jhf3nj6con5h7ib6",
             "type": "repeater",
             "content": {
-                "repeaterObject": "@{discount.data}",
+                "repeaterObject": "@{prisendring.data}",
                 "keyVariable": "itemId",
                 "valueVariable": "item"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 4,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
-            "visible": true
+            "visible": "flag.valid"
         },
         "1r4vhvwmi3i252vf": {
             "id": "1r4vhvwmi3i252vf",
@@ -479,7 +160,7 @@
             "type": "image",
             "content": {
                 "caption": "",
-                "src": "@{item.meta.bilde.product}"
+                "src": "@{item.bilde.product}"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -515,7 +196,7 @@
             "id": "h2piopwcggoyem0i",
             "type": "link",
             "content": {
-                "url": "@{item.meta.url}",
+                "url": "@{item.url}",
                 "rel": "",
                 "text": "Bestill",
                 "target": "_blank",
@@ -561,10 +242,10 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 1,
+            "position": 2,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
-            "visible": true
+            "visible": "flag.valid"
         },
         "yqu7zermto0v0dso": {
             "id": "yqu7zermto0v0dso",
@@ -697,7 +378,7 @@
             "id": "4l0rrwr3m1lrl69c",
             "type": "column",
             "content": {
-                "width": "0.6",
+                "width": "0.2",
                 "contentHAlign": "start"
             },
             "isCodeManaged": false,
@@ -751,7 +432,7 @@
             "id": "77sv19d94olacopw",
             "type": "column",
             "content": {
-                "width": "1"
+                "width": "0.9"
             },
             "isCodeManaged": false,
             "position": 3,
@@ -811,30 +492,6 @@
             "handlers": {},
             "visible": true
         },
-        "f2ugmilotnsw0woi": {
-            "id": "f2ugmilotnsw0woi",
-            "type": "selectinput",
-            "content": {
-                "label": "Sorter etter:",
-                "options": "@{discount.dropdown}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "",
-                "maximumCount": "1",
-                "placeholder": ""
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "euhzyatxx39lcshv",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "discount.feature"
-            }
-        },
         "z1voz5donh5rn7z6": {
             "id": "z1voz5donh5rn7z6",
             "type": "selectinput",
@@ -852,11 +509,11 @@
             "position": 0,
             "parentId": "yqu7zermto0v0dso",
             "handlers": {
-                "wf-option-change": "getset.set_discounts"
+                "wf-option-change": "getset.get_data"
             },
             "binding": {
                 "eventType": "wf-option-change",
-                "stateRef": "discount.top"
+                "stateRef": "prisendring.antall"
             }
         },
         "7ok8xku763zhvj14": {
@@ -866,217 +523,10 @@
                 "proxyId": "t3ufjfkyjam48yv1"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 7,
             "parentId": "ccad7k7sc5oxy81l",
             "handlers": {},
             "visible": true
-        },
-        "80i04b3q2iwseuj7": {
-            "id": "80i04b3q2iwseuj7",
-            "type": "sidebar",
-            "content": {},
-            "isCodeManaged": false,
-            "position": -2,
-            "parentId": "vjq79b6mddm1jn3y",
-            "handlers": {},
-            "visible": true
-        },
-        "f3ku8kgueyq0t3qn": {
-            "id": "f3ku8kgueyq0t3qn",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.category}",
-                "placeholder": "Kategori",
-                "maximumCount": "1",
-                "cssClasses": "",
-                "selectedColor": "#FFFFFF",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.get_data"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.category"
-            }
-        },
-        "u9a2oohrqnzlldz3": {
-            "id": "u9a2oohrqnzlldz3",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.district}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Distrikt"
-            },
-            "isCodeManaged": false,
-            "position": 4,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.district"
-            }
-        },
-        "44m88x28dpsfidlz": {
-            "id": "44m88x28dpsfidlz",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.volume}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Volum"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.volume"
-            }
-        },
-        "ph2ymradoah5u350": {
-            "id": "ph2ymradoah5u350",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.country}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Land"
-            },
-            "isCodeManaged": false,
-            "position": 3,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.country"
-            }
-        },
-        "gd0nllpgw1gr7ywf": {
-            "id": "gd0nllpgw1gr7ywf",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.subcategory}",
-                "placeholder": "Underkategori",
-                "maximumCount": "1",
-                "cssClasses": "",
-                "selectedColor": "#FFFFFF",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.subcategory"
-            }
-        },
-        "hwpcxszncst21skr": {
-            "id": "hwpcxszncst21skr",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.selected.subdistrict}",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "selectedColor": "#FFFFFF",
-                "primaryTextColor": "#136F63",
-                "maximumCount": "1",
-                "placeholder": "Underdistrikt"
-            },
-            "isCodeManaged": false,
-            "position": 5,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "wf-option-change": "getset.set_discounts"
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "selection.subdistrict"
-            }
-        },
-        "0ee5t2o6cnots5xi": {
-            "id": "0ee5t2o6cnots5xi",
-            "type": "html",
-            "content": {
-                "element": "",
-                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(19, 111, 99)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(243 , 247 , 244)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
-                "attrs": "",
-                "htmlInside": "Nullstill valg",
-                "cssClasses": ""
-            },
-            "isCodeManaged": false,
-            "position": 6,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "click": "getset.reset_selection"
-            }
-        },
-        "gyfzum9fj83m47ea": {
-            "id": "gyfzum9fj83m47ea",
-            "type": "image",
-            "content": {
-                "src": "https://raw.githubusercontent.com/hallvardnmbu/vinskraper/main/static/logo.jpg",
-                "caption": ""
-            },
-            "isCodeManaged": false,
-            "position": 7,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {},
-            "visible": true
-        },
-        "t04zvo7cfg0foz8n": {
-            "id": "t04zvo7cfg0foz8n",
-            "type": "html",
-            "content": {
-                "element": "",
-                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(19, 111, 99)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
-                "attrs": "",
-                "htmlInside": "Hovedside",
-                "cssClasses": ""
-            },
-            "isCodeManaged": false,
-            "position": 8,
-            "parentId": "80i04b3q2iwseuj7",
-            "handlers": {
-                "click": "$goToPage_hovedside"
-            }
         },
         "etrltu89ydczh0u9": {
             "id": "etrltu89ydczh0u9",
@@ -1090,13 +540,203 @@
             "position": 0,
             "parentId": "cs1revic2xtapwc3",
             "handlers": {
-                "wf-toggle": "getset.set_discounts"
+                "wf-toggle": "getset.get_data"
             },
             "visible": true,
             "binding": {
                 "eventType": "wf-toggle",
-                "stateRef": "discount.ascending"
+                "stateRef": "prisendring.stigende"
             }
+        },
+        "jo10y66q64x8rceu": {
+            "id": "jo10y66q64x8rceu",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.kategori}",
+                "placeholder": "Alle kategorier",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.kategori"
+            }
+        },
+        "amxnn52v3spguibg": {
+            "id": "amxnn52v3spguibg",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.underkategori}",
+                "placeholder": "Alle underategorier",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.underkategori"
+            }
+        },
+        "bcaa48wcu80ba2ok": {
+            "id": "bcaa48wcu80ba2ok",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.land}",
+                "placeholder": "Alle land",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.land"
+            }
+        },
+        "ulxi6720q6ud43qy": {
+            "id": "ulxi6720q6ud43qy",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.volum}",
+                "placeholder": "Alle volum",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.volum"
+            }
+        },
+        "z8wfrvwsj7sbsaqj": {
+            "id": "z8wfrvwsj7sbsaqj",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.distrikt}",
+                "placeholder": "Alle distrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 4,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.distrikt"
+            }
+        },
+        "jbinvjpwdjbbrrzi": {
+            "id": "jbinvjpwdjbbrrzi",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.underdistrikt}",
+                "placeholder": "Alle underdistrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 5,
+            "parentId": "a0xov3f0jw9m5rp3",
+            "handlers": {
+                "wf-options-change": "getset.get_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.underdistrikt"
+            }
+        },
+        "f2ugmilotnsw0woi": {
+            "id": "f2ugmilotnsw0woi",
+            "type": "selectinput",
+            "content": {
+                "label": "Sorter etter:",
+                "options": "@{prisendring.dropdown}",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "selectedColor": "#FFFFFF",
+                "primaryTextColor": "",
+                "maximumCount": "0",
+                "placeholder": ""
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "euhzyatxx39lcshv",
+            "handlers": {
+                "wf-option-change": "getset.get_data"
+            },
+            "binding": {
+                "eventType": "wf-option-change",
+                "stateRef": "prisendring.fokus"
+            }
+        },
+        "gejjqr5x2wla8xz5": {
+            "id": "gejjqr5x2wla8xz5",
+            "type": "reuse",
+            "content": {
+                "proxyId": "ep60i50awfyxuux2"
+            },
+            "isCodeManaged": false,
+            "position": 5,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": true
+        },
+        "zy4bsc8v3vq7szxp": {
+            "id": "zy4bsc8v3vq7szxp",
+            "type": "message",
+            "content": {
+                "message": "-Ingen data finnes for valgt kombinasjon.",
+                "loadingColor": "#136F63",
+                "primaryTextColor": "#F3F7F4",
+                "cssClasses": "",
+                "errorColor": "#8E3B46"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "ccad7k7sc5oxy81l",
+            "handlers": {},
+            "visible": "flag.invalid"
         }
     }
 }
