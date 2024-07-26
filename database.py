@@ -20,6 +20,28 @@ CLIENT = MongoClient(
 )
 
 
+def uniques(
+    features=['underkategori', 'volum', 'land', 'distrikt', 'underdistrikt']
+) -> Dict[str, List[str]]:
+    """
+    Extract the unique values for the given features from the database.
+
+    Parameters
+    ----------
+    features : list
+
+    Returns
+    -------
+    dict
+    """
+    items = {}
+    for category in [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]:
+        collection = CLIENT['vinskraper'][category.name]
+        for feature in features:
+            items[feature] = list(set(items.get(feature, []) + collection.distinct(feature)))
+    return items
+
+
 def _discount(record, prices):
     """Calculate the discount for the given record."""
     prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(' ')[1]))
@@ -49,21 +71,12 @@ def derive(category: CATEGORY) -> Dict[str, BulkWriteResult]:
         A dictionary containing the results of the bulk write operations.
         Keys are `'calculating discounts'` and `'plotting'`.
 
-    Raises
-    ------
-    ValueError
-        If the category is set to `CATEGORY.ALLE`.
-
     Notes
     -----
         The discount is calculated as the percentage difference between the two latest price-columns.
         If there is only one price-column, the discount is set to `'-'`.
         If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
     """
-    if category == CATEGORY.ALLE:
-        raise ValueError('Cannot calculate discounts for all categories at once. '
-                         'Please specify a single category.')
-
     collection = CLIENT['vinskraper'][category.name]
     records = list(collection.find({}))
 
@@ -114,16 +127,7 @@ def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
     Returns
     -------
     BulkWriteResult
-
-    Raises
-    ------
-    ValueError
-        If the category is set to `CATEGORY.ALLE`.
     """
-    if category == CATEGORY.ALLE:
-        raise ValueError('Cannot upsert all categories at once. '
-                         'Please specify a single category.')
-
     collection = CLIENT['vinskraper'][category.name]
 
     operations = [
@@ -139,32 +143,40 @@ def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
     return result
 
 
-def load(category: CATEGORY) -> pd.DataFrame:
+def load(collections: List[str]) -> pd.DataFrame:
     """
     Load the data from the database.
 
     Parameters
     ----------
-    category : str
-        The category of products to load.
-    ascending : bool
-        Whether to sort the data in ascending order.
-    focus : str
-        The column to focus on when sorting the data.
-    limit : int
-        The number of records to return.
+    collections : List[str]
+        The categories of products to load from the database.
 
     Returns
     -------
     pd.DataFrame
         The data from the database.
     """
-    if category == CATEGORY.ALLE:
-        return _load_all()
+    print('Heisann!')
+    categories = [CATEGORY[cat] for cat in collections]
+    print('Hei!')
 
-    collection = CLIENT['vinskraper'][category.name]
+    # Use all categories if none are specified.
+    # As Cognac is a subcategory of Spirit, it is removed to avoid duplicates.
+    if not categories:
+        categories = [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]
+    elif CATEGORY.COGNAC in categories and CATEGORY.SPIRIT in categories:
+        categories.remove(CATEGORY.COGNAC)
 
-    data = pd.DataFrame(list(collection.find())).set_index('index').drop(columns=['_id'])
+    data = []
+    for category in categories:
+        collection = CLIENT['vinskraper'][category.name]
+
+        df = pd.DataFrame(list(collection.find({}))).set_index('index').drop(columns=['_id'])
+        df = df.replace({'-': None})
+
+        data.append(df)
+    data = pd.concat(data)
 
     return data
 
@@ -181,22 +193,3 @@ def plots(indices: List[str]) -> pd.DataFrame:
     data['plot'] = data['plot'].apply(pio.from_json)
 
     return data
-
-
-def _load_all() -> pd.DataFrame:
-    """
-    Load all data from the database.
-
-    Returns
-    -------
-    pd.DataFrame
-    """
-    dfs = []
-    for category in [cat for cat in CATEGORY
-                     if cat not in (CATEGORY.ALLE, CATEGORY.COGNAC)]:
-        df = load(category)
-        df['kategori'] = category.value.capitalize().replace('_', ' ')
-        dfs.append(df)
-    dfs = pd.concat(dfs)
-
-    return dfs
