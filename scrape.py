@@ -31,6 +31,10 @@ _PROXIES = None
 _PROXY_URL = ('https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies'
               '&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000')
 
+_MONTH = pd.Timestamp.now().strftime('%Y-%m-01')
+_IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
+          'product': 'https://bilder.vinmonopolet.no/bottle.png'}
+
 
 def _renew_proxy():
     """
@@ -74,7 +78,9 @@ def _scrape_page(
     """
     for _ in range(10):
         try:
-            response = _SESSION.get(_URL.format(page, category.value), proxies=_PROXY)
+            response = _SESSION.get(_URL.format(page, category.value),
+                                    proxies=_PROXY,
+                                    timeout=3)
             break
         except Exception as err:
             _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
@@ -87,6 +93,35 @@ def _scrape_page(
         response.status_code = 500
 
     return response
+
+
+def _process_images(images):
+    return {img['format']: img['url'] for img in images} if images else _IMAGE
+
+
+def _process(products) -> List[dict]:
+    return [{
+        'index': int(product.get('code', 0)),
+        'navn': product.get('name', '-'),
+        'volum': product.get('volume', {}).get('value', 0.0),
+        'land': product.get('main_country', {}).get('name', '-'),
+        'distrikt': product.get('district', {}).get('name', '-'),
+        'underdistrikt': product.get('sub_District', {}).get('name', '-'),
+        'kategori': product.get('main_category', {}).get('name', '-'),
+        'underkategori': product.get('main_sub_category', {}).get('name', '-'),
+        'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
+        'status': product.get('status', '-'),
+        'kan kjøpes': product.get('buyable', False),
+        'utgått': product.get('expired', False),
+        'tilgjengelig for bestilling': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('availableForPurchase', False),
+        'bestillingsinformasjon': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('infos', [{}])[0].get('readableValue', '-'),
+        'tilgjengelig i butikk': product.get('productAvailability', {}).get('storesAvailability', {}).get('availableForPurchase', False),
+        'butikkinformasjon': product.get('productAvailability', {}).get('storesAvailability', {}).get('infos', [{}])[0].get('readableValue', '-'),
+        'produktutvalg': product.get('product_selection', '-'),
+        'bærekraftig': product.get('sustainable', False),
+        'bilde': _process_images(product.get('images')),
+        f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
+    } for product in products]
 
 
 def _scrape_category(category: CATEGORY) -> List[dict]:
@@ -112,7 +147,6 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
         The price key is suffixed with the current (year-month)timestamp (%Y-%m-01).
     """
     items = []
-    today = pd.Timestamp.now().strftime('%Y-%m-01')
 
     # ----------------------------------------------------------------------------------------------
     # Loops through the pages of the category.
@@ -143,83 +177,11 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
             break
 
         # ------------------------------------------------------------------------------------------
-        # Extracts the product information and stores it in the dictionary.
+        # Extracts the product information and stores it in the list.
 
-        for product in products:
-            code = product.get('code', None)
-            if code is None:
-                _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                              f'Product without code: {product}. Skipping.')
-                continue
-
-            items.append({
-                'index': code,
-                'navn': product.get('name', '-'),
-                'volum': product.get('volume', {}).get('value', 0.0),
-
-                'land': product.get('main_country', {}).get('name', '-'),
-                'distrikt': product.get('district', {}).get('name', '-'),
-                'underdistrikt': product.get('sub_District', {}).get('name', '-'),
-
-                'kategori': product.get('main_category', {}).get('name', '-') if category != CATEGORY.COGNAC else 'Cognac',
-                'underkategori': product.get('main_sub_category', {}).get('name', '-'),
-
-                'meta': {
-                    'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
-
-                    'status': product.get('status', '-'),
-                    'kan kjøpes': product.get('buyable', False),
-                    'utgått': product.get('expired', False),
-                    'kan bestilles': product.get('storesAvailability', {}).get(
-                        'infos', [{}]
-                    )[0].get('readableValue', '-'),
-                    'produktutvalg': product.get('product_selection', '-'),
-                    'bærekraftig': product.get('sustainable', False),
-
-                    'bilde': {img['format']: img['url'] for img in product.get('images', [{
-                        'format': 'thumbnail',
-                        'url': 'https://bilder.vinmonopolet.no/bottle.png'
-                    }, {
-                        'format': 'product',
-                        'url': 'https://bilder.vinmonopolet.no/bottle.png'
-                    }])},
-                },
-
-                f'pris {today}': product.get('price', {}).get('value', 0.0),
-            })
+        items.extend(_process(products))
 
     return items
-
-
-def _update(category: CATEGORY):
-    """
-    Fetches all products from the given category and stores (appends) the results to the MongoDB
-    collection.
-
-    Parameters
-    ----------
-    category : CATEGORY
-        The category of products to fetch.
-        See enumerator `CATEGORY` for available options.
-
-    Raises
-    ------
-    BulkWriteError
-        If there is an issue with the bulk write operation.
-        This is printed out in `scrape()`, and retried later.
-    """
-    _LOGGER.info(f'┌─ Fetching {category.name}')
-    items = _scrape_category(category)
-    _LOGGER.info(f'├─ Inserting into database.')
-    result = upsert(items, category)
-    _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
-    _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
-    _LOGGER.info(f'├─ Deriving discounts and plotting prices.')
-    results = derive(category)
-    for which, result in results.items():
-        _LOGGER.info(f'│ ├─ Modified {result.modified_count} records when {which}')
-        _LOGGER.info(f'│ {"└" if which.startswith("p") else "├"}─ Upserted {result.upserted_count} records when {which}')
-    _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
 
 
 def scrape():
@@ -227,19 +189,20 @@ def scrape():
     Vinmonopolet updates their prices monthly.
     This function should therefore be called at the start of each month to fetch the new prices.
     Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
-
-    Notes
-    -----
-    Loops through all categories and updates all products for each category.
-    The products are stored in the `directory`, suffixed by the `CATEGORY` names.
     """
     _renew_proxy()
 
     retries = 0
-    categories = [cat for cat in CATEGORY if cat != CATEGORY.ALLE]
+    categories = [cat for cat in CATEGORY]
     for category in categories:
         try:
-            _update(category)
+            _LOGGER.info(f'┌─ Fetching {category.name}')
+            items = _scrape_category(category)
+            _LOGGER.info(f'├─ Inserting into database.')
+            result = upsert(items, category)
+            _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
+            _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
+            _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
         except BulkWriteError as bwe:
             retries += 1
             categories.append(category) if retries < 10 else None
@@ -248,5 +211,30 @@ def scrape():
                           f'{"Retrying." if retries < 10 else ""}')
 
 
-if __name__ == '__main__':
-    scrape()
+def discounts():
+    """
+    Vinmonopolet updates their prices monthly.
+    This function should therefore be called at the start of each month, after `scrape()` has been called, to calculate the discounts.
+    Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
+    """
+    retries = 0
+    categories = [cat for cat in CATEGORY]
+    for category in categories:
+        try:
+            _LOGGER.info(f'┌─ Calculating discounts for {category.name}')
+            results = derive(category)
+            for which, result in results.items():
+                _LOGGER.info(f'│ ├─ Modified {result.modified_count} records when {which}')
+                _LOGGER.info(f'│ {"└" if which.startswith("p") else "├"}─ Upserted {result.upserted_count} records when {which}')
+            _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
+        except BulkWriteError as bwe:
+            retries += 1
+            categories.append(category) if retries < 10 else None
+            _LOGGER.error(f'└─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
+                          f'Bulk write operation; {bwe.details}.'
+                          f'{"Retrying." if retries < 10 else ""}')
+
+
+# if __name__ == '__main__':
+#     scrape()
+#     discounts()
