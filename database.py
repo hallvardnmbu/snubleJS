@@ -20,28 +20,6 @@ CLIENT = MongoClient(
 )
 
 
-def uniques(
-    features=['underkategori', 'volum', 'land', 'distrikt', 'underdistrikt']
-) -> Dict[str, List[str]]:
-    """
-    Extract the unique values for the given features from the database.
-
-    Parameters
-    ----------
-    features : list
-
-    Returns
-    -------
-    dict
-    """
-    items = {}
-    for category in [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]:
-        collection = CLIENT['vinskraper'][category.name]
-        for feature in features:
-            items[feature] = list(set(items.get(feature, []) + collection.distinct(feature)))
-    return items
-
-
 def _discount(record, prices):
     """Calculate the discount for the given record."""
     prices = sorted(prices, key=lambda x: pd.Timestamp(x.split(' ')[1]))
@@ -143,7 +121,40 @@ def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
     return result
 
 
-def load(collections: List[str]) -> pd.DataFrame:
+def uniques(
+    features=['underkategori', 'volum', 'land', 'distrikt', 'underdistrikt']
+) -> Dict[str, List[str]]:
+    """
+    Extract the unique values for the given features from the database.
+
+    Parameters
+    ----------
+    features : list
+
+    Returns
+    -------
+    dict
+    """
+    items = {}
+    for category in [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]:
+        collection = CLIENT['vinskraper'][category.name]
+        for feature in features:
+            items[feature] = list(set(items.get(feature, []) + collection.distinct(feature)))
+    return items
+
+
+def load(
+    kategori: List[str],
+    underkategori: List[str],
+    volum: List[str],
+    land: List[str],
+    distrikt: List[str],
+    underdistrikt: List[str],
+
+    sorting: str = 'prisendring',
+    ascending: bool = True,
+    amount: int = 10
+) -> pd.DataFrame:
     """
     Load the data from the database.
 
@@ -151,15 +162,25 @@ def load(collections: List[str]) -> pd.DataFrame:
     ----------
     collections : List[str]
         The categories of products to load from the database.
+    focus : str
+        The feature to focus on.
+    ascending : bool
+        Whether to sort the data in ascending order.
+    amount : int
+        The amount of data to load.
 
     Returns
     -------
     pd.DataFrame
         The data from the database.
+
+    Raises
+    ------
+    ValueError
+        (No objects to concatenate.)
+        If no data is found for the given parameters.
     """
-    print('Heisann!')
-    categories = [CATEGORY[cat] for cat in collections]
-    print('Hei!')
+    categories = [CATEGORY[cat] for cat in kategori]
 
     # Use all categories if none are specified.
     # As Cognac is a subcategory of Spirit, it is removed to avoid duplicates.
@@ -168,15 +189,47 @@ def load(collections: List[str]) -> pd.DataFrame:
     elif CATEGORY.COGNAC in categories and CATEGORY.SPIRIT in categories:
         categories.remove(CATEGORY.COGNAC)
 
+    # Setting up the pipeline for the aggregation.
+    # The pipeline is used to filter the data from the database.
+    # The pipeline is constructed based on the given parameters.
+    # The pipeline is then used to load the data from the database.
+    pipeline = [{
+        '$match': {
+            'tilgjengelig for bestilling': True,
+            **{field: {'$in': value} for field, value in [
+                        ('underkategori', underkategori),
+                        ('volum', [float(v) for v in volum]),
+                        ('land', land),
+                        ('distrikt', distrikt),
+                        ('underdistrikt', underdistrikt)
+                    ] if value}
+        }
+    },
+    {
+        '$sort': {
+            sorting: 1 if ascending else -1
+        }
+    },
+    {
+        '$limit': int(amount)
+    }]
+
     data = []
     for category in categories:
-        collection = CLIENT['vinskraper'][category.name]
+        collection = list(CLIENT['vinskraper'][category.name].aggregate(pipeline))
 
-        df = pd.DataFrame(list(collection.find({}))).set_index('index').drop(columns=['_id'])
+        # Skip the category if there is no data.
+        if not collection:
+            continue
+
+        df = pd.DataFrame(collection).set_index('index').drop(columns=['_id'])
         df = df.replace({'-': None})
 
         data.append(df)
     data = pd.concat(data)
+
+    if len(categories) > 1:
+        data = data.sort_values(by=sorting, ascending=ascending).head(int(amount))
 
     return data
 
