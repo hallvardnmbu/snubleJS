@@ -1,7 +1,5 @@
 """Visualisation module for vinskraper."""
 
-from typing import Optional
-
 import pandas as pd
 import plotly.io as pio
 import plotly.graph_objects as go
@@ -19,90 +17,102 @@ _COLOUR = {
 }
 
 
-def graph(record, columns) -> Optional[str]:
+def graph(
+    df: pd.DataFrame,
+    prices: list[str]
+) -> pd.Series:
     """
-    Return a JSON-string of the plotly graph for the given record.
+    Creates the price plot for the given data.
 
     Parameters
     ----------
-    record : dict
-        The record to plot.
-    columns : List[str]
-        The (price) columns to plot.
+    df : pd.DataFrame
+        The data to plot.
+    prices : list[str]
+        The columns to plot.
+
+    Returns
+    -------
+    pd.Series
+        The plots, with the same index as `df`.
     """
-    prices = [record[price] for price in columns] + [record[columns[-1]]]
-    dates = [pd.Timestamp(price.split(' ')[1]) for price in columns] + [pd.Timestamp.now()]
+    dates = [pd.Timestamp(price.split(' ')[1]) for price in prices] + [pd.Timestamp.now()]
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        name=record['navn'],
+    figures = []
 
-        x=dates,
-        y=prices,
+    for _, record in df.iterrows():
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            name=record['navn'],
 
-        mode='lines',
-        line={'shape': 'hv', 'width': 3, 'color': _COLOUR['green']},
+            x=dates,
+            y=[record[price] for price in prices] + [record[prices[-1]]],
 
-        fill='tozeroy',
-        fillcolor=_COLOUR['greenish'],
-    ))
+            mode='lines',
+            line={'shape': 'hv', 'width': 3, 'color': _COLOUR['green']},
 
-    fig.update_layout(
-        plot_bgcolor=_COLOUR['white'],
-        height=300,
+            fill='tozeroy',
+            fillcolor=_COLOUR['greenish'],
+        ))
 
-        margin={
-            't': 10,
-            'b': 0,
-            'l': 0,
-            'r': 0,
-        },
+        fig.update_layout(
+            plot_bgcolor=_COLOUR['white'],
+            height=300,
 
-        title={
-            'text': '',
-            'font': {
-                'family': 'Poppins, sans-serif',
-                'color': _COLOUR['black'],
-            }
-        },
+            margin={
+                't': 10,
+                'b': 0,
+                'l': 0,
+                'r': 0,
+            },
 
-        xaxis={
-            'title': {
+            title={
                 'text': '',
                 'font': {
-                    'size': 16,
-                    'weight': 'bold',
+                    'family': 'Poppins, sans-serif',
+                    'color': _COLOUR['black'],
+                }
+            },
+
+            xaxis={
+                'title': {
+                    'text': '',
+                    'font': {
+                        'size': 16,
+                        'weight': 'bold',
+                        'family': 'Poppins, sans-serif',
+                        'color': _COLOUR['black'],
+                    },
+                },
+                'tickfont': {
+                    'size': 12,
                     'family': 'Poppins, sans-serif',
                     'color': _COLOUR['black'],
                 },
+                'showgrid': False,
             },
-            'tickfont': {
-                'size': 12,
-                'family': 'Poppins, sans-serif',
-                'color': _COLOUR['black'],
-            },
-            'showgrid': False,
-        },
 
-        yaxis={
-            'title': {
-                'text': '',
-                'font': {
-                    'size': 16,
-                    'weight': 'bold',
+            yaxis={
+                'title': {
+                    'text': '',
+                    'font': {
+                        'size': 16,
+                        'weight': 'bold',
+                        'family': 'Poppins, sans-serif',
+                        'color': _COLOUR['black'],
+                    },
+                },
+                'tickfont': {
+                    'size': 12,
                     'family': 'Poppins, sans-serif',
                     'color': _COLOUR['black'],
                 },
+                'ticksuffix': ' kr',
+                'tickvals': sorted(set(prices)),
+                'showgrid': False,
             },
-            'tickfont': {
-                'size': 12,
-                'family': 'Poppins, sans-serif',
-                'color': _COLOUR['black'],
-            },
-            'ticksuffix': ' kr',
-            'tickvals': sorted(set(prices)),
-            'showgrid': False,
-        },
-    )
+        )
 
-    return pio.to_json(fig)
+        figures.append(pio.to_json(fig))
+
+    return pd.Series(figures, index=df.index)
