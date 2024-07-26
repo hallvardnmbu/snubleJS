@@ -2,8 +2,8 @@
 
 import writer
 
-from scrape import CATEGORY
-from getset import get_data, set_discounts, reset_selection
+from category import CATEGORY
+from getset import initialise, get_data, set_discounts, reset_selection
 
 
 STATE = writer.init_state({
@@ -15,44 +15,43 @@ STATE = writer.init_state({
     # Dynamically updated when the category (etc.) is changed.
 
     'dropdown': {
-        'category': {
+
+        # The following are the unique values for each dropdown.
+        # These are based on the full dataset (i.e., across categories).
+        'kategori': {
             v.name: k.capitalize().replace('_', ' ') if '%' not in k else 'Cognac'
             for k, v in CATEGORY.__dict__['_value2member_map_'].items()
         },
+        'underkategori': [],
+        'volum': [],
+        'land': [],
+        'distrikt': [],
+        'underdistrikt': [],
 
-        # The following are the unique values for each dropdown.
-        # These are statically updated when the category is changed.
-        'possible': {
-            'subcategory': None,
-            'volume': None,
-            'country': None,
-            'district': None,
-            'subdistrict': None,
-        },
-
-        # The following depends on the selected category (`['selection']['category']`).
-        # These are dynamically updated when the category is changed.
+        # The following depends on the current selection.
+        # These are dynamically updated any of the dropdowns are changed.
+        # They reflect the actual unique values for the selected data.
         # See `getset._dropdown` for more information.
-        'selected': {
-            'subcategory': None,
-            'volume': None,
-            'country': None,
-            'district': None,
-            'subdistrict': None,
+        'mulig': {
+            'underkategori': [],
+            'volum': [],
+            'land': [],
+            'distrikt': [],
+            'underdistrikt': [],
         },
     },
 
-    # selection
+    # valgt
     # ----------------------------------------------------------------------------------------------
     # Current selection for each dropdown.
 
-    'selection': {
-        'category': 'ALLE',
-        'subcategory': 'Alle',
-        'volume': 'Alle',
-        'country': 'Alle',
-        'district': 'Alle',
-        'subdistrict': 'Alle',
+    'valgt': {
+        'kategori': [],
+        'underkategori': [],
+        'volum': [],
+        'land': [],
+        'distrikt': [],
+        'underdistrikt': [],
     },
 
     # data
@@ -68,10 +67,10 @@ STATE = writer.init_state({
     # Dynamically updated when the selection is changed.
     # Ordered by the discount percentage.
 
-    'discount': {
-        'top': '10',
-        'ascending': True,
-        'feature': 'prisendring',
+    'prisendring': {
+        'antall': '10',
+        'stigende': True,
+        'kolonner': ['prisendring'],
         'dropdown': {
             'prisendring': 'prisendring',
             'pris': 'pris',
@@ -95,4 +94,4 @@ STATE = writer.init_state({
     }
 })
 
-get_data(STATE)
+initialise(STATE)

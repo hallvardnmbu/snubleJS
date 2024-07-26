@@ -8,8 +8,6 @@ class CATEGORY(enum.Enum):
     Enum class for the different categories of products available at vinmonopolet.
     Extends the `scrape._URL` with the category value.
     """
-    ALLE = 'alle_kategorier'
-
     RED_WINE = 'rødvin'
     WHITE_WINE = 'hvitvin'
     COGNAC = ('brennevin%3AmainSubCategory%3Abrennevin_druebrennevin'
