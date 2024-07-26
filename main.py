@@ -1,9 +1,10 @@
 """State management and initialisation of the application."""
 
+from datetime import datetime
 import writer
 
 from category import CATEGORY
-from getset import initialise, get_data, set_discounts, reset_selection
+from getset import initialise, get_data, reset_selection
 
 
 STATE = writer.init_state({
@@ -28,6 +29,8 @@ STATE = writer.init_state({
         'distrikt': [],
         'underdistrikt': [],
 
+        # TODO: IMPLEMENT DROPDOWN DYNAMIC BEHAVIOUR
+        # ------------------------------------------
         # The following depends on the current selection.
         # These are dynamically updated any of the dropdowns are changed.
         # They reflect the actual unique values for the selected data.
@@ -70,10 +73,10 @@ STATE = writer.init_state({
     'prisendring': {
         'antall': '10',
         'stigende': True,
-        'kolonner': ['prisendring'],
+        'fokus': 'prisendring',
         'dropdown': {
             'prisendring': 'prisendring',
-            'pris': 'pris',
+            f'pris {datetime.now().strftime("%Y-%m-01")}': 'pris',
             'navn': 'navn',
             'kategori': 'kategori',
             'underkategori': 'underkategori',
@@ -87,10 +90,12 @@ STATE = writer.init_state({
 
     # flag
     # ----------------------------------------------------------------------------------------------
-    # Flag to indicate when data is being updated.
+    # Flag to indicate when data is being updated, and if the current selection is invalid.
 
     'flag': {
-        'updating': False
+        'updating': False,
+        'invalid': False,
+        'valid': True,
     }
 })
 
