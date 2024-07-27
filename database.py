@@ -1,23 +1,41 @@
 """Logic for interacting with the MongoDB database."""
 
 import os
+import enum
 from typing import List, Dict
 
 import pymongo
 import pandas as pd
-import plotly.io as pio
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
 
-from category import CATEGORY
-from visualise import graph
 
-
-CLIENT = MongoClient(
+_CLIENT = MongoClient(
     f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
+DATABASE = _CLIENT['vinskraper']['vin']
+
+
+class CATEGORY(enum.Enum):
+    """
+    Enum class for the different categories of products available at vinmonopolet.
+    Extends the `scrape._URL` with the category value.
+    """
+    RED_WINE = 'rødvin'
+    WHITE_WINE = 'hvitvin'
+    SPARKLING_WINE = 'musserende_vin'
+    PEARLING_WINE = 'perlende_vin'
+    FORTIFIED_WINE = 'sterkvin'
+    AROMATIC_WINE = 'aromatisert_vin'
+    FRUIT_WINE = 'fruktvin'
+    ROSE_WINE = 'rosévin'
+    SPIRIT = 'brennevin'
+    BEER = 'øl'
+    CIDER = 'sider'
+    SAKE = 'sake'
+    MEAD = 'mjød'
 
 
 def _discount(record, prices):
@@ -31,23 +49,13 @@ def _discount(record, prices):
     return 0.0
 
 
-def derive(category: CATEGORY) -> Dict[str, BulkWriteResult]:
+def derive() -> BulkWriteResult:
     """
     Calculate the discount for the data in the database.
-    Create the price plot for the data in the database.
-
-    Parameters
-    ----------
-    category : CATEGORY
-        The category of products to calculate the discount for.
-        See enumerator `CATEGORY` for available options.
-        Modifies the database in-place.
 
     Returns
     -------
-    dict
-        A dictionary containing the results of the bulk write operations.
-        Keys are `'calculating discounts'` and `'plotting'`.
+    BulkWriteResult
 
     Notes
     -----
@@ -55,14 +63,12 @@ def derive(category: CATEGORY) -> Dict[str, BulkWriteResult]:
         If there is only one price-column, the discount is set to `'-'`.
         If any of the prices are `NaN` (replaced with `0`'s), the discount is set to `'-'`.
     """
-    collection = CLIENT['vinskraper'][category.name]
-    records = list(collection.find({}))
+    records = list(DATABASE.find({}))
 
-    prices = []
-    graphs = []
+    operations = []
     for record in records:
         _prices = [feat for feat in record if feat.startswith('pris ')]
-        prices.append(
+        operations.append(
             pymongo.UpdateOne(
                 {'index': record['index']},
                 {'$set': {
@@ -71,25 +77,13 @@ def derive(category: CATEGORY) -> Dict[str, BulkWriteResult]:
                 upsert=True
             )
         )
-        graphs.append(
-            pymongo.UpdateOne(
-                {'index': record['index']},
-                {'$set': {
-                    'plot': graph(record, _prices),
-                }},
-                upsert=True
-            )
-        )
 
-    results = {
-        'calculating discounts': collection.bulk_write(prices),
-        'plotting': CLIENT['vinskraper']['PLOTS'].bulk_write(graphs),
-    }
+    results = DATABASE.bulk_write(operations)
 
     return results
 
 
-def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
+def upsert(data: List[dict]) -> BulkWriteResult:
     """
     Upsert the given data into the database.
 
@@ -106,8 +100,6 @@ def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
     -------
     BulkWriteResult
     """
-    collection = CLIENT['vinskraper'][category.name]
-
     operations = [
         pymongo.UpdateOne(
             {'index': record['index']},
@@ -116,31 +108,63 @@ def upsert(data: List[dict], category: CATEGORY) -> BulkWriteResult:
         )
         for record in data
     ]
-    result = collection.bulk_write(operations)
+    result = DATABASE.bulk_write(operations)
 
     return result
 
 
 def uniques(
-    features=['underkategori', 'volum', 'land', 'distrikt', 'underdistrikt']
+    extract: List[str],
+    kategori: List[str] = [],
+    underkategori: List[str] = [],
+    volum: List[str] = [],
+    land: List[str] = [],
+    distrikt: List[str] = [],
+    underdistrikt: List[str] = [],
 ) -> Dict[str, List[str]]:
     """
-    Extract the unique values for the given features from the database.
+    Extract the unique values for the given `extract` features from the database.
+    Filters the data based on the given parameters.
 
     Parameters
     ----------
-    features : list
+    extract : list of str
+        The features to extract the unique values for.
+    kategori : list of str
+        The categories to include.
+    underkategori : list of str
+        The subcategories to include.
+    volum : list of str
+        The volumes to include.
+    land : list of str
+        The countries to include.
+    distrikt : list of str
+        The districts to include.
+    underdistrikt : list of str
+        The subdistricts to include.
 
     Returns
     -------
     dict
+        A dictionary containing the unique values for the given features.
+        Keys are the features and values are a list of the unique values.
     """
-    items = {}
-    for category in [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]:
-        collection = CLIENT['vinskraper'][category.name]
-        for feature in features:
-            items[feature] = list(set(items.get(feature, []) + collection.distinct(feature)))
-    return items
+    filtered = DATABASE.find({
+        'tilgjengelig for bestilling': True,
+        **{field: {'$in': value} for field, value in [
+                    ('kategori', kategori),
+                    ('underkategori', underkategori),
+                    ('volum', [float(v) for v in volum]),
+                    ('land', land),
+                    ('distrikt', distrikt),
+                    ('underdistrikt', underdistrikt)
+                ] if value}
+    })
+
+    return {
+        feature: list(set(filtered.distinct(feature)) - {None, '-'})
+        for feature in extract
+    }
 
 
 def load(
@@ -160,10 +184,20 @@ def load(
 
     Parameters
     ----------
-    collections : List[str]
-        The categories of products to load from the database.
-    focus : str
-        The feature to focus on.
+    kategori : list of str
+        The categories to include.
+    underkategori : list of str
+        The subcategories to include.
+    volum : list of str
+        The volumes to include.
+    land : list of str
+        The countries to include.
+    distrikt : list of str
+        The districts to include.
+    underdistrikt : list of str
+        The subdistricts to include.
+    sorting : str
+        The feature to sorting by.
     ascending : bool
         Whether to sort the data in ascending order.
     amount : int
@@ -176,27 +210,22 @@ def load(
 
     Raises
     ------
-    ValueError
-        (No objects to concatenate.)
+    KeyError
+        (Unable to set index.)
         If no data is found for the given parameters.
+
+    Notes
+    -----
+    Setting up the pipeline for the aggregation.
+        The pipeline is used to filter the data from the database.
+        The pipeline is constructed based on the given parameters.
+        The pipeline is then used to load the data from the database.
     """
-    categories = [CATEGORY[cat] for cat in kategori]
-
-    # Use all categories if none are specified.
-    # As Cognac is a subcategory of Spirit, it is removed to avoid duplicates.
-    if not categories:
-        categories = [cat for cat in CATEGORY if cat != CATEGORY.COGNAC]
-    elif CATEGORY.COGNAC in categories and CATEGORY.SPIRIT in categories:
-        categories.remove(CATEGORY.COGNAC)
-
-    # Setting up the pipeline for the aggregation.
-    # The pipeline is used to filter the data from the database.
-    # The pipeline is constructed based on the given parameters.
-    # The pipeline is then used to load the data from the database.
     pipeline = [{
         '$match': {
             'tilgjengelig for bestilling': True,
             **{field: {'$in': value} for field, value in [
+                        ('kategori', kategori),
                         ('underkategori', underkategori),
                         ('volum', [float(v) for v in volum]),
                         ('land', land),
@@ -214,35 +243,8 @@ def load(
         '$limit': int(amount)
     }]
 
-    data = []
-    for category in categories:
-        collection = list(CLIENT['vinskraper'][category.name].aggregate(pipeline))
+    collection = list(DATABASE.aggregate(pipeline))
 
-        # Skip the category if there is no data.
-        if not collection:
-            continue
-
-        df = pd.DataFrame(collection).set_index('index').drop(columns=['_id'])
-        df = df.replace({'-': None})
-
-        data.append(df)
-    data = pd.concat(data)
-
-    if len(categories) > 1:
-        data = data.sort_values(by=sorting, ascending=ascending).head(int(amount))
-
-    return data
-
-
-def plots(indices: List[str]) -> pd.DataFrame:
-    collection = CLIENT['vinskraper']['PLOTS']
-
-    data = pd.DataFrame(list(collection.find(
-        {'index': {
-            '$in': indices
-        }}
-    ))).set_index('index').drop(columns=['_id'])
-
-    data['plot'] = data['plot'].apply(pio.from_json)
+    data = pd.DataFrame(collection).set_index('index').drop(columns=['_id']).replace({'-': None})
 
     return data

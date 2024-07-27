@@ -108,7 +108,7 @@
             "id": "jhf3nj6con5h7ib6",
             "type": "repeater",
             "content": {
-                "repeaterObject": "@{prisendring.data}",
+                "repeaterObject": "@{data.verdier}",
                 "keyVariable": "itemId",
                 "valueVariable": "item"
             },
@@ -513,7 +513,7 @@
             },
             "binding": {
                 "eventType": "wf-option-change",
-                "stateRef": "prisendring.antall"
+                "stateRef": "data.antall"
             }
         },
         "7ok8xku763zhvj14": {
@@ -545,7 +545,7 @@
             "visible": true,
             "binding": {
                 "eventType": "wf-toggle",
-                "stateRef": "prisendring.stigende"
+                "stateRef": "data.stigende"
             }
         },
         "jo10y66q64x8rceu": {
@@ -691,7 +691,7 @@
             "type": "selectinput",
             "content": {
                 "label": "Sorter etter:",
-                "options": "@{prisendring.dropdown}",
+                "options": "@{data.dropdown}",
                 "accentColor": "#F3F7F4",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
@@ -707,7 +707,7 @@
             },
             "binding": {
                 "eventType": "wf-option-change",
-                "stateRef": "prisendring.fokus"
+                "stateRef": "data.fokus"
             }
         },
         "gejjqr5x2wla8xz5": {

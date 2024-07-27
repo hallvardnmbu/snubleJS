@@ -3,7 +3,6 @@
 from datetime import datetime
 import writer
 
-from category import CATEGORY
 from getset import initialise, get_data, reset_selection
 
 
@@ -17,30 +16,20 @@ STATE = writer.init_state({
 
     'dropdown': {
 
-        # The following are the unique values for each dropdown.
-        # These are based on the full dataset (i.e., across categories).
-        'kategori': {
-            v.name: k.capitalize().replace('_', ' ') if '%' not in k else 'Cognac'
-            for k, v in CATEGORY.__dict__['_value2member_map_'].items()
-        },
-        'underkategori': [],
-        'volum': [],
-        'land': [],
-        'distrikt': [],
-        'underdistrikt': [],
+        'kategori': {},
+        'underkategori': {},
+        'volum': {},
+        'land': {},
+        'distrikt': {},
+        'underdistrikt': {},
 
-        # TODO: IMPLEMENT DROPDOWN DYNAMIC BEHAVIOUR
-        # ------------------------------------------
-        # The following depends on the current selection.
-        # These are dynamically updated any of the dropdowns are changed.
-        # They reflect the actual unique values for the selected data.
-        # See `getset._dropdown` for more information.
-        'mulig': {
-            'underkategori': [],
-            'volum': [],
-            'land': [],
-            'distrikt': [],
-            'underdistrikt': [],
+        'full': {
+            'kategori': {},
+            'underkategori': {},
+            'volum': {},
+            'land': {},
+            'distrikt': {},
+            'underdistrikt': {},
         },
     },
 
@@ -59,19 +48,12 @@ STATE = writer.init_state({
 
     # data
     # ----------------------------------------------------------------------------------------------
-    # DataFrame
-    #   Contains the data for the current category.
-
-    'data': None,
-
-    # discount
-    # ----------------------------------------------------------------------------------------------
     # Dictionary containing the discount data for the current selection.
     # Dynamically updated when the selection is changed.
     # Ordered by the discount percentage.
 
-    'prisendring': {
-        'antall': '10',
+    'data': {
+        'antall': '5',
         'stigende': True,
         'fokus': 'prisendring',
         'dropdown': {
@@ -85,7 +67,7 @@ STATE = writer.init_state({
             'underdistrikt': 'underdistrikt',
             'volum': 'volum',
         },
-        'data': None
+        'verdier': None
     },
 
     # flag

@@ -9,25 +9,35 @@ from visualise import graph
 
 
 _LOGGER = logging.getLogger(__name__)
-_FEATURES = ['underkategori', 'volum', 'land', 'distrikt', 'underdistrikt']
+_FEATURES = ['kategori', 'underkategori',
+             'distrikt', 'underdistrikt',
+             'volum', 'land']
+_DIVIDER = ['UTILGJENGELIGE VALG', '-------------------']
 
 
 def initialise(state):
+    """
+    Set the possible dropdown-values for each feature.
+    Get the data for the initial selection.
 
-    # Set the possible dropdown-values for each feature.
-    for feature, values in uniques(_FEATURES).items():
-        state['dropdown'][feature] = {
+    Parameters
+    ----------
+    state : dict
+    """
+    for feature, values in uniques(extract=_FEATURES).items():
+        state['dropdown']['full'][feature] = {
             str(k): k
             for k in sorted([v for v in values if v and v != '-'])
         }
+        state['dropdown'][feature] = state['dropdown']['full'][feature]
 
     # Convert volume to neatly formatted string.
-    state['dropdown']['volum'] = {
+    state['dropdown']['full']['volum'] = {
         str(vol): f'{vol:g} cL'
-        for vol in state['dropdown']['volum'].to_dict().values()
+        for vol in state['dropdown']['full']['volum'].to_dict().values()
     }
+    state['dropdown']['volum'] = state['dropdown']['full']['volum']
 
-    # Get the data for the initial category.
     get_data(state)
 
 
@@ -43,16 +53,22 @@ def get_data(state):
     """
     state['flag']['updating'] = True
 
+    # Removing the divider from the selection.
+    state['valgt'] = {
+        feature: [v for v in values if v not in _DIVIDER]
+        for feature, values in state['valgt'].to_dict().items()
+    }
+
     # Loading data for the current selection.
     try:
-        state['data'] = load(
+        data = load(
             **state['valgt'].to_dict(),
 
-            sorting=state['prisendring']['fokus'],
-            ascending=state['prisendring']['stigende'],
-            amount=state['prisendring']['antall']
+            sorting=state['data']['fokus'],
+            ascending=state['data']['stigende'],
+            amount=state['data']['antall']
         )
-    except ValueError:
+    except KeyError:
         state['flag']['updating'] = False
         state['flag']['invalid'] = True
         state['flag']['valid'] = False
@@ -61,20 +77,20 @@ def get_data(state):
     state['flag']['valid'] = True
 
     # Remove duplicates if any.
-    if state['data'].index.duplicated().any():
+    if data.index.duplicated().any():
         _LOGGER.error('Found duplicates! Removing them.')
-        state['data'] = state['data'][~state['data'].index.duplicated(keep='first')]
+        data = data.drop_duplicates()
 
     # Refreshing the selected dropdown values.
-    # _dropdown(state, state['data'])
+    _dropdown(state)
 
     # Setting the discount data for the current selection.
-    _discounts(state)
+    _discounts(state, data)
 
     state['flag']['updating'] = False
 
 
-def _discounts(state):
+def _discounts(state, data: pd.DataFrame):
     """
     Updates the discount data in the state to correspond with the current selection.
 
@@ -82,28 +98,30 @@ def _discounts(state):
     ----------
     state : dict
         The current state of the application.
+    data : pd.DataFrame
+        The currently selected data.
     """
-    prices = sorted([col for col in state['data'].columns
+    prices = sorted([col for col in data.columns
                      if col.startswith('pris ')],
                     key=lambda x: pd.Timestamp(x.split(' ')[1]))
-    state['data']['pris'] = state['data'][prices[-1]]
+    data['pris'] = data[prices[-1]]
 
-    state['data']['plot'] = graph(state['data'].copy(), prices)
+    data['plot'] = graph(data, prices)
 
     if len(prices) < 2:
-        state['data']['pris_gammel'] = state['data']['pris'].copy()
+        data['pris_gammel'] = data['pris'].copy()
     else:
-        state['data']['pris_gammel'] = state['data'][prices[-2]]
+        data['pris_gammel'] = data[prices[-2]]
 
-    state['prisendring']['data'] = {
+    state['data']['verdier'] = {
         str(k): v
-        for k, v in state['data'].reset_index().T.to_dict().items()
+        for k, v in data.reset_index().T.to_dict().items()
     }
 
 
 def reset_selection(state):
     """
-    Resets the selection to 'Alle'.
+    Resets the current selection.
 
     Parameters
     ----------
@@ -116,74 +134,35 @@ def reset_selection(state):
     get_data(state)
 
 
-# def _dropdown(state, df: pd.DataFrame):
-#     """
-#     Refreshes the valid dropdown values of the state to correspond with the current selection.
+def _dropdown(state):
+    """
+    Refreshes the valid dropdown values of the state to correspond with the current selection.
 
-#     Parameters
-#     ----------
-#     state : dict
-#         The current state of the application.
-#     df : pd.DataFrame
-#         The currently selected data.
-#     """
-#     # Update the possible dropdown values for the current category.
-#     state['dropdown']['mulig'] = {
-#         col: {
-#             str(k): k for k in sorted([v for v in list(df[col].unique())
-#                                        if v and v != '-'])
-#         }
-#         for col in df
-#         if col in _FEATURES
-#     }
+    Parameters
+    ----------
+    state : dict
+        The current state of the application.
+    """
+    values = uniques(
+        extract=_FEATURES,
+        **state['valgt'].to_dict(),
+    )
+    del values['kategori']
 
-#     # Convert volume to neatly formatted string.
-#     state['dropdown']['mulig']['volum'] = {
-#         str(vol): f'{vol:g} cL'
-#         for vol in state['dropdown']['mulig']['volum'].to_dict().values()
-#     }
+    for feature, values in values.items():
+        others = set(state['dropdown']['full'][feature].to_dict().keys()) - set(values)
 
-#     state['dropdown']['mulig'] = {
-#         col: sorted(
-#             [v for v in list(df[col].unique()) if v and v != '-']
-#         )
-#         for col in df
-#         if col in _FEATURES
-#     }
-#     state['dropdown']['mulig']['volum'] = [f'{vol:g} cL' for vol in state['dropdown']['mulig']['volum']]
+        state['dropdown'][feature] = {
+            str(k): k
+            for k in list(
+                sorted(values, key=lambda x: float(x) if feature == 'volum' else x)
+                + (_DIVIDER if others else [])
+                + sorted(others, key=lambda x: float(x) if feature == 'volum' else x)
+            )
+        }
 
-#     LEGG TIL LOGIKK ALA FINN.NO
-
-#     state['dropdown']['underkategori'] = {
-#         **{'Alle': 'Alle underkategorier'},
-#         **{category: category
-#            for category in state['dropdown']['possible']['subcategory']}
-#     }
-
-#     which = 'selected' if state['selection']['underkategori'] != 'Alle' else 'possible'
-#     state['dropdown']['selected']['volume'] = {
-#         **{'Alle': 'Alle volum'},
-#         **{str(volume): f'{volume:g} cL'
-#            for volume in state['dropdown'][which]['volume']}
-#     }
-
-#     which = 'selected' if state['selection']['volume'] != 'Alle' else which
-#     state['dropdown']['selected']['country'] = {
-#         **{'Alle': 'Alle land'},
-#         **{country: country
-#            for country in state['dropdown'][which]['country']}
-#     }
-
-#     which = 'selected' if state['selection']['country'] != 'Alle' else which
-#     state['dropdown']['selected']['district'] = {
-#         **{'Alle': 'Alle distrikter'},
-#         **{district: district
-#            for district in state['dropdown'][which]['district']}
-#     }
-
-#     which = 'selected' if state['selection']['district'] != 'Alle' else which
-#     state['dropdown']['selected']['subdistrict'] = {
-#         **{'Alle': 'Alle underdistrikter'},
-#         **{district: district
-#            for district in state['dropdown'][which]['subdistrict']}
-#     }
+    # Convert volume to neatly formatted string.
+    state['dropdown']['volum'] = {
+        str(vol): f'{float(vol):g} cL' if vol not in _DIVIDER else vol
+        for vol in state['dropdown']['volum'].to_dict().values()
+    }
