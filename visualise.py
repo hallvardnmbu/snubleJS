@@ -12,6 +12,7 @@ _COLOUR = {
     'white': '#FFFFFF',
 
     'red': '#8E3B46',
+    'redish': '#f3ebec',
     'green': '#136F63',
     'greenish': '#F3F7F4',
 }
@@ -41,6 +42,8 @@ def graph(
     figures = []
 
     for _, record in df.iterrows():
+        diff = 0 if len(prices) < 2 else record[prices[-1]] - record[prices[-2]]
+
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             name=record['navn'],
@@ -49,10 +52,14 @@ def graph(
             y=[record[price] for price in prices] + [record[prices[-1]]],
 
             mode='lines',
-            line={'shape': 'hv', 'width': 3, 'color': _COLOUR['green']},
+            line={
+                'shape': 'hv',
+                'width': 3,
+                'color': _COLOUR['green'] if diff >= 0 else _COLOUR['red'],
+            },
 
             fill='tozeroy',
-            fillcolor=_COLOUR['greenish'],
+            fillcolor=_COLOUR['greenish'] if diff >= 0 else _COLOUR['redish'],
         ))
 
         fig.update_layout(
@@ -60,7 +67,7 @@ def graph(
             height=300,
 
             margin={
-                't': 10,
+                't': 20,
                 'b': 0,
                 'l': 0,
                 'r': 0,

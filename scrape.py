@@ -9,8 +9,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from pymongo.errors import BulkWriteError
 
-from category import CATEGORY
-from database import upsert, derive
+from database import CATEGORY, upsert, derive
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -199,7 +198,7 @@ def scrape():
             _LOGGER.info(f'┌─ Fetching {category.name}')
             items = _scrape_category(category)
             _LOGGER.info(f'├─ Inserting into database.')
-            result = upsert(items, category)
+            result = upsert(items)
             _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
             _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
             _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
@@ -217,22 +216,18 @@ def discounts():
     This function should therefore be called at the start of each month, after `scrape()` has been called, to calculate the discounts.
     Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
     """
-    retries = 0
-    categories = [cat for cat in CATEGORY]
-    for category in categories:
+    for i in range(10):
         try:
-            _LOGGER.info(f'┌─ Calculating discounts for {category.name}')
-            results = derive(category)
-            for which, result in results.items():
-                _LOGGER.info(f'│ ├─ Modified {result.modified_count} records when {which}')
-                _LOGGER.info(f'│ {"└" if which.startswith("p") else "├"}─ Upserted {result.upserted_count} records when {which}')
+            _LOGGER.info(f'┌─ Calculating discounts.')
+            result = derive()
+            _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
+            _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
             _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
+            break
         except BulkWriteError as bwe:
-            retries += 1
-            categories.append(category) if retries < 10 else None
             _LOGGER.error(f'└─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                          f'Bulk write operation; {bwe.details}.'
-                          f'{"Retrying." if retries < 10 else ""}')
+                            f'Bulk write operation; {bwe.details}.'
+                            f'{"Retrying." if i < 10 else ""}')
 
 
 # if __name__ == '__main__':
