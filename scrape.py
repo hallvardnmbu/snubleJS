@@ -20,7 +20,7 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
-_DATABASE = _CLIENT['vinskraper']['testing']
+_DATABASE = _CLIENT['vinskraper']['vin']
 
 _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         'search?searchType=product'
@@ -33,8 +33,8 @@ _PROXIES = None
 _PROXY_URL = ('https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies'
               '&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000')
 
-_OLD = (pd.Timestamp.now() - pd.DateOffset(months=2)).strftime('%Y-%m-01')
-_NOW = (pd.Timestamp.now() - pd.DateOffset(months=1)).strftime('%Y-%m-01')
+_OLD = (pd.Timestamp.now() - pd.DateOffset(months=1)).strftime('%Y-%m-01')
+_NOW = pd.Timestamp.now().strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
 
@@ -278,5 +278,5 @@ def scrape(categories=None, max_workers=10):
     return failed
 
 
-# if __name__ == '__main__':
-#     scrape()
+if __name__ == '__main__':
+    scrape()
