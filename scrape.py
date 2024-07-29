@@ -230,6 +230,6 @@ def discounts():
                             f'{"Retrying." if i < 10 else ""}')
 
 
-# if __name__ == '__main__':
-#     scrape()
-#     discounts()
+if __name__ == '__main__':
+    scrape()
+    discounts()

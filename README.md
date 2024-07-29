@@ -43,6 +43,14 @@ export mongodb_password=<password>
 
 (eller tilsvarende for ditt operativsystem). Hvor `<username>` og `<password>` er brukernavn og passord til din [MongoDB](https://www.mongodb.com)-database (hvilket kan opprettes gratis).
 
+Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gjøres ved å kjøre;
+
+```bash
+python scrape.py
+```
+
+(etter å ha oppretted databasen `vinskraper` og collection `vin`).
+
 ![DigitalOcean](./static/DigitalOcean.jpg)
 
 I tillegg til å kunne kjøres lokalt, er applikasjonen kjørt i "skyen" – ved bruk av
