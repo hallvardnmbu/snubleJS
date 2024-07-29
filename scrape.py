@@ -185,7 +185,7 @@ def _process(products) -> List[dict]:
         'produktutvalg': product.get('product_selection', '-'),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
-        f'pris {_NOW}': product.get('price', {}).get('value', 0.0) + 15,
+        f'pris {_NOW}': product.get('price', {}).get('value', 0.0),
     } for product in products]
 
 
