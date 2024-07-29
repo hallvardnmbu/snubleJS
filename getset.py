@@ -69,7 +69,7 @@ def set_data(state, fresh: bool = True):
         if searching:
             data = search(
                 name=state['finn']['navn'],
-                amount=int(state['data']['antall']),
+                amount=int(state['data']['antall']) * 2,
                 sorting=state['data']['fokus'],
                 ascending=state['data']['stigende'],
 
