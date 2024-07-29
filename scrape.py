@@ -1,23 +1,26 @@
-"""Scrape products from vinmonopolet's website."""
+"""Scrape products from vinmonopolet's website and store the results to a database."""
 
+import os
+import enum
 import json
-import logging
 from typing import List
+import concurrent.futures
 
+import pymongo
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from pymongo.errors import BulkWriteError
+from pymongo.results import BulkWriteResult
+from pymongo.mongo_client import MongoClient
 
-from database import CATEGORY, upsert, derive
 
-
-_LOGGER = logging.getLogger(__name__)
-_COLOUR = {
-    'RED': '\033[31m',
-    'GREEN': '\033[32m',
-    'RESET': '\033[0m',
-}
+_CLIENT = MongoClient(
+    f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
+    f'@vinskraper.wykjrgz.mongodb.net/'
+    f'?retryWrites=true&w=majority&appName=vinskraper'
+)
+_DATABASE = _CLIENT['vinskraper']['testing']
 
 _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         'search?searchType=product'
@@ -30,9 +33,72 @@ _PROXIES = None
 _PROXY_URL = ('https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies'
               '&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000')
 
-_MONTH = pd.Timestamp.now().strftime('%Y-%m-01')
+_OLD = (pd.Timestamp.now() - pd.DateOffset(months=2)).strftime('%Y-%m-01')
+_NOW = (pd.Timestamp.now() - pd.DateOffset(months=1)).strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
+
+
+class CATEGORY(enum.Enum):
+    """
+    Enum class for the different categories of products available at vinmonopolet.
+    Extends the `scrape._URL` with the category value.
+    """
+    RED_WINE = 'rødvin'
+    WHITE_WINE = 'hvitvin'
+    SPARKLING_WINE = 'musserende_vin'
+    PEARLING_WINE = 'perlende_vin'
+    FORTIFIED_WINE = 'sterkvin'
+    AROMATIC_WINE = 'aromatisert_vin'
+    FRUIT_WINE = 'fruktvin'
+    ROSE_WINE = 'rosévin'
+    SPIRIT = 'brennevin'
+    BEER = 'øl'
+    CIDER = 'sider'
+    SAKE = 'sake'
+    MEAD = 'mjød'
+
+
+def _upsert(data: List[dict]) -> BulkWriteResult:
+    """
+    Upsert the given data into the database.
+    Calculates the price change percentage based on the previous and current price.
+
+    Parameters
+    ----------
+    data : List[dict]
+        The data to insert into the database.
+
+    Returns
+    -------
+    BulkWriteResult
+    """
+    operations = [
+        pymongo.UpdateOne(
+            {'index': record['index']},
+            [
+                {'$set': record},
+                {'$set': {
+                    'prisendring': {'$cond': [
+                        {'$gt': [f'$pris {_OLD}', 0]},
+                        {'$multiply': [
+                            {'$divide': [
+                                {'$subtract': [record[f'pris {_NOW}'], f'$pris {_OLD}']},
+                                f'$pris {_OLD}'
+                            ]},
+                            100
+                        ]},
+                        0
+                    ]}
+                }}
+            ],
+            upsert=True
+        )
+        for record in data
+    ]
+    result = _DATABASE.bulk_write(operations)
+
+    return result
 
 
 def _renew_proxy():
@@ -82,12 +148,12 @@ def _scrape_page(
                                     timeout=3)
             break
         except Exception as err:
-            _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                          f'Page {page} (trying another proxy); {err}')
+            print(f'├─ Error: '
+                  f'Page {page} (trying another proxy); {err}')
             _renew_proxy()
     else:
-        _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                      f'Failed to fetch page {page} after 10 attempts.')
+        print(f'├─ Error: '
+              f'Failed to fetch page {page} after 10 attempts.')
         response = requests.models.Response()
         response.status_code = 500
 
@@ -119,11 +185,11 @@ def _process(products) -> List[dict]:
         'produktutvalg': product.get('product_selection', '-'),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
-        f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
+        f'pris {_NOW}': product.get('price', {}).get('value', 0.0) + 15,
     } for product in products]
 
 
-def _scrape_category(category: CATEGORY) -> List[dict]:
+def _scrape_category(category: CATEGORY) -> bool:
     """
     Fetches all products from the given category.
 
@@ -134,8 +200,7 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
 
     Returns
     -------
-    List of dict
-        A list containing the products fetched from the given category.
+    bool
 
     Notes
     -----
@@ -143,22 +208,21 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
         Assumes that there is less than 1000 pages.
         Parses the response and extracts the products.
         Extracts the product information and stores it in the dictionary.
-        The price key is suffixed with the current (year-month)timestamp (%Y-%m-01).
+        The price key is suffixed with the current (year-month-)timestamp (%Y-%m-01).
     """
-    items = []
 
     # ----------------------------------------------------------------------------------------------
     # Loops through the pages of the category.
     # Assuming that there is less than 1000 pages.
 
-    # TODO: Parallelise the fetching. Each session should use its own proxy.
+    items = []
     for page in range(1000):
         response = _scrape_page(category, page)
 
         if response.status_code != 200:
-            _LOGGER.error(f'├─ {_COLOUR["RED"]}Failed{_COLOUR["RESET"]}: '
-                          f'Page {page} (status code {response.status_code}): '
-                          f'{response.text}.')
+            print(f'{category.name} Failed: '
+                  f'Page {page} (status code {response.status_code}): '
+                  f'{response.text}.')
             continue
 
         # ------------------------------------------------------------------------------------------
@@ -166,13 +230,12 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
 
         soup = BeautifulSoup(response.text, 'html.parser')
         if soup.string is None:
-            _LOGGER.error(f'├─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                          f'Page {page} (no JSON found).')
+            print(f'{category.name} Error: Page {page} (no JSON found).')
             continue
         products = json.loads(soup.string).get('productSearchResult', {}).get('products', [])
 
         if not products:
-            _LOGGER.info(f'├─ No more products (final page: {page - 1}).')
+            print(f'{category.name} No more products (final page: {page - 1}).')
             break
 
         # ------------------------------------------------------------------------------------------
@@ -180,56 +243,40 @@ def _scrape_category(category: CATEGORY) -> List[dict]:
 
         items.extend(_process(products))
 
-    return items
+    print(f'{category.name} Inserting into database.')
+    try:
+        result = _upsert(items)
+    except BulkWriteError as bwe:
+        print(f'{category.name} Error: '
+              f'Bulk write operation; {bwe.details}.')
+        return False
+    print(f'{category.name} Modified {result.modified_count} records')
+    print(f'{category.name} Upserted {result.upserted_count} records')
+    print(f'{category.name} Success.')
+    return True
 
 
-def scrape():
-    """
-    Vinmonopolet updates their prices monthly.
-    This function should therefore be called at the start of each month to fetch the new prices.
-    Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
-    """
-    _renew_proxy()
+def scrape(categories=None, max_workers=10):
+    if categories is None:
+        categories = list(CATEGORY)
+    failed = []
 
-    retries = 0
-    categories = [cat for cat in CATEGORY]
-    for category in categories:
-        try:
-            _LOGGER.info(f'┌─ Fetching {category.name}')
-            items = _scrape_category(category)
-            _LOGGER.info(f'├─ Inserting into database.')
-            result = upsert(items)
-            _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
-            _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
-            _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
-        except BulkWriteError as bwe:
-            retries += 1
-            categories.append(category) if retries < 10 else None
-            _LOGGER.error(f'└─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                          f'Bulk write operation; {bwe.details}.'
-                          f'{"Retrying." if retries < 10 else ""}')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        results = {executor.submit(_scrape_category, category): category
+                   for category in categories}
+
+        for future in concurrent.futures.as_completed(results):
+            try:
+                success = future.result()
+                if not success:
+                    failed.append(results[future])
+            except Exception as exc:
+                category = results[future]
+                print(f'{category.name} FAILED! Concurrency error: {exc}')
+                failed.append(category)
+
+    return failed
 
 
-def discounts():
-    """
-    Vinmonopolet updates their prices monthly.
-    This function should therefore be called at the start of each month, after `scrape()` has been called, to calculate the discounts.
-    Retries a category if there is an issue with the bulk write operation. Maximum 10 retries.
-    """
-    for i in range(10):
-        try:
-            _LOGGER.info(f'┌─ Calculating discounts.')
-            result = derive()
-            _LOGGER.info(f'│ ├─ Modified {result.modified_count} records')
-            _LOGGER.info(f'│ └─ Upserted {result.upserted_count} records')
-            _LOGGER.info(f'└─ {_COLOUR["GREEN"]}Success{_COLOUR["RESET"]}.')
-            break
-        except BulkWriteError as bwe:
-            _LOGGER.error(f'└─ {_COLOUR["RED"]}Error{_COLOUR["RESET"]}: '
-                            f'Bulk write operation; {bwe.details}.'
-                            f'{"Retrying." if i < 10 else ""}')
-
-
-if __name__ == '__main__':
-    scrape()
-    discounts()
+# if __name__ == '__main__':
+#     scrape()

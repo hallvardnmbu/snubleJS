@@ -1,6 +1,5 @@
 """Getters and setters used by the application."""
 
-import logging
 from typing import List
 
 import pandas as pd
@@ -9,7 +8,6 @@ from database import uniques, amount, load, search
 from visualise import graph
 
 
-_LOGGER = logging.getLogger(__name__)
 _FEATURES = ['kategori', 'underkategori',
              'distrikt', 'underdistrikt',
              'volum', 'land']
@@ -94,7 +92,7 @@ def set_data(state, fresh: bool = True):
 
     # Remove duplicates if any.
     if data.index.duplicated().any():
-        _LOGGER.error('Found duplicates! Removing them.')
+        print('Found duplicates! Removing them.')
         data = data.drop_duplicates()
 
     # Setting the discount data for the current selection.
