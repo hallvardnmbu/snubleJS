@@ -1,9 +1,15 @@
 """State management and initialisation of the application."""
 
-from datetime import datetime
+import datetime
 import writer
 
+from database import load
 from getset import initialise, set_data, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, reset_search, set_next_page, set_previous_page
+
+
+# To prevent errors before the newest data is loaded, the newest column is set manually.
+_newest = sorted([col for col in load(amount=1).columns if col.startswith('pris ')],
+                 key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))[-1]
 
 
 STATE = writer.init_state({
@@ -71,12 +77,12 @@ STATE = writer.init_state({
     # Ordered by the discount percentage.
 
     'data': {
-        'antall': '10',
+        'antall': '7',
         'stigende': True,
         'fokus': 'prisendring',
         'dropdown': {
             'prisendring': 'prisendring',
-            f'pris {datetime.now().strftime("%Y-%m-01")}': 'pris',
+            f'pris {_newest}': 'pris',
             'navn': 'navn',
             'kategori': 'kategori',
             'underkategori': 'underkategori',

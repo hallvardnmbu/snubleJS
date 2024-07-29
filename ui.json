@@ -336,7 +336,8 @@
             "type": "image",
             "content": {
                 "caption": "",
-                "src": "@{item.bilde.product}"
+                "src": "@{item.bilde.product}",
+                "maxHeight": "-1"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -397,7 +398,7 @@
             "id": "5oyh5evbn0c4wq0s",
             "type": "column",
             "content": {
-                "width": "0.3",
+                "width": "0.2",
                 "contentHAlign": "end"
             },
             "isCodeManaged": false,
@@ -454,7 +455,7 @@
             "id": "889lnwwn3dzvgovi",
             "type": "column",
             "content": {
-                "width": "0.2",
+                "width": "0.15",
                 "contentHAlign": "start"
             },
             "isCodeManaged": false,
@@ -480,7 +481,7 @@
             "id": "olxuh1zffoq6cc0q",
             "type": "column",
             "content": {
-                "width": "0.9"
+                "width": "0.6"
             },
             "isCodeManaged": false,
             "position": 3,
@@ -520,7 +521,7 @@
             "id": "813hnlf6r5jbw0c6",
             "type": "column",
             "content": {
-                "width": "0.1"
+                "width": "0.05"
             },
             "isCodeManaged": false,
             "position": 1,
