@@ -3,10 +3,19 @@
 from datetime import datetime
 import writer
 
-from getset import initialise, get_data, reset_selection
+from getset import initialise, set_data, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, reset_search, set_next_page, set_previous_page
 
 
 STATE = writer.init_state({
+
+    # side
+    # ----------------------------------------------------------------------------------------------
+    # Current page of the data.
+
+    'side': {
+        'gjeldende': 1,
+        'totalt': None,
+    },
 
     # dropdown
     # ----------------------------------------------------------------------------------------------
@@ -15,7 +24,6 @@ STATE = writer.init_state({
     # Dynamically updated when the category (etc.) is changed.
 
     'dropdown': {
-
         'kategori': {},
         'underkategori': {},
         'volum': {},
@@ -24,12 +32,12 @@ STATE = writer.init_state({
         'underdistrikt': {},
 
         'full': {
-            'kategori': {},
-            'underkategori': {},
-            'volum': {},
-            'land': {},
-            'distrikt': {},
-            'underdistrikt': {},
+            'kategori': [],
+            'underkategori': [],
+            'volum': [],
+            'land': [],
+            'distrikt': [],
+            'underdistrikt': [],
         },
     },
 
@@ -46,6 +54,16 @@ STATE = writer.init_state({
         'underdistrikt': [],
     },
 
+    # finn
+    # ----------------------------------------------------------------------------------------------
+    # Text containing the name to search for.
+    # Resets when the current selection is changed.
+
+    'finn': {
+        'navn': None,
+        'filter': False,
+    },
+
     # data
     # ----------------------------------------------------------------------------------------------
     # Dictionary containing the discount data for the current selection.
@@ -53,7 +71,7 @@ STATE = writer.init_state({
     # Ordered by the discount percentage.
 
     'data': {
-        'antall': '5',
+        'antall': '10',
         'stigende': True,
         'fokus': 'prisendring',
         'dropdown': {
@@ -78,6 +96,10 @@ STATE = writer.init_state({
         'updating': False,
         'invalid': False,
         'valid': True,
+
+        'underkategori': False,
+        'distrikt': False,
+        'underdistrikt': False,
     }
 })
 
