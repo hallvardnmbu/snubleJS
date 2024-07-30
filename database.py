@@ -1,7 +1,7 @@
 """Logic for interacting with the MongoDB database."""
 
 import os
-from typing import Any, List, Dict
+from typing import Union, Any, List, Dict
 
 import pandas as pd
 from pymongo.mongo_client import MongoClient
@@ -23,6 +23,7 @@ def uniques(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+    **kwargs: Any,
 ) -> Dict[str, List[str]]:
     """
     Extract the unique values for the given `extract` features from the database.
@@ -44,6 +45,9 @@ def uniques(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    **kwargs : any
+        To prevent errors when passing additional parameters.
+        Due to the structure of the state dictionary.
 
     Returns
     -------
@@ -76,6 +80,10 @@ def amount(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+
+    sorting: str = 'prisendring',
+    fra: Union[None, float] = None,
+    til: Union[None, float] = None,
 ) -> int:
     """
     Extract the maximum amount of records for the given parameters.
@@ -94,13 +102,16 @@ def amount(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    **kwargs : any
+        To prevent errors when passing additional parameters.
+        Due to the structure of the state dictionary.
 
     Returns
     -------
     int
         The maximum amount of records for the given parameters.
     """
-    return _DATABASE.count_documents({
+    query = {
         'tilgjengelig for bestilling': True,
         **{field: {'$in': value} for field, value in [
                     ('kategori', kategori),
@@ -110,7 +121,22 @@ def amount(
                     ('distrikt', distrikt),
                     ('underdistrikt', underdistrikt),
                 ] if value}
-    })
+    }
+
+    if fra or til:
+        between = {op: val for op, val in [
+            ('$gte', fra),
+            ('$lte', til)
+        ] if val}
+        if sorting == 'volum':
+            query['volum'] = {
+                **query.get('volum', {}),
+                **between
+            }
+        else:
+            query[sorting] = between
+
+    return _DATABASE.count_documents(query)
 
 
 def load(
@@ -121,6 +147,8 @@ def load(
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
 
+    fra: Union[None, float] = None,
+    til: Union[None, float] = None,
     sorting: str = 'prisendring',
     ascending: bool = True,
     amount: int = 10,
@@ -180,7 +208,7 @@ def load(
                         ('land', land),
                         ('distrikt', distrikt),
                         ('underdistrikt', underdistrikt),
-                    ] if value}
+                    ] if value},
         }
     },
     {
@@ -194,6 +222,19 @@ def load(
     {
         '$limit': amount
     }]
+
+    if fra or til:
+        between = {op: val for op, val in [
+            ('$gte', fra),
+            ('$lte', til)
+        ] if val}
+        if sorting == 'volum':
+            pipeline[0]['$match']['volum'] = {
+                **pipeline[0]['$match'].get('volum', {}),
+                **between
+            }
+        else:
+            pipeline[0]['$match'][sorting] = between
 
     collection = list(_DATABASE.aggregate(pipeline))
 
@@ -211,6 +252,9 @@ def search(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+
+    fra: Union[None, float] = None,
+    til: Union[None, float] = None,
 
     sorting: str = 'prisendring',
     ascending: bool = True,
@@ -282,6 +326,19 @@ def search(
     {
         '$limit': amount
     }]
+
+    if fra or til:
+        between = {op: val for op, val in [
+            ('$gte', fra),
+            ('$lte', til)
+        ] if val}
+        if sorting == 'volum':
+            pipeline[1]['$match']['volum'] = {
+                **pipeline[1]['$match'].get('volum', {}),
+                **between
+            }
+        else:
+            pipeline[1]['$match'][sorting] = between
 
     collection = list(_DATABASE.aggregate(pipeline))
 

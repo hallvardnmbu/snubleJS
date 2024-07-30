@@ -12,6 +12,7 @@ _FEATURES = ['kategori', 'underkategori',
              'distrikt', 'underdistrikt',
              'volum', 'land']
 _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
+_FOCUS = None
 
 
 def initialise(state):
@@ -59,8 +60,10 @@ def set_data(state, fresh: bool = True):
     # Removing the divider from the selection.
     state['valgt'] = {
         feature: [v for v in values if v not in _DIVIDER]
+        if feature not in ('fra', 'til') else values
         for feature, values in state['valgt'].to_dict().items()
     }
+    focus = state['data']['fokus'] if state['data']['fokus'] else 'prisendring'
 
     # Loading data for the current selection.
     try:
@@ -68,7 +71,7 @@ def set_data(state, fresh: bool = True):
             data = search(
                 name=state['finn']['navn'],
                 amount=int(state['data']['antall']) * 2,
-                sorting=state['data']['fokus'],
+                sorting=focus,
                 ascending=state['data']['stigende'],
 
                 **state['valgt'].to_dict() if state['finn']['filter'] else {},
@@ -77,7 +80,7 @@ def set_data(state, fresh: bool = True):
             data = load(
                 **state['valgt'].to_dict(),
 
-                sorting=state['data']['fokus'],
+                sorting=focus,
                 ascending=state['data']['stigende'],
                 amount=int(state['data']['antall']),
                 page=state['side']['gjeldende'],
@@ -102,6 +105,7 @@ def set_data(state, fresh: bool = True):
     if fresh and not searching:
         state['side']['totalt'] = amount(
             **state['valgt'].to_dict(),
+            sorting=focus
         ) // int(state['data']['antall'])
         state['side']['gjeldende'] = 1
     elif fresh and searching:
@@ -109,6 +113,24 @@ def set_data(state, fresh: bool = True):
         state['side']['gjeldende'] = 1
 
     state['flag']['updating'] = False
+
+
+def set_focus(state):
+    global _FOCUS
+
+    if _FOCUS == state['data']['fokus']:
+        set_data(state)
+        return
+
+    state['valgt']['fra'] = None
+    state['valgt']['til'] = None
+    if state['data']['fokus'].startswith('pris') or state['data']['fokus'] == 'volum':
+        state['flag']['between'] = True
+    else:
+        state['flag']['between'] = False
+
+    _FOCUS = state['data']['fokus']
+    set_data(state)
 
 
 def set_next_page(state):
@@ -128,6 +150,10 @@ def set_previous_page(state):
 
     state['side']['gjeldende'] -= 1
 
+    set_data(state, fresh=False)
+
+
+def set_page(state):
     set_data(state, fresh=False)
 
 
@@ -268,7 +294,7 @@ def reset_selection(state):
         The current state of the application.
     """
     for feature in state['valgt'].to_dict():
-        state['valgt'][feature] = []
+        state['valgt'][feature] = [] if feature not in ('fra', 'til') else None
 
     # Reset the dropdown.
     # Arbitrarily chosen, as all `set_{selection}` functions cascade downwards.
