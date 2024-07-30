@@ -1,4 +1,12 @@
-"""Scrape products from vinmonopolet's website and store the results to a database."""
+"""
+Scrape products from vinmonopolet's website and store the results to a database.
+
+Finds the fields specified in the `_process` function and stores them in a MongoDB database.
+
+For a more detailed product information, see `detailed.py`.
+
+For a list of shops with products in stock, see `shops.py`.
+"""
 
 import os
 import enum
@@ -14,6 +22,8 @@ from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
 
+from scrape.proxy import Proxy
+
 
 _CLIENT = MongoClient(
     f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
@@ -26,12 +36,8 @@ _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         'search?searchType=product'
         '&currentPage={}'
         '&q=%3Arelevance%3AmainCategory%3A{}')
+_PROXY = Proxy()
 _SESSION = requests.Session()
-
-_PROXY = None
-_PROXIES = None
-_PROXY_URL = ('https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies'
-              '&proxy_format=protocolipport&format=text&anonymity=Elite,Anonymous&timeout=20000')
 
 _OLD = (pd.Timestamp.now() - pd.DateOffset(months=1)).strftime('%Y-%m-01')
 _NOW = pd.Timestamp.now().strftime('%Y-%m-01')
@@ -101,21 +107,6 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
     return result
 
 
-def _renew_proxy():
-    """
-    Updates the `_PROXY` with the head of `_PROXIES`.
-    Updates the `_PROXIES`-list when it's empty.
-    """
-    global _PROXY, _PROXIES
-
-    if not _PROXIES:
-        _PROXIES = [proxy for proxy in
-                    requests.get(_PROXY_URL).text.split('\r\n')
-                    if proxy and proxy.startswith('http')]
-
-    _PROXY = {'http': _PROXIES.pop(0)}
-
-
 def _scrape_page(
         category: CATEGORY,
         page: int
@@ -138,19 +129,19 @@ def _scrape_page(
     Notes
     -----
         Tries to fetch the page using the `_PROXY`.
-        If it fails, it renews the proxy (`_renew_proxy`) and retries.
+        If it fails, it renews the proxy (`_PROXY.renew()`) and retries.
         Returns code `500` if it fails 10 consecutive times.
     """
     for _ in range(10):
         try:
             response = _SESSION.get(_URL.format(page, category.value),
-                                    proxies=_PROXY,
+                                    proxies=_PROXY.get(),
                                     timeout=3)
             break
         except Exception as err:
             print(f'├─ Error: '
                   f'Page {page} (trying another proxy); {err}')
-            _renew_proxy()
+            _PROXY.renew()
     else:
         print(f'├─ Error: '
               f'Failed to fetch page {page} after 10 attempts.')
@@ -205,7 +196,7 @@ def _scrape_category(category: CATEGORY) -> bool:
     Notes
     -----
         Loops through the pages of the category.
-        Assumes that there is less than 1000 pages.
+        Assumes that there is less than 10000 pages.
         Parses the response and extracts the products.
         Extracts the product information and stores it in the dictionary.
         The price key is suffixed with the current (year-month-)timestamp (%Y-%m-01).
@@ -213,10 +204,10 @@ def _scrape_category(category: CATEGORY) -> bool:
 
     # ----------------------------------------------------------------------------------------------
     # Loops through the pages of the category.
-    # Assuming that there is less than 1000 pages.
+    # Assuming that there is less than 10000 pages.
 
     items = []
-    for page in range(1000):
+    for page in range(10000):
         response = _scrape_page(category, page)
 
         if response.status_code != 200:
