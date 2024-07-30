@@ -56,7 +56,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 6,
+            "position": 5,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": true
@@ -364,7 +364,7 @@
             "id": "toq8ettajnz2pzel",
             "type": "column",
             "content": {
-                "width": "1"
+                "width": "0.8"
             },
             "isCodeManaged": false,
             "position": 1,
@@ -617,23 +617,22 @@
             "position": 0,
             "parentId": "jocfk0k83ys74cw6",
             "handlers": {},
-            "visible": true
+            "visible": "item.land"
         },
         "a2m7fgkyh7e71jdo": {
             "id": "a2m7fgkyh7e71jdo",
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "0tzqxesupzw3z68k",
-            "handlers": {},
-            "visible": "flag.valid"
+            "handlers": {}
         },
         "etd9cf3xfx7tvsqi": {
             "id": "etd9cf3xfx7tvsqi",
             "type": "switchinput",
             "content": {
-                "label": "Lavest f\u00f8rst",
+                "label": "Vis lavest f\u00f8rst",
                 "separatorColor": "#8E3B46",
                 "accentColor": "#136F63"
             },
@@ -643,7 +642,7 @@
             "handlers": {
                 "wf-toggle": "getset.set_data"
             },
-            "visible": true,
+            "visible": "data.fokus",
             "binding": {
                 "eventType": "wf-toggle",
                 "stateRef": "data.stigende"
@@ -653,7 +652,7 @@
             "id": "ab9fej581ixb1r14",
             "type": "column",
             "content": {
-                "width": "1",
+                "width": "0.3",
                 "contentVAlign": "start"
             },
             "isCodeManaged": false,
@@ -666,20 +665,20 @@
             "id": "sc6gttqaegrsj32b",
             "type": "selectinput",
             "content": {
-                "label": "Sortering:",
+                "label": "",
                 "options": "@{data.dropdown}",
                 "accentColor": "#F3F7F4",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
-                "primaryTextColor": "",
-                "maximumCount": "0",
-                "placeholder": ""
+                "maximumCount": "1",
+                "placeholder": "Sorter etter . . .",
+                "containerBackgroundColor": "#FFFFFF"
             },
             "isCodeManaged": false,
             "position": 0,
             "parentId": "ab9fej581ixb1r14",
             "handlers": {
-                "wf-option-change": "getset.set_data"
+                "wf-option-change": "getset.set_focus"
             },
             "binding": {
                 "eventType": "wf-option-change",
@@ -693,22 +692,10 @@
                 "proxyId": "a2m7fgkyh7e71jdo"
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 6,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": true
-        },
-        "ift7600t4x66626j": {
-            "id": "ift7600t4x66626j",
-            "type": "reuse",
-            "content": {
-                "proxyId": "ep60i50awfyxuux2"
-            },
-            "isCodeManaged": false,
-            "position": 5,
-            "parentId": "0tzqxesupzw3z68k",
-            "handlers": {},
-            "visible": true
+            "visible": "flag.valid"
         },
         "y2lpfc9izrfkpid5": {
             "id": "y2lpfc9izrfkpid5",
@@ -721,7 +708,7 @@
                 "errorColor": "#8E3B46"
             },
             "isCodeManaged": false,
-            "position": 1,
+            "position": 2,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.invalid"
@@ -775,12 +762,12 @@
             "id": "gps612rxjffzenrn",
             "type": "section",
             "content": {
-                "title": "Side @{side.gjeldende} av @{side.totalt}",
+                "title": "",
                 "containerBackgroundColor": "#FFFFFF"
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "c4vjiz5n2pkflq2b",
+            "parentId": "jybwlc2vw54cce00",
             "handlers": {},
             "visible": true
         },
@@ -789,7 +776,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 0,
+            "position": 1,
             "parentId": "gps612rxjffzenrn",
             "handlers": {},
             "visible": true
@@ -804,19 +791,6 @@
             "isCodeManaged": false,
             "position": 0,
             "parentId": "7m82qvd2lov19n9w",
-            "handlers": {},
-            "visible": true
-        },
-        "c4vjiz5n2pkflq2b": {
-            "id": "c4vjiz5n2pkflq2b",
-            "type": "column",
-            "content": {
-                "width": "0.5",
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
             "visible": true
         },
@@ -845,7 +819,7 @@
             "type": "textinput",
             "content": {
                 "label": "",
-                "placeholder": "S\u00f8k etter navn",
+                "placeholder": "S\u00f8k etter navn . . .",
                 "accentColor": "#136F63"
             },
             "isCodeManaged": false,
@@ -877,6 +851,217 @@
             "handlers": {
                 "click": "getset.reset_search"
             }
+        },
+        "cq2e708jgudo1wqf": {
+            "id": "cq2e708jgudo1wqf",
+            "type": "numberinput",
+            "content": {
+                "label": "",
+                "placeholder": "Hopp",
+                "minValue": "1",
+                "maxValue": "@{side.totalt}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "yj9b7gsghu3al854",
+            "handlers": {
+                "wf-number-change": "getset.set_page",
+                "wf-number-change-finish": "getset.set_page"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-number-change",
+                "stateRef": "side.gjeldende"
+            }
+        },
+        "fxzsstyryb0zrvz0": {
+            "id": "fxzsstyryb0zrvz0",
+            "type": "heading",
+            "content": {
+                "text": " av @{side.totalt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "annbjepvabi1cbpo",
+            "handlers": {},
+            "visible": true
+        },
+        "bcw524b3dyynk89p": {
+            "id": "bcw524b3dyynk89p",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "gps612rxjffzenrn",
+            "handlers": {},
+            "visible": true
+        },
+        "yj9b7gsghu3al854": {
+            "id": "yj9b7gsghu3al854",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "bcw524b3dyynk89p",
+            "handlers": {},
+            "visible": true
+        },
+        "annbjepvabi1cbpo": {
+            "id": "annbjepvabi1cbpo",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "start",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "bcw524b3dyynk89p",
+            "handlers": {},
+            "visible": true
+        },
+        "3xhvy745pr8ni2za": {
+            "id": "3xhvy745pr8ni2za",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "bcw524b3dyynk89p",
+            "handlers": {},
+            "visible": true
+        },
+        "s1d3m6ujd6eoz9n9": {
+            "id": "s1d3m6ujd6eoz9n9",
+            "type": "heading",
+            "content": {
+                "text": "Side",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "3xhvy745pr8ni2za",
+            "handlers": {},
+            "visible": true
+        },
+        "n1q1t3tekysev88w": {
+            "id": "n1q1t3tekysev88w",
+            "type": "numberinput",
+            "content": {
+                "label": "",
+                "placeholder": "Fra verdi",
+                "minValue": "0",
+                "maxValue": "50000",
+                "cssClasses": "bubblegum"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6zpfdylr7ob99pes",
+            "handlers": {
+                "wf-number-change": "getset.set_data",
+                "wf-number-change-finish": "getset.set_data"
+            },
+            "visible": "flag.between",
+            "binding": {
+                "eventType": "wf-number-change",
+                "stateRef": "valgt.fra"
+            }
+        },
+        "ubq6mqdk7jvvf1r3": {
+            "id": "ubq6mqdk7jvvf1r3",
+            "type": "numberinput",
+            "content": {
+                "label": "",
+                "placeholder": "Til verdi",
+                "minValue": "0",
+                "maxValue": "50000"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "6zpfdylr7ob99pes",
+            "handlers": {
+                "wf-number-change": "getset.set_data",
+                "wf-number-change-finish": "getset.set_data"
+            },
+            "visible": "flag.between",
+            "binding": {
+                "eventType": "wf-number-change",
+                "stateRef": "valgt.til"
+            }
+        },
+        "jybwlc2vw54cce00": {
+            "id": "jybwlc2vw54cce00",
+            "type": "column",
+            "content": {
+                "width": "0.35",
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "a2m7fgkyh7e71jdo",
+            "handlers": {},
+            "visible": true
+        },
+        "6zpfdylr7ob99pes": {
+            "id": "6zpfdylr7ob99pes",
+            "type": "column",
+            "content": {
+                "width": "0.35",
+                "contentHAlign": "start",
+                "contentVAlign": "start",
+                "title": ""
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "a2m7fgkyh7e71jdo",
+            "handlers": {},
+            "visible": true
+        },
+        "hvlin6socb8zpgly": {
+            "id": "hvlin6socb8zpgly",
+            "type": "horizontalstack",
+            "content": {
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "toq8ettajnz2pzel",
+            "handlers": {},
+            "visible": true
+        },
+        "lu4ayvgjlex9p7bn": {
+            "id": "lu4ayvgjlex9p7bn",
+            "type": "heading",
+            "content": {
+                "text": "@{item.kategori}",
+                "headingType": "h1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "hvlin6socb8zpgly",
+            "handlers": {},
+            "visible": "item.kategori"
+        },
+        "yt59vlnz84xfgbjp": {
+            "id": "yt59vlnz84xfgbjp",
+            "type": "heading",
+            "content": {
+                "text": "@{item.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "hvlin6socb8zpgly",
+            "handlers": {},
+            "visible": "item.underkategori"
         }
     }
 }

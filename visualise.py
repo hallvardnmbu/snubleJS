@@ -51,10 +51,14 @@ def graph(
             x=dates,
             y=[record[price] for price in prices] + [record[prices[-1]]],
 
-            mode='lines',
+            mode='lines+markers',
             line={
                 'shape': 'hv',
                 'width': 3,
+                'color': _COLOUR['green'] if diff >= 0 else _COLOUR['red'],
+            },
+            marker={
+                'size': 8,
                 'color': _COLOUR['green'] if diff >= 0 else _COLOUR['red'],
             },
 
@@ -64,7 +68,8 @@ def graph(
 
         fig.update_layout(
             plot_bgcolor=_COLOUR['white'],
-            height=300,
+            height=200,
+            dragmode='pan',
 
             margin={
                 't': 20,
@@ -82,6 +87,10 @@ def graph(
             },
 
             xaxis={
+                'range': [
+                    dates[0] - pd.Timedelta(hours=5),
+                    dates[-1] + pd.Timedelta(hours=5)
+                ],
                 'title': {
                     'text': '',
                     'font': {

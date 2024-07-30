@@ -4,7 +4,7 @@ import datetime
 import writer
 
 from database import load
-from getset import initialise, set_data, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, reset_search, set_next_page, set_previous_page
+from getset import initialise, set_data, set_focus, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, reset_search, set_next_page, set_previous_page, set_page
 
 
 # To prevent errors before the newest data is loaded, the newest column is set manually.
@@ -58,6 +58,9 @@ STATE = writer.init_state({
         'land': [],
         'distrikt': [],
         'underdistrikt': [],
+
+        'fra': None,
+        'til': None,
     },
 
     # finn
@@ -79,17 +82,17 @@ STATE = writer.init_state({
     'data': {
         'antall': '7',
         'stigende': True,
-        'fokus': 'prisendring',
+        'fokus': None,
         'dropdown': {
-            'prisendring': 'prisendring',
-            _price: 'pris',
-            'navn': 'navn',
-            'kategori': 'kategori',
-            'underkategori': 'underkategori',
-            'land': 'land',
-            'distrikt': 'distrikt',
-            'underdistrikt': 'underdistrikt',
-            'volum': 'volum',
+            'prisendring': 'Prisendring',
+            _price: 'Pris',
+            'navn': 'Navn',
+            'kategori': 'Kategori',
+            'underkategori': 'Underkategori',
+            'land': 'Land',
+            'distrikt': 'Distrikt',
+            'underdistrikt': 'Underdistrikt',
+            'volum': 'Volum',
         },
         'verdier': None
     },
@@ -102,6 +105,8 @@ STATE = writer.init_state({
         'updating': False,
         'invalid': False,
         'valid': True,
+
+        'between': False,
 
         'underkategori': False,
         'distrikt': False,
