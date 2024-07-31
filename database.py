@@ -12,6 +12,12 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
+# _STORES: Dict[int, str] = {record['index']: record['navn'] for record in list(
+#     _CLIENT['vinskraper']['butikk'].aggregate([
+#         {'$project': {'_id': 0, 'navn': 1, 'index': 1}}
+#       SORT IT!
+#     ])
+# )}
 _DATABASE = _CLIENT['vinskraper']['vin']
 
 
@@ -23,8 +29,9 @@ def uniques(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
-    **kwargs: Any,
-) -> Dict[str, List[str]]:
+    butikk: List[str] = [],
+    **kwargs: Dict[str, Union[float, None]]
+) -> Dict[str, Union[List[str], Dict[int, str]]]:
     """
     Extract the unique values for the given `extract` features from the database.
     Filters the data based on the given parameters.
@@ -45,9 +52,10 @@ def uniques(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
-    **kwargs : any
-        To prevent errors when passing additional parameters.
-        Due to the structure of the state dictionary.
+    butikk : list of str
+        The stores to include.
+    kwargs : dict
+        To prevent errors when passing the state's `valgt` dictionary.
 
     Returns
     -------
@@ -56,7 +64,11 @@ def uniques(
         Keys are the features and values are a list of the unique values.
     """
     filtered = _DATABASE.find({
-        'tilgjengelig for bestilling': True,
+        **{field: value for field, value in [
+            ('tilgjengelig for bestilling', not bool(butikk)),
+            ('butikk', {'$all': butikk} if butikk else None)
+        ] if value},
+
         **{field: {'$in': value} for field, value in [
                     ('kategori', kategori),
                     ('underkategori', underkategori),
@@ -80,10 +92,12 @@ def amount(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+    butikk: List[str] = [],
 
-    sorting: str = 'prisendring',
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
+
+    sorting: str = 'prisendring',
 ) -> int:
     """
     Extract the maximum amount of records for the given parameters.
@@ -102,9 +116,14 @@ def amount(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
-    **kwargs : any
-        To prevent errors when passing additional parameters.
-        Due to the structure of the state dictionary.
+    butikk : list of str
+        The stores to include.
+    fra : float
+        The minimum value to include (wrt. `sorting`).
+    til : float
+        The maximum value to include (wrt. `sorting`).
+    sorting : str
+        The feature to sort the data by.
 
     Returns
     -------
@@ -112,14 +131,18 @@ def amount(
         The maximum amount of records for the given parameters.
     """
     query = {
-        'tilgjengelig for bestilling': True,
+        **{field: value for field, value in [
+            ('tilgjengelig for bestilling', not bool(butikk)),
+            ('butikk', {'$all': butikk} if butikk else None)
+        ] if value},
+
         **{field: {'$in': value} for field, value in [
                     ('kategori', kategori),
                     ('underkategori', underkategori),
                     ('volum', [float(v) for v in volum]),
                     ('land', land),
                     ('distrikt', distrikt),
-                    ('underdistrikt', underdistrikt),
+                    ('underdistrikt', underdistrikt)
                 ] if value}
     }
 
@@ -146,9 +169,11 @@ def load(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+    butikk: List[str] = [],
 
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
+
     sorting: str = 'prisendring',
     ascending: bool = True,
     amount: int = 10,
@@ -171,6 +196,12 @@ def load(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    butikk : list of str
+        The stores to include.
+    fra : float
+        The minimum value to include (wrt. `sorting`).
+    til : float
+        The maximum value to include (wrt. `sorting`).
     sorting : str
         The feature to sorting by.
     ascending : bool
@@ -200,15 +231,19 @@ def load(
     """
     pipeline = [{
         '$match': {
-            'tilgjengelig for bestilling': True,
+            **{field: value for field, value in [
+                ('tilgjengelig for bestilling', not bool(butikk)),
+                ('butikk', {'$all': butikk} if butikk else None)
+            ] if value},
+
             **{field: {'$in': value} for field, value in [
                         ('kategori', kategori),
                         ('underkategori', underkategori),
                         ('volum', [float(v) for v in volum]),
                         ('land', land),
                         ('distrikt', distrikt),
-                        ('underdistrikt', underdistrikt),
-                    ] if value},
+                        ('underdistrikt', underdistrikt)
+                    ] if value}
         }
     },
     {
@@ -252,6 +287,7 @@ def search(
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+    butikk: List[str] = [],
 
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
@@ -279,6 +315,12 @@ def search(
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    butikk : list of str
+        The stores to include.
+    fra : float
+        The minimum value to include (wrt. `sorting`).
+    til : float
+        The maximum value to include (wrt. `sorting`).
     sorting : str
         The feature to sorting by.
     ascending : bool
@@ -307,7 +349,11 @@ def search(
     },
     {
         '$match': {
-            'tilgjengelig for bestilling': True,
+            **{field: value for field, value in [
+                ('tilgjengelig for bestilling', not bool(butikk)),
+                ('butikk', {'$all': butikk} if butikk else None)
+            ] if value},
+
             **{field: {'$in': value} for field, value in [
                         ('kategori', kategori),
                         ('underkategori', underkategori),

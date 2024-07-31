@@ -4,7 +4,7 @@ import datetime
 import writer
 
 from database import load
-from getset import initialise, set_data, set_focus, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, reset_search, set_next_page, set_previous_page, set_page
+from getset import initialise, set_data, set_focus, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, set_next_page, set_previous_page, set_page
 
 
 # To prevent errors before the newest data is loaded, the newest column is set manually.
@@ -36,6 +36,7 @@ STATE = writer.init_state({
         'land': {},
         'distrikt': {},
         'underdistrikt': {},
+        'butikk': {},
 
         'full': {
             'kategori': [],
@@ -44,6 +45,7 @@ STATE = writer.init_state({
             'land': [],
             'distrikt': [],
             'underdistrikt': [],
+            'butikk': [],
         },
     },
 
@@ -58,6 +60,7 @@ STATE = writer.init_state({
         'land': [],
         'distrikt': [],
         'underdistrikt': [],
+        'butikk': [],
 
         'fra': None,
         'til': None,

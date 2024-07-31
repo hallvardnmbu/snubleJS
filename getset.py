@@ -10,7 +10,7 @@ from visualise import graph
 
 _FEATURES = ['kategori', 'underkategori',
              'distrikt', 'underdistrikt',
-             'volum', 'land']
+             'volum', 'land', 'butikk']
 _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
 _FOCUS = None
 
@@ -299,14 +299,6 @@ def reset_selection(state):
     # Reset the dropdown.
     # Arbitrarily chosen, as all `set_{selection}` functions cascade downwards.
     set_category(state)
-
-
-def reset_search(state):
-    state['finn'] = {
-        'navn': None,
-        'filter': False,
-    }
-    set_data(state)
 
 
 def _discounts(state, data: pd.DataFrame):
