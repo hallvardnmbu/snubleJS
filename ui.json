@@ -72,7 +72,7 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 4,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {
                 "click": "getset.reset_selection"
@@ -86,7 +86,7 @@
                 "caption": ""
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 5,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
             "visible": true
@@ -232,18 +232,6 @@
                 "stateRef": "valgt.underdistrikt"
             }
         },
-        "wxjnhvj4otyd0ak9": {
-            "id": "wxjnhvj4otyd0ak9",
-            "type": "html",
-            "content": {
-                "styles": "{\n  \"padding\": \"5px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(255, 255, 255)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(243 , 247 , 244)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"left\",\n  \"border-radius\": \"10px\",\n  \"font-size\": \"12px\"\n}"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "4zfu8hplv46m9c6a",
-            "handlers": {},
-            "visible": true
-        },
         "1v438n22xexwju0q": {
             "id": "1v438n22xexwju0q",
             "type": "multiselectinput",
@@ -256,8 +244,8 @@
                 "primaryTextColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 0,
-            "parentId": "wxjnhvj4otyd0ak9",
+            "position": 2,
+            "parentId": "4zfu8hplv46m9c6a",
             "handlers": {
                 "wf-options-change": "getset.set_volume"
             },
@@ -455,7 +443,7 @@
             "id": "889lnwwn3dzvgovi",
             "type": "column",
             "content": {
-                "width": "0.15",
+                "width": "0.2",
                 "contentHAlign": "start"
             },
             "isCodeManaged": false,
@@ -481,7 +469,7 @@
             "id": "olxuh1zffoq6cc0q",
             "type": "column",
             "content": {
-                "width": "0.6"
+                "width": "0.55"
             },
             "isCodeManaged": false,
             "position": 3,
@@ -638,7 +626,7 @@
             },
             "isCodeManaged": false,
             "position": 1,
-            "parentId": "ab9fej581ixb1r14",
+            "parentId": "hkiku69lu2i26z2k",
             "handlers": {
                 "wf-toggle": "getset.set_data"
             },
@@ -652,7 +640,7 @@
             "id": "ab9fej581ixb1r14",
             "type": "column",
             "content": {
-                "width": "0.3",
+                "width": "0.5",
                 "contentVAlign": "start"
             },
             "isCodeManaged": false,
@@ -667,7 +655,7 @@
             "content": {
                 "label": "",
                 "options": "@{data.dropdown}",
-                "accentColor": "#F3F7F4",
+                "accentColor": "#FFFFFF",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
                 "maximumCount": "1",
@@ -676,7 +664,7 @@
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "ab9fej581ixb1r14",
+            "parentId": "hkiku69lu2i26z2k",
             "handlers": {
                 "wf-option-change": "getset.set_focus"
             },
@@ -713,87 +701,6 @@
             "handlers": {},
             "visible": "flag.invalid"
         },
-        "eglsxwwhonl68ve1": {
-            "id": "eglsxwwhonl68ve1",
-            "type": "column",
-            "content": {
-                "title": "",
-                "width": "1",
-                "contentHAlign": "start"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "7m82qvd2lov19n9w",
-            "handlers": {},
-            "visible": true
-        },
-        "04b6oq7l17nzj8ga": {
-            "id": "04b6oq7l17nzj8ga",
-            "type": "button",
-            "content": {
-                "text": "",
-                "icon": "arrow_back",
-                "separatorColor": ""
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "xpgd1akjkb67d5ea",
-            "handlers": {
-                "wf-click": "getset.set_previous_page"
-            },
-            "visible": true
-        },
-        "9odzqg4w0pimmv0i": {
-            "id": "9odzqg4w0pimmv0i",
-            "type": "button",
-            "content": {
-                "text": "",
-                "icon": "arrow_forward"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "eglsxwwhonl68ve1",
-            "handlers": {
-                "wf-click": "getset.set_next_page"
-            },
-            "visible": true
-        },
-        "gps612rxjffzenrn": {
-            "id": "gps612rxjffzenrn",
-            "type": "section",
-            "content": {
-                "title": "",
-                "containerBackgroundColor": "#FFFFFF"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "jybwlc2vw54cce00",
-            "handlers": {},
-            "visible": true
-        },
-        "7m82qvd2lov19n9w": {
-            "id": "7m82qvd2lov19n9w",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "gps612rxjffzenrn",
-            "handlers": {},
-            "visible": true
-        },
-        "xpgd1akjkb67d5ea": {
-            "id": "xpgd1akjkb67d5ea",
-            "type": "column",
-            "content": {
-                "width": "1",
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "7m82qvd2lov19n9w",
-            "handlers": {},
-            "visible": true
-        },
         "kn3bli1rptpp25dz": {
             "id": "kn3bli1rptpp25dz",
             "type": "switchinput",
@@ -803,7 +710,7 @@
                 "accentColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 7,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {
                 "wf-toggle": "getset.set_data"
@@ -823,7 +730,7 @@
                 "accentColor": "#136F63"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 6,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {
                 "wf-change-finish": "getset.set_data",
@@ -834,123 +741,6 @@
                 "eventType": "wf-change",
                 "stateRef": "finn.navn"
             }
-        },
-        "ktnvl86tjbs0td02": {
-            "id": "ktnvl86tjbs0td02",
-            "type": "html",
-            "content": {
-                "element": "",
-                "styles": "{\n  \"padding\": \"8px\",\n\"padding-left\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(19, 111, 99)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(243 , 247 , 244)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"left\",\n  \"text-align\": \"left\",\n  \"cursor\": \"pointer\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"12px\"\n}",
-                "attrs": "",
-                "htmlInside": "Nullstill s\u00f8k",
-                "cssClasses": ""
-            },
-            "isCodeManaged": false,
-            "position": 7,
-            "parentId": "4zfu8hplv46m9c6a",
-            "handlers": {
-                "click": "getset.reset_search"
-            }
-        },
-        "cq2e708jgudo1wqf": {
-            "id": "cq2e708jgudo1wqf",
-            "type": "numberinput",
-            "content": {
-                "label": "",
-                "placeholder": "Hopp",
-                "minValue": "1",
-                "maxValue": "@{side.totalt}"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "yj9b7gsghu3al854",
-            "handlers": {
-                "wf-number-change": "getset.set_page",
-                "wf-number-change-finish": "getset.set_page"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-number-change",
-                "stateRef": "side.gjeldende"
-            }
-        },
-        "fxzsstyryb0zrvz0": {
-            "id": "fxzsstyryb0zrvz0",
-            "type": "heading",
-            "content": {
-                "text": " av @{side.totalt}",
-                "headingType": "h4"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "annbjepvabi1cbpo",
-            "handlers": {},
-            "visible": true
-        },
-        "bcw524b3dyynk89p": {
-            "id": "bcw524b3dyynk89p",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "gps612rxjffzenrn",
-            "handlers": {},
-            "visible": true
-        },
-        "yj9b7gsghu3al854": {
-            "id": "yj9b7gsghu3al854",
-            "type": "column",
-            "content": {
-                "width": "1",
-                "contentHAlign": "end",
-                "contentVAlign": "center"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "bcw524b3dyynk89p",
-            "handlers": {},
-            "visible": true
-        },
-        "annbjepvabi1cbpo": {
-            "id": "annbjepvabi1cbpo",
-            "type": "column",
-            "content": {
-                "width": "1",
-                "contentHAlign": "start",
-                "contentVAlign": "center"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "bcw524b3dyynk89p",
-            "handlers": {},
-            "visible": true
-        },
-        "3xhvy745pr8ni2za": {
-            "id": "3xhvy745pr8ni2za",
-            "type": "column",
-            "content": {
-                "width": "1",
-                "contentHAlign": "end",
-                "contentVAlign": "center"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "bcw524b3dyynk89p",
-            "handlers": {},
-            "visible": true
-        },
-        "s1d3m6ujd6eoz9n9": {
-            "id": "s1d3m6ujd6eoz9n9",
-            "type": "heading",
-            "content": {
-                "text": "Side",
-                "headingType": "h4"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "3xhvy745pr8ni2za",
-            "handlers": {},
-            "visible": true
         },
         "n1q1t3tekysev88w": {
             "id": "n1q1t3tekysev88w",
@@ -964,7 +754,7 @@
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "6zpfdylr7ob99pes",
+            "parentId": "yjcylp0mnstfc5gf",
             "handlers": {
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
@@ -986,7 +776,7 @@
             },
             "isCodeManaged": false,
             "position": 1,
-            "parentId": "6zpfdylr7ob99pes",
+            "parentId": "yjcylp0mnstfc5gf",
             "handlers": {
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
@@ -1006,21 +796,6 @@
             },
             "isCodeManaged": false,
             "position": 2,
-            "parentId": "a2m7fgkyh7e71jdo",
-            "handlers": {},
-            "visible": true
-        },
-        "6zpfdylr7ob99pes": {
-            "id": "6zpfdylr7ob99pes",
-            "type": "column",
-            "content": {
-                "width": "0.35",
-                "contentHAlign": "start",
-                "contentVAlign": "start",
-                "title": ""
-            },
-            "isCodeManaged": false,
-            "position": 1,
             "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
             "visible": true
@@ -1062,6 +837,366 @@
             "parentId": "hvlin6socb8zpgly",
             "handlers": {},
             "visible": "item.underkategori"
+        },
+        "izi3lobht49r1jn7": {
+            "id": "izi3lobht49r1jn7",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.butikk}",
+                "placeholder": "Kan bestilles",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "4zfu8hplv46m9c6a",
+            "handlers": {
+                "wf-options-change": "getset.set_store"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.butikk"
+            }
+        },
+        "sko1reuiykt5larl": {
+            "id": "sko1reuiykt5larl",
+            "type": "column",
+            "content": {
+                "width": "0.15",
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "a2m7fgkyh7e71jdo",
+            "handlers": {},
+            "visible": true
+        },
+        "w23jmw2xm892ak3z": {
+            "id": "w23jmw2xm892ak3z",
+            "type": "html",
+            "content": {
+                "styles": "{\n  \"padding\": \"10px\",\n  \"min-height\": \"120px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(6, 7, 14)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"left\",\n  \"border-radius\": \"10px\",\n  \"font-size\": \"12px\"\n}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ab9fej581ixb1r14",
+            "handlers": {},
+            "visible": true
+        },
+        "2uunu0g5yat3bib7": {
+            "id": "2uunu0g5yat3bib7",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.distrikt}",
+                "placeholder": "Alle distrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "w23jmw2xm892ak3z",
+            "handlers": {
+                "wf-options-change": "getset.set_district"
+            },
+            "visible": "flag.distrikt",
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.distrikt"
+            }
+        },
+        "sqgejtzvz9fob7mj": {
+            "id": "sqgejtzvz9fob7mj",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.underdistrikt}",
+                "placeholder": "Alle underdistrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "w23jmw2xm892ak3z",
+            "handlers": {
+                "wf-options-change": "getset.set_subdistrict"
+            },
+            "visible": "flag.underdistrikt",
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.underdistrikt"
+            }
+        },
+        "8kmf11rt8ontfjhn": {
+            "id": "8kmf11rt8ontfjhn",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "w23jmw2xm892ak3z",
+            "handlers": {},
+            "visible": true
+        },
+        "hkiku69lu2i26z2k": {
+            "id": "hkiku69lu2i26z2k",
+            "type": "column",
+            "content": {
+                "width": "1"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "8kmf11rt8ontfjhn",
+            "handlers": {},
+            "visible": true
+        },
+        "yjcylp0mnstfc5gf": {
+            "id": "yjcylp0mnstfc5gf",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "8kmf11rt8ontfjhn",
+            "handlers": {},
+            "visible": "flag.between"
+        },
+        "3umy0emxn9586tbq": {
+            "id": "3umy0emxn9586tbq",
+            "type": "html",
+            "content": {
+                "styles": "{\n  \"padding\": \"10px\",\n  \"min-height\": \"120px\",\n  \"min-width\": \"50px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(6, 7, 14)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"left\",\n  \"border-radius\": \"10px\",\n  \"font-size\": \"12px\"\n}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "jybwlc2vw54cce00",
+            "handlers": {},
+            "visible": true
+        },
+        "e7aar8iaw8w2v7r7": {
+            "id": "e7aar8iaw8w2v7r7",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.distrikt}",
+                "placeholder": "Alle distrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "3umy0emxn9586tbq",
+            "handlers": {
+                "wf-options-change": "getset.set_district"
+            },
+            "visible": "flag.distrikt",
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.distrikt"
+            }
+        },
+        "0pyb4pixu4q4frhe": {
+            "id": "0pyb4pixu4q4frhe",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{dropdown.underdistrikt}",
+                "placeholder": "Alle underdistrikt",
+                "accentColor": "#F3F7F4",
+                "chipTextColor": "#136F63",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "3umy0emxn9586tbq",
+            "handlers": {
+                "wf-options-change": "getset.set_subdistrict"
+            },
+            "visible": "flag.underdistrikt",
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.underdistrikt"
+            }
+        },
+        "qajdfpk6ke8kqx96": {
+            "id": "qajdfpk6ke8kqx96",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "3umy0emxn9586tbq",
+            "handlers": {},
+            "visible": true
+        },
+        "yx3yms1snz0ogghk": {
+            "id": "yx3yms1snz0ogghk",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "center",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "qajdfpk6ke8kqx96",
+            "handlers": {},
+            "visible": true
+        },
+        "rvbgi60n5dr9j1ts": {
+            "id": "rvbgi60n5dr9j1ts",
+            "type": "numberinput",
+            "content": {
+                "label": "",
+                "placeholder": "Hopp",
+                "minValue": "1",
+                "maxValue": "@{side.totalt}"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "yx3yms1snz0ogghk",
+            "handlers": {
+                "wf-number-change": "getset.set_page",
+                "wf-number-change-finish": "getset.set_page"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-number-change",
+                "stateRef": "side.gjeldende"
+            }
+        },
+        "j3f83z76m9z3t0dr": {
+            "id": "j3f83z76m9z3t0dr",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "start",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "qajdfpk6ke8kqx96",
+            "handlers": {},
+            "visible": true
+        },
+        "eebwn6l89rtj8e1k": {
+            "id": "eebwn6l89rtj8e1k",
+            "type": "heading",
+            "content": {
+                "text": " av @{side.totalt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "j3f83z76m9z3t0dr",
+            "handlers": {},
+            "visible": true
+        },
+        "qp7kriyshnb95qsk": {
+            "id": "qp7kriyshnb95qsk",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qajdfpk6ke8kqx96",
+            "handlers": {},
+            "visible": true
+        },
+        "er6te3p8wutnx7sf": {
+            "id": "er6te3p8wutnx7sf",
+            "type": "heading",
+            "content": {
+                "text": "Side",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "qp7kriyshnb95qsk",
+            "handlers": {},
+            "visible": true
+        },
+        "hr792y96pu82gfvg": {
+            "id": "hr792y96pu82gfvg",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "3umy0emxn9586tbq",
+            "handlers": {},
+            "visible": true
+        },
+        "6x9pqzjbzeuu8lun": {
+            "id": "6x9pqzjbzeuu8lun",
+            "type": "column",
+            "content": {
+                "title": "",
+                "width": "1",
+                "contentHAlign": "start"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "hr792y96pu82gfvg",
+            "handlers": {},
+            "visible": true
+        },
+        "8cm33qeqcr3xuejn": {
+            "id": "8cm33qeqcr3xuejn",
+            "type": "button",
+            "content": {
+                "text": "",
+                "icon": "arrow_forward",
+                "buttonColor": "#FFFFFF",
+                "buttonTextColor": "#136F63",
+                "buttonShadow": "0px 0px 0px 1px #06070e"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6x9pqzjbzeuu8lun",
+            "handlers": {
+                "wf-click": "getset.set_next_page"
+            },
+            "visible": true
+        },
+        "tf7vls2e9egfb211": {
+            "id": "tf7vls2e9egfb211",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "hr792y96pu82gfvg",
+            "handlers": {},
+            "visible": true
+        },
+        "1dpkhpo6hfzohp20": {
+            "id": "1dpkhpo6hfzohp20",
+            "type": "button",
+            "content": {
+                "text": "",
+                "icon": "arrow_back",
+                "buttonColor": "#FFFFFF",
+                "buttonTextColor": "#136F63",
+                "buttonShadow": "0px 0px 0px 1px #06070e"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "tf7vls2e9egfb211",
+            "handlers": {
+                "wf-click": "getset.set_previous_page"
+            },
+            "visible": true
         }
     }
 }
