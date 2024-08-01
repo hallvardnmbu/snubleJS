@@ -886,58 +886,12 @@
             "handlers": {},
             "visible": true
         },
-        "2uunu0g5yat3bib7": {
-            "id": "2uunu0g5yat3bib7",
-            "type": "multiselectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.distrikt}",
-                "placeholder": "Alle distrikt",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "w23jmw2xm892ak3z",
-            "handlers": {
-                "wf-options-change": "getset.set_district"
-            },
-            "visible": "flag.distrikt",
-            "binding": {
-                "eventType": "wf-options-change",
-                "stateRef": "valgt.distrikt"
-            }
-        },
-        "sqgejtzvz9fob7mj": {
-            "id": "sqgejtzvz9fob7mj",
-            "type": "multiselectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.underdistrikt}",
-                "placeholder": "Alle underdistrikt",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "w23jmw2xm892ak3z",
-            "handlers": {
-                "wf-options-change": "getset.set_subdistrict"
-            },
-            "visible": "flag.underdistrikt",
-            "binding": {
-                "eventType": "wf-options-change",
-                "stateRef": "valgt.underdistrikt"
-            }
-        },
         "8kmf11rt8ontfjhn": {
             "id": "8kmf11rt8ontfjhn",
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 2,
+            "position": 0,
             "parentId": "w23jmw2xm892ak3z",
             "handlers": {},
             "visible": true
@@ -979,58 +933,12 @@
             "handlers": {},
             "visible": true
         },
-        "e7aar8iaw8w2v7r7": {
-            "id": "e7aar8iaw8w2v7r7",
-            "type": "multiselectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.distrikt}",
-                "placeholder": "Alle distrikt",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "3umy0emxn9586tbq",
-            "handlers": {
-                "wf-options-change": "getset.set_district"
-            },
-            "visible": "flag.distrikt",
-            "binding": {
-                "eventType": "wf-options-change",
-                "stateRef": "valgt.distrikt"
-            }
-        },
-        "0pyb4pixu4q4frhe": {
-            "id": "0pyb4pixu4q4frhe",
-            "type": "multiselectinput",
-            "content": {
-                "label": "",
-                "options": "@{dropdown.underdistrikt}",
-                "placeholder": "Alle underdistrikt",
-                "accentColor": "#F3F7F4",
-                "chipTextColor": "#136F63",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "3umy0emxn9586tbq",
-            "handlers": {
-                "wf-options-change": "getset.set_subdistrict"
-            },
-            "visible": "flag.underdistrikt",
-            "binding": {
-                "eventType": "wf-options-change",
-                "stateRef": "valgt.underdistrikt"
-            }
-        },
         "qajdfpk6ke8kqx96": {
             "id": "qajdfpk6ke8kqx96",
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 2,
+            "position": 0,
             "parentId": "3umy0emxn9586tbq",
             "handlers": {},
             "visible": true
@@ -1130,7 +1038,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 3,
+            "position": 1,
             "parentId": "3umy0emxn9586tbq",
             "handlers": {},
             "visible": true
