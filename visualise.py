@@ -55,15 +55,15 @@ def graph(
             line={
                 'shape': 'hv',
                 'width': 3,
-                'color': _COLOUR['green'] if diff >= 0 else _COLOUR['red'],
+                'color': _COLOUR['green'] if diff < 0 else _COLOUR['red'],
             },
             marker={
                 'size': 8,
-                'color': _COLOUR['green'] if diff >= 0 else _COLOUR['red'],
+                'color': _COLOUR['green'] if diff < 0 else _COLOUR['red'],
             },
 
             fill='tozeroy',
-            fillcolor=_COLOUR['greenish'] if diff >= 0 else _COLOUR['redish'],
+            fillcolor=_COLOUR['greenish'] if diff < 0 else _COLOUR['redish'],
         ))
 
         fig.update_layout(

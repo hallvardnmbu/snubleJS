@@ -12,13 +12,14 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
-# _STORES: Dict[int, str] = {record['index']: record['navn'] for record in list(
-#     _CLIENT['vinskraper']['butikk'].aggregate([
-#         {'$project': {'_id': 0, 'navn': 1, 'index': 1}}
-#       SORT IT!
-#     ])
-# )}
 _DATABASE = _CLIENT['vinskraper']['vin']
+
+STORES: Dict[int, str] = {record['index']: record['navn'] for record in list(
+    _CLIENT['vinskraper']['butikk'].aggregate([
+        {'$project': {'_id': 0, 'navn': 1, 'index': 1}},
+        {'$sort': {'navn': 1}}
+    ])
+)}
 
 
 def uniques(
@@ -31,7 +32,7 @@ def uniques(
     underdistrikt: List[str] = [],
     butikk: List[str] = [],
     **kwargs: Dict[str, Union[float, None]]
-) -> Dict[str, Union[List[str], Dict[int, str]]]:
+) -> Dict[str, Union[list, Dict[str, str]]]:
     """
     Extract the unique values for the given `extract` features from the database.
     Filters the data based on the given parameters.
@@ -66,7 +67,7 @@ def uniques(
     filtered = _DATABASE.find({
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': butikk} if butikk else None)
+            ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
         ] if value},
 
         **{field: {'$in': value} for field, value in [
@@ -79,9 +80,19 @@ def uniques(
                 ] if value}
     })
 
-    return {
+    mapping: Dict[str, Union[list, Dict[str, str]]] = {
         feature: list(set(filtered.distinct(feature)) - {None, '-'})
         for feature in extract
+        if feature != 'butikk'
+    }
+
+    if 'butikk' not in extract:
+        return mapping
+
+    stores = list(set(filtered.distinct('butikk')) - {None, '-'})
+    return {
+        **mapping,
+        **{'butikk': {str(idx): name for idx, name in STORES.items() if idx in stores}}
     }
 
 
@@ -133,7 +144,7 @@ def amount(
     query = {
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': butikk} if butikk else None)
+            ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
         ] if value},
 
         **{field: {'$in': value} for field, value in [
@@ -233,7 +244,7 @@ def load(
         '$match': {
             **{field: value for field, value in [
                 ('tilgjengelig for bestilling', not bool(butikk)),
-                ('butikk', {'$all': butikk} if butikk else None)
+                ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
             ] if value},
 
             **{field: {'$in': value} for field, value in [
@@ -280,6 +291,9 @@ def load(
 
 def search(
     name: str,
+    amount: int = 10,
+
+    filters: bool = False,
 
     kategori: List[str] = [],
     underkategori: List[str] = [],
@@ -292,9 +306,8 @@ def search(
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
 
-    sorting: str = 'prisendring',
+    sorting: Union[None, str] = None,
     ascending: bool = True,
-    amount: int = 10,
 ) -> pd.DataFrame:
     """
     Search for the given name in the database.
@@ -303,6 +316,11 @@ def search(
     ----------
     name : str
         The name to search for.
+    amount : int
+        The number of results to return.
+    filters : bool
+        Whether to apply the filters to the search.
+        The filters are the rest of the parameters.
     kategori : list of str
         The categories to include.
     underkategori : list of str
@@ -325,8 +343,6 @@ def search(
         The feature to sorting by.
     ascending : bool
         Whether to sort the data in ascending order.
-    amount : int
-        The number of results to return.
 
     Returns
     -------
@@ -346,32 +362,33 @@ def search(
                 'path': 'navn',
             }
         }
-    },
-    {
-        '$match': {
-            **{field: value for field, value in [
-                ('tilgjengelig for bestilling', not bool(butikk)),
-                ('butikk', {'$all': butikk} if butikk else None)
-            ] if value},
-
-            **{field: {'$in': value} for field, value in [
-                        ('kategori', kategori),
-                        ('underkategori', underkategori),
-                        ('volum', [float(v) for v in volum]),
-                        ('land', land),
-                        ('distrikt', distrikt),
-                        ('underdistrikt', underdistrikt)
-                    ] if value}
-        }
-    },
-    {
-        '$sort': {
-            sorting: 1 if ascending else -1
-        }
-    },
-    {
-        '$limit': amount
     }]
+
+    if filters:
+        print(butikk)
+        pipeline += [{
+            '$match': {
+                **{field: value for field, value in [
+                    ('tilgjengelig for bestilling', not bool(butikk)),
+                    ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
+                ] if value},
+
+                **{field: {'$in': value} for field, value in [
+                            ('kategori', kategori),
+                            ('underkategori', underkategori),
+                            ('volum', [float(v) for v in volum]),
+                            ('land', land),
+                            ('distrikt', distrikt),
+                            ('underdistrikt', underdistrikt)
+                        ] if value}
+            }
+        }]
+        if sorting:
+            pipeline += [{
+                '$sort': {
+                    sorting: 1 if ascending else -1
+                }
+            }]
 
     if fra or til:
         between = {op: val for op, val in [
@@ -385,6 +402,10 @@ def search(
             }
         else:
             pipeline[1]['$match'][sorting] = between
+
+    pipeline += [{
+        '$limit': amount
+    }]
 
     collection = list(_DATABASE.aggregate(pipeline))
 

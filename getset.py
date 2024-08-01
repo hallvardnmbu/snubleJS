@@ -10,7 +10,7 @@ from visualise import graph
 
 _FEATURES = ['kategori', 'underkategori',
              'distrikt', 'underdistrikt',
-             'volum', 'land', 'butikk']
+             'volum', 'land']
 _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
 _FOCUS = None
 
@@ -37,6 +37,11 @@ def initialise(state):
         str(vol): f'{vol:g} cL'
         for vol in state['dropdown']['volum'].to_dict().values()
     }
+
+    # Setting the store selection.
+    items = uniques(['butikk'])['butikk']
+    state['dropdown']['butikk'] = items
+    state['dropdown']['full']['butikk'] = items
 
     set_data(state)
 
@@ -71,6 +76,9 @@ def set_data(state, fresh: bool = True):
             data = search(
                 name=state['finn']['navn'],
                 amount=int(state['data']['antall']) * 2,
+
+                filters=state['finn']['filter'],
+
                 sorting=focus,
                 ascending=state['data']['stigende'],
 
@@ -194,6 +202,13 @@ def _dropdown(
     for choice in [float(c) if feature == 'volum' else c for c in state['valgt'][feature]]:
         if choice not in possible:
             state['valgt'][feature].remove(choice)
+
+
+def set_store(state):
+    set_category(state, main=False)
+    set_country(state, main=False)
+    set_volume(state, main=False)
+    set_data(state)
 
 
 def set_category(state, main: bool = True):
@@ -323,6 +338,8 @@ def _discounts(state, data: pd.DataFrame):
         data['pris_gammel'] = data['pris'].copy()
     else:
         data['pris_gammel'] = data[prices[-2]]
+
+    data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
 
     state['data']['verdier'] = {
         str(k): v
