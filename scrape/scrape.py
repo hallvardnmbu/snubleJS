@@ -17,12 +17,11 @@ import concurrent.futures
 import pymongo
 import requests
 import pandas as pd
-from bs4 import BeautifulSoup
 from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
 
-from scrape.proxy import Proxy
+from proxy import Proxy
 
 
 _CLIENT = MongoClient(
@@ -219,12 +218,7 @@ def _scrape_category(category: CATEGORY) -> bool:
         # ------------------------------------------------------------------------------------------
         # Parses the response and extracts the products.
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        if soup.string is None:
-            print(f'{category.name} Error: Page {page} (no JSON found).')
-            continue
-        products = json.loads(soup.string).get('productSearchResult', {}).get('products', [])
-
+        products = response.json().get('productSearchResult', {}).get('products', [])
         if not products:
             print(f'{category.name} No more products (final page: {page - 1}).')
             break

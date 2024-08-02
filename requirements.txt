@@ -8,4 +8,3 @@ pymongo[srv]
 # Web scraping:
 urllib3
 requests
-beautifulsoup4
