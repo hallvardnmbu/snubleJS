@@ -12,7 +12,7 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
-_DATABASE = _CLIENT['vinskraper']['vin']
+_DATABASE = _CLIENT['vinskraper']['varer']
 
 STORES: Dict[int, str] = {record['index']: record['navn'] for record in list(
     _CLIENT['vinskraper']['butikk'].aggregate([
@@ -65,6 +65,9 @@ def uniques(
         Keys are the features and values are a list of the unique values.
     """
     filtered = _DATABASE.find({
+        'utgått': False,
+        'kan kjøpes': True,
+
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
             ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
@@ -142,6 +145,9 @@ def amount(
         The maximum amount of records for the given parameters.
     """
     query = {
+        'utgått': False,
+        'kan kjøpes': True,
+
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
             ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
@@ -242,6 +248,9 @@ def load(
     """
     pipeline = [{
         '$match': {
+            'utgått': False,
+            'kan kjøpes': True,
+
             **{field: value for field, value in [
                 ('tilgjengelig for bestilling', not bool(butikk)),
                 ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
@@ -368,6 +377,9 @@ def search(
         print(butikk)
         pipeline += [{
             '$match': {
+                'utgått': False,
+                'kan kjøpes': True,
+
                 **{field: value for field, value in [
                     ('tilgjengelig for bestilling', not bool(butikk)),
                     ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
