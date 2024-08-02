@@ -1049,30 +1049,13 @@
             "content": {
                 "title": "",
                 "width": "1",
-                "contentHAlign": "start"
+                "contentHAlign": "start",
+                "contentVAlign": "center"
             },
             "isCodeManaged": false,
-            "position": 1,
+            "position": 2,
             "parentId": "hr792y96pu82gfvg",
             "handlers": {},
-            "visible": true
-        },
-        "8cm33qeqcr3xuejn": {
-            "id": "8cm33qeqcr3xuejn",
-            "type": "button",
-            "content": {
-                "text": "",
-                "icon": "arrow_forward",
-                "buttonColor": "#FFFFFF",
-                "buttonTextColor": "#136F63",
-                "buttonShadow": "0px 0px 0px 1px #06070e"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "6x9pqzjbzeuu8lun",
-            "handlers": {
-                "wf-click": "getset.set_next_page"
-            },
             "visible": true
         },
         "tf7vls2e9egfb211": {
@@ -1080,7 +1063,8 @@
             "type": "column",
             "content": {
                 "width": "1",
-                "contentHAlign": "end"
+                "contentHAlign": "end",
+                "contentVAlign": "center"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -1103,6 +1087,56 @@
             "parentId": "tf7vls2e9egfb211",
             "handlers": {
                 "wf-click": "getset.set_previous_page"
+            },
+            "visible": true
+        },
+        "dwkzrqkmhenf24gt": {
+            "id": "dwkzrqkmhenf24gt",
+            "type": "column",
+            "content": {
+                "width": "1",
+                "contentHAlign": "center",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "hr792y96pu82gfvg",
+            "handlers": {},
+            "visible": true
+        },
+        "gpt766qr13l9opi7": {
+            "id": "gpt766qr13l9opi7",
+            "type": "button",
+            "content": {
+                "text": "",
+                "icon": "house",
+                "buttonColor": "#FFFFFF",
+                "buttonTextColor": "#136F63",
+                "buttonShadow": "0px 0px 0px 1px #06070e"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "dwkzrqkmhenf24gt",
+            "handlers": {
+                "wf-click": "getset.set_page_one"
+            },
+            "visible": true
+        },
+        "8cm33qeqcr3xuejn": {
+            "id": "8cm33qeqcr3xuejn",
+            "type": "button",
+            "content": {
+                "text": "",
+                "icon": "arrow_forward",
+                "buttonColor": "#FFFFFF",
+                "buttonTextColor": "#136F63",
+                "buttonShadow": "0px 0px 0px 1px #06070e"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "6x9pqzjbzeuu8lun",
+            "handlers": {
+                "wf-click": "getset.set_next_page"
             },
             "visible": true
         }

@@ -4,7 +4,7 @@ import datetime
 import writer
 
 from database import load
-from getset import initialise, set_data, set_focus, set_store, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, set_next_page, set_previous_page, set_page
+from getset import initialise, set_data, set_focus, set_store, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, set_next_page, set_previous_page, set_page_one, set_page
 
 
 # To prevent errors before the newest data is loaded, the newest column is set manually.
