@@ -1,22 +1,20 @@
 """
 Scrape products from vinmonopolet's website and store the results to a database.
 
-Finds the fields specified in the `_process` function and stores them in a MongoDB database.
+TODO: Update this function to only fetch the updated prices.
+TODO: `./available.py` and `./news.py` handle the rest.
 
-For a more detailed product information, see `detailed.py`.
-
-For a list of shops with products in stock, see `shops.py`.
+CRON JOB: 0 06 1 * *
 """
 
 import os
 import enum
-import json
 from typing import List
 import concurrent.futures
+from datetime import datetime, timedelta
 
 import pymongo
 import requests
-import pandas as pd
 from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
@@ -29,7 +27,7 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
-_DATABASE = _CLIENT['vinskraper']['vin']
+_DATABASE = _CLIENT['vinskraper']['varer']
 
 _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         'search?searchType=product'
@@ -38,8 +36,8 @@ _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
 _PROXY = Proxy()
 _SESSION = requests.Session()
 
-_OLD = (pd.Timestamp.now() - pd.DateOffset(months=1)).strftime('%Y-%m-01')
-_NOW = pd.Timestamp.now().strftime('%Y-%m-01')
+_OLD = (datetime.now() - timedelta(days=15)).strftime("%Y-%m-01")
+_NOW = datetime.now().strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
 
@@ -259,6 +257,18 @@ def scrape(categories=None, max_workers=10):
                 category = results[future]
                 print(f'{category.name} FAILED! Concurrency error: {exc}')
                 failed.append(category)
+
+    expired = list(_DATABASE.find({'utgått': True}))
+    if expired:
+        _CLIENT['vinskraper']['utgått'].insert_many(expired)
+
+        ids = [doc['index'] for doc in expired]
+        result = _DATABASE.delete_many({'index': {'$in': ids}})
+
+        print(f"Moved {len(ids)} documents to the expired collection.")
+        print(f"Deleted {result.deleted_count} documents from the stock collection.")
+    else:
+        print("No expired documents found.")
 
     return failed
 

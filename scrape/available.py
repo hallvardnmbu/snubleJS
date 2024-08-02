@@ -1,4 +1,8 @@
-"""Fetch information about all of Vinmonopolet's stores, and their stock."""
+"""
+Fetch information about all of Vinmonopolet's stores, and their stock.
+
+CRON JOB: 15 06 * * *
+"""
 
 import os
 from typing import List
@@ -16,7 +20,8 @@ _CLIENT = MongoClient(
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
-_DATABASE = _CLIENT['vinskraper']['vin']
+_DATABASE = _CLIENT['vinskraper']['varer']
+_EXPIRED = _CLIENT['vinskraper']['utgått']
 
 _PROXY = Proxy()
 
@@ -133,7 +138,7 @@ def _product(index: int) -> dict:
     raise ValueError('Failed to fetch product information.')
 
 
-def available(products: List[int] = None, max_workers=5):
+def available(products: List[int] = None, max_workers=10):
     """
     Update information about products and their stock in stores.
 
@@ -165,21 +170,31 @@ def available(products: List[int] = None, max_workers=5):
     for i in range(0, len(products), step):
         print(f'Processing products {i} to {i + step} of {len(products)}.')
 
+        expired = []
         operations = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            results = {executor.submit(_product, product): product for product in products[i:i + step]}
+            results = {executor.submit(_product, product): product for product in
+                       products[i:i + step]}
             for future in concurrent.futures.as_completed(results):
                 product = future.result()
                 if not product:
                     continue
-                operations.append(
-                    pymongo.UpdateOne(
-                        {'index': product['index']},
-                        {'$set': product},
-                        upsert=True
-                    )
+
+                operation = pymongo.UpdateOne(
+                    {'index': product['index']},
+                    {'$set': product},
+                    upsert=True
                 )
+                if product['utgått']:
+                    expired.append(operation)
+                    operations.append(pymongo.DeleteOne(
+                        {'index': product['index']}
+                    ))
+                else:
+                    operations.append(operation)
         _DATABASE.bulk_write(operations)
+        if expired:
+            _EXPIRED.bulk_write(expired)
 
 
 if __name__ == '__main__':
