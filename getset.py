@@ -142,7 +142,6 @@ def set_focus(state):
 
 
 def set_next_page(state):
-
     if state['side']['gjeldende'] >= state['side']['totalt']:
         return
 
@@ -152,12 +151,16 @@ def set_next_page(state):
 
 
 def set_previous_page(state):
-
     if state['side']['gjeldende'] < 2:
         return
 
     state['side']['gjeldende'] -= 1
 
+    set_data(state, fresh=False)
+
+
+def set_page_one(state):
+    state['side']['gjeldende'] = 1
     set_data(state, fresh=False)
 
 
