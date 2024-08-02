@@ -49,7 +49,7 @@ Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gj�
 python scrape.py
 ```
 
-(etter å ha oppretted databasen `vinskraper` og collection `vin`).
+(etter å ha oppretted databasen `vinskraper` og collection `varer`).
 
 ![DigitalOcean](./static/DigitalOcean.jpg)
 
