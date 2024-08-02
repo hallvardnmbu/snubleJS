@@ -85,7 +85,7 @@ def available(products: List[int] = None, max_workers=5):
 
     step = max(len(products) // 1000, 500)
     for i in range(0, len(products), step):
-        print(f'Processing products {i} to {i + step}.')
+        print(f'Processing products {i} to {i + step} of {len(products)}.')
 
         operations = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
