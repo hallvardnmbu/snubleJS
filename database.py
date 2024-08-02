@@ -14,13 +14,6 @@ _CLIENT = MongoClient(
 )
 _DATABASE = _CLIENT['vinskraper']['varer']
 
-STORES: Dict[int, str] = {record['index']: record['navn'] for record in list(
-    _CLIENT['vinskraper']['butikk'].aggregate([
-        {'$project': {'_id': 0, 'navn': 1, 'index': 1}},
-        {'$sort': {'navn': 1}}
-    ])
-)}
-
 
 def uniques(
     extract: List[str],
@@ -70,7 +63,7 @@ def uniques(
 
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
+            ('butikk', {'$all': butikk} if butikk else None)
         ] if value},
 
         **{field: {'$in': value} for field, value in [
@@ -86,17 +79,9 @@ def uniques(
     mapping: Dict[str, Union[list, Dict[str, str]]] = {
         feature: list(set(filtered.distinct(feature)) - {None, '-'})
         for feature in extract
-        if feature != 'butikk'
     }
 
-    if 'butikk' not in extract:
-        return mapping
-
-    stores = list(set(filtered.distinct('butikk')) - {None, '-'})
-    return {
-        **mapping,
-        **{'butikk': {str(idx): name for idx, name in STORES.items() if idx in stores}}
-    }
+    return mapping
 
 
 def amount(
@@ -150,7 +135,7 @@ def amount(
 
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
+            ('butikk', {'$all': butikk} if butikk else None)
         ] if value},
 
         **{field: {'$in': value} for field, value in [
@@ -253,7 +238,7 @@ def load(
 
             **{field: value for field, value in [
                 ('tilgjengelig for bestilling', not bool(butikk)),
-                ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
+                ('butikk', {'$all': butikk} if butikk else None)
             ] if value},
 
             **{field: {'$in': value} for field, value in [
@@ -374,7 +359,6 @@ def search(
     }]
 
     if filters:
-        print(butikk)
         pipeline += [{
             '$match': {
                 'utgått': False,
@@ -382,7 +366,7 @@ def search(
 
                 **{field: value for field, value in [
                     ('tilgjengelig for bestilling', not bool(butikk)),
-                    ('butikk', {'$all': [int(b) for b in butikk]} if butikk else None)
+                    ('butikk', {'$all': butikk} if butikk else None)
                 ] if value},
 
                 **{field: {'$in': value} for field, value in [

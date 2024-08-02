@@ -10,7 +10,7 @@ from visualise import graph
 
 _FEATURES = ['kategori', 'underkategori',
              'distrikt', 'underdistrikt',
-             'volum', 'land']
+             'volum', 'land', 'butikk']
 _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
 _FOCUS = None
 
@@ -37,11 +37,6 @@ def initialise(state):
         str(vol): f'{vol:g} cL'
         for vol in state['dropdown']['volum'].to_dict().values()
     }
-
-    # Setting the store selection.
-    items = uniques(['butikk'])['butikk']
-    state['dropdown']['butikk'] = items
-    state['dropdown']['full']['butikk'] = items
 
     set_data(state)
 
@@ -111,10 +106,10 @@ def set_data(state, fresh: bool = True):
 
     # Setting the total number of pages.
     if fresh and not searching:
-        state['side']['totalt'] = amount(
+        state['side']['totalt'] = max(amount(
             **state['valgt'].to_dict(),
             sorting=focus
-        ) // int(state['data']['antall'])
+        ) // int(state['data']['antall']), 1)
         state['side']['gjeldende'] = 1
     elif fresh and searching:
         state['side']['totalt'] = 1
