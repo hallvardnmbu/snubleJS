@@ -133,7 +133,7 @@ def _product(index: int) -> dict:
     raise ValueError('Failed to fetch product information.')
 
 
-def stocked(products: List[int] = None, max_workers=5):
+def available(products: List[int] = None, max_workers=5):
     """
     Update information about products and their stock in stores.
 
@@ -183,4 +183,4 @@ def stocked(products: List[int] = None, max_workers=5):
 
 
 if __name__ == '__main__':
-    stocked()
+    available()
