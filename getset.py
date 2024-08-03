@@ -5,7 +5,7 @@ from typing import List
 import pandas as pd
 
 from database import uniques, amount, load, search
-from visualise import graph
+from visualise import COLOUR, graph
 
 
 _FEATURES = ['kategori', 'underkategori',
@@ -338,6 +338,12 @@ def _discounts(state, data: pd.DataFrame):
         data['pris_gammel'] = data[prices[-2]]
 
     data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
+
+    data['bakgrunnsfarge'] = data['prisendring'].apply(lambda x: COLOUR['greenish'] if x < 0 else (COLOUR['redish'] if x > 0 else COLOUR['blackish']))
+    data['tekstfarge'] = data['prisendring'].apply(lambda x: COLOUR['green'] if x < 0 else (COLOUR['red'] if x > 0 else COLOUR['black']))
+
+    # Rename columns with spaces to underscores.
+    data.columns = [col.replace(' ', '_') for col in data.columns]
 
     state['data']['verdier'] = {
         str(k): v

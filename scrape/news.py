@@ -1,5 +1,9 @@
 """
 Fetch new products.
+Fetch detailed information about products.
+
+TODO: Check if new products are within the `utgått` collection.
+TODO: If so, move them back to the `varer` collection.
 
 CRON JOB: 0 05 1/7 * *
 """
@@ -101,8 +105,8 @@ def _details(product: int) -> dict:
                                    details.get('content', {}).get('characteristics', [])],
                 'ingredienser': [ingredient['readableValue'] for ingredient in
                                  details.get('content', {}).get('ingredients', [])],
-                'egenskaper': [f'{trait["name"]}: {trait["readableValue"]}' for trait in
-                               details.get('content', {}).get('traits', [])],
+                **{trait["name"].lower(): trait["readableValue"]
+                    for trait in details.get('content', {}).get('traits', [])},
                 'lukt': details.get('smell', '-'),
                 'smak': details.get('taste', '-'),
 
@@ -161,6 +165,11 @@ def details(products: List[int] = None, max_workers=5):
                 product = future.result()
                 if not product:
                     continue
+                if 'alkohol' in product:
+                    try:
+                        product['alkohol'] = float(product['alkohol'].replace(' prosent', ''))
+                    except Exception:
+                        print(f'Failed to convert alcohol to float: {product["alkohol"]}')
                 operations.append(
                     pymongo.UpdateOne(
                         {'index': product['index']},
@@ -202,5 +211,5 @@ def news(max_workers=10):
         details(ids)
 
 
-# if __name__ == '__main__':
-#     news()
+if __name__ == '__main__':
+    news()
