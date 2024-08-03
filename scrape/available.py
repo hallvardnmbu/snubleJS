@@ -111,6 +111,7 @@ def _product(index: int) -> dict:
 
                 'status': product.get('status', '-'),
                 'kan kjøpes': product.get('buyable', False),
+                'utgått': False,
 
                 'tilgjengelig for bestilling': product \
                     .get('productAvailability') \
