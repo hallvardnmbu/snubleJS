@@ -309,7 +309,7 @@
             "id": "zp4ymmlwhtpez6vn",
             "type": "column",
             "content": {
-                "width": "0.2",
+                "width": "0.15",
                 "contentHAlign": "center",
                 "contentVAlign": "center"
             },
@@ -337,7 +337,7 @@
             "id": "o8pxz0muqmnijls0",
             "type": "heading",
             "content": {
-                "text": "@{item.volum} cL",
+                "text": "@{item.volum} cL \u2022 @{item.alkohol} %",
                 "alignment": "right",
                 "headingType": "h4",
                 "primaryTextColor": "#06070E"
@@ -352,219 +352,11 @@
             "id": "toq8ettajnz2pzel",
             "type": "column",
             "content": {
-                "width": "0.8"
+                "width": "0.85"
             },
             "isCodeManaged": false,
             "position": 1,
             "parentId": "8ftvarre9vbzeiur",
-            "handlers": {},
-            "visible": true
-        },
-        "49uwylb4lqgomgaf": {
-            "id": "49uwylb4lqgomgaf",
-            "type": "plotlygraph",
-            "content": {
-                "spec": "@{item.plot}"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "toq8ettajnz2pzel",
-            "handlers": {},
-            "visible": true
-        },
-        "itd6lx4shpqoeas3": {
-            "id": "itd6lx4shpqoeas3",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "toq8ettajnz2pzel",
-            "handlers": {},
-            "visible": true
-        },
-        "5oyh5evbn0c4wq0s": {
-            "id": "5oyh5evbn0c4wq0s",
-            "type": "column",
-            "content": {
-                "width": "0.2",
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "itd6lx4shpqoeas3",
-            "handlers": {},
-            "visible": true
-        },
-        "n66uqv8wxg3yeet2": {
-            "id": "n66uqv8wxg3yeet2",
-            "type": "link",
-            "content": {
-                "url": "@{item.url}",
-                "rel": "",
-                "text": "Bestill",
-                "target": "_blank",
-                "primaryTextColor": "#06070E"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "5oyh5evbn0c4wq0s",
-            "handlers": {},
-            "visible": true
-        },
-        "8magrp1nm54pb6ky": {
-            "id": "8magrp1nm54pb6ky",
-            "type": "heading",
-            "content": {
-                "text": "@{item.pris}",
-                "headingType": "h2",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "5oyh5evbn0c4wq0s",
-            "handlers": {},
-            "visible": true
-        },
-        "cd9jzgc43jtk97cr": {
-            "id": "cd9jzgc43jtk97cr",
-            "type": "heading",
-            "content": {
-                "text": "@{item.pris_gammel}",
-                "headingType": "h3",
-                "primaryTextColor": "#8E3B46"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "5oyh5evbn0c4wq0s",
-            "handlers": {},
-            "visible": true
-        },
-        "889lnwwn3dzvgovi": {
-            "id": "889lnwwn3dzvgovi",
-            "type": "column",
-            "content": {
-                "width": "0.2",
-                "contentHAlign": "start"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "itd6lx4shpqoeas3",
-            "handlers": {},
-            "visible": true
-        },
-        "gfivnnodjqy0rvlc": {
-            "id": "gfivnnodjqy0rvlc",
-            "type": "heading",
-            "content": {
-                "text": "@{item.prisendring} %",
-                "headingType": "h2"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "889lnwwn3dzvgovi",
-            "handlers": {},
-            "visible": true
-        },
-        "olxuh1zffoq6cc0q": {
-            "id": "olxuh1zffoq6cc0q",
-            "type": "column",
-            "content": {
-                "width": "0.55"
-            },
-            "isCodeManaged": false,
-            "position": 3,
-            "parentId": "itd6lx4shpqoeas3",
-            "handlers": {},
-            "visible": true
-        },
-        "4lejtirxqw1f9crz": {
-            "id": "4lejtirxqw1f9crz",
-            "type": "heading",
-            "content": {
-                "text": "@{item.underdistrikt}",
-                "headingType": "h4",
-                "alignment": "right"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "olxuh1zffoq6cc0q",
-            "handlers": {},
-            "visible": "item.underdistrikt"
-        },
-        "5i83tmjf7ycpwmna": {
-            "id": "5i83tmjf7ycpwmna",
-            "type": "heading",
-            "content": {
-                "text": "@{item.distrikt}",
-                "headingType": "h3",
-                "alignment": "right"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "olxuh1zffoq6cc0q",
-            "handlers": {},
-            "visible": "item.distrikt"
-        },
-        "813hnlf6r5jbw0c6": {
-            "id": "813hnlf6r5jbw0c6",
-            "type": "column",
-            "content": {
-                "width": "0.05"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "itd6lx4shpqoeas3",
-            "handlers": {},
-            "visible": true
-        },
-        "xjppzi1gfpeh422a": {
-            "id": "xjppzi1gfpeh422a",
-            "type": "heading",
-            "content": {
-                "text": "kr",
-                "headingType": "h2",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "813hnlf6r5jbw0c6",
-            "handlers": {},
-            "visible": true
-        },
-        "zk1z4khgqu4dl60l": {
-            "id": "zk1z4khgqu4dl60l",
-            "type": "heading",
-            "content": {
-                "text": "kr",
-                "headingType": "h3",
-                "primaryTextColor": "#8E3B46"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "813hnlf6r5jbw0c6",
-            "handlers": {},
-            "visible": true
-        },
-        "o9k7cnc9nbnus4vr": {
-            "id": "o9k7cnc9nbnus4vr",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "8g3rs3om9x66w4e9",
-            "handlers": {},
-            "visible": true
-        },
-        "ieiaw4qj6jppxruw": {
-            "id": "ieiaw4qj6jppxruw",
-            "type": "column",
-            "content": {
-                "title": "",
-                "width": "1"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "o9k7cnc9nbnus4vr",
             "handlers": {},
             "visible": true
         },
@@ -580,32 +372,6 @@
             "parentId": "ieiaw4qj6jppxruw",
             "handlers": {},
             "visible": true
-        },
-        "jocfk0k83ys74cw6": {
-            "id": "jocfk0k83ys74cw6",
-            "type": "column",
-            "content": {
-                "width": "0.4",
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "o9k7cnc9nbnus4vr",
-            "handlers": {},
-            "visible": true
-        },
-        "p9h90bluo0mjx5la": {
-            "id": "p9h90bluo0mjx5la",
-            "type": "heading",
-            "content": {
-                "text": "@{item.land}",
-                "headingType": "h1"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "jocfk0k83ys74cw6",
-            "handlers": {},
-            "visible": "item.land"
         },
         "a2m7fgkyh7e71jdo": {
             "id": "a2m7fgkyh7e71jdo",
@@ -799,44 +565,6 @@
             "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
             "visible": true
-        },
-        "hvlin6socb8zpgly": {
-            "id": "hvlin6socb8zpgly",
-            "type": "horizontalstack",
-            "content": {
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 2,
-            "parentId": "toq8ettajnz2pzel",
-            "handlers": {},
-            "visible": true
-        },
-        "lu4ayvgjlex9p7bn": {
-            "id": "lu4ayvgjlex9p7bn",
-            "type": "heading",
-            "content": {
-                "text": "@{item.kategori}",
-                "headingType": "h1"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "hvlin6socb8zpgly",
-            "handlers": {},
-            "visible": "item.kategori"
-        },
-        "yt59vlnz84xfgbjp": {
-            "id": "yt59vlnz84xfgbjp",
-            "type": "heading",
-            "content": {
-                "text": "@{item.underkategori}",
-                "headingType": "h4"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "hvlin6socb8zpgly",
-            "handlers": {},
-            "visible": "item.underkategori"
         },
         "izi3lobht49r1jn7": {
             "id": "izi3lobht49r1jn7",
@@ -1138,6 +866,459 @@
             "handlers": {
                 "wf-click": "getset.set_next_page"
             },
+            "visible": true
+        },
+        "o9k7cnc9nbnus4vr": {
+            "id": "o9k7cnc9nbnus4vr",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "8g3rs3om9x66w4e9",
+            "handlers": {},
+            "visible": true
+        },
+        "ieiaw4qj6jppxruw": {
+            "id": "ieiaw4qj6jppxruw",
+            "type": "column",
+            "content": {
+                "title": "",
+                "width": "0.75",
+                "contentHAlign": "start",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "o9k7cnc9nbnus4vr",
+            "handlers": {},
+            "visible": true
+        },
+        "h69l119ulwq8zfpv": {
+            "id": "h69l119ulwq8zfpv",
+            "type": "column",
+            "content": {
+                "width": "0.25",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "o9k7cnc9nbnus4vr",
+            "handlers": {},
+            "visible": true
+        },
+        "x47nee3n06znjbwr": {
+            "id": "x47nee3n06znjbwr",
+            "type": "text",
+            "content": {
+                "text": "@{item.smak}\n@{item.lukt}\n@{item.\u00e5rgang}\n@{item.farge}\n@{item.kork}\n@{item.metode}\n@{item.lagring}\n@{item.sukker}\n@{item.syre}",
+                "useMarkdown": "yes"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "id572w5jk0o5wjri",
+            "handlers": {},
+            "visible": true
+        },
+        "x5x159myayf9gko3": {
+            "id": "x5x159myayf9gko3",
+            "type": "tabs",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "toq8ettajnz2pzel",
+            "handlers": {},
+            "visible": true
+        },
+        "ahdvv7swumst0vh4": {
+            "id": "ahdvv7swumst0vh4",
+            "type": "tab",
+            "content": {
+                "name": "Generelt"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "x5x159myayf9gko3",
+            "handlers": {},
+            "visible": true
+        },
+        "id572w5jk0o5wjri": {
+            "id": "id572w5jk0o5wjri",
+            "type": "tab",
+            "content": {
+                "name": "Detaljer"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "x5x159myayf9gko3",
+            "handlers": {},
+            "visible": true
+        },
+        "tcysbsj1jkzl7lrq": {
+            "id": "tcysbsj1jkzl7lrq",
+            "type": "horizontalstack",
+            "content": {
+                "contentHAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "mf806826g4bj3n5v",
+            "handlers": {},
+            "visible": true
+        },
+        "g9ii64a99vy5efj4": {
+            "id": "g9ii64a99vy5efj4",
+            "type": "heading",
+            "content": {
+                "text": "@{item.land}",
+                "headingType": "h2"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "tcysbsj1jkzl7lrq",
+            "handlers": {},
+            "visible": "item.land"
+        },
+        "66m4osk43bcnklyu": {
+            "id": "66m4osk43bcnklyu",
+            "type": "heading",
+            "content": {
+                "text": "@{item.distrikt}",
+                "headingType": "h3"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "tcysbsj1jkzl7lrq",
+            "handlers": {},
+            "visible": "item.distrikt"
+        },
+        "5ucmkrotuaa4jkpw": {
+            "id": "5ucmkrotuaa4jkpw",
+            "type": "heading",
+            "content": {
+                "text": "@{item.underdistrikt}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "tcysbsj1jkzl7lrq",
+            "handlers": {},
+            "visible": "item.underdistrikt"
+        },
+        "hut03twxlm490kas": {
+            "id": "hut03twxlm490kas",
+            "type": "horizontalstack",
+            "content": {
+                "contentHAlign": "start"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "d7s2myys7to3it91",
+            "handlers": {},
+            "visible": true
+        },
+        "7456sa06p5v927cc": {
+            "id": "7456sa06p5v927cc",
+            "type": "heading",
+            "content": {
+                "text": "@{item.kategori}",
+                "headingType": "h2"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "hut03twxlm490kas",
+            "handlers": {},
+            "visible": "item.kategori"
+        },
+        "ltou2l9o70w4x477": {
+            "id": "ltou2l9o70w4x477",
+            "type": "heading",
+            "content": {
+                "text": "@{item.underkategori}",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "hut03twxlm490kas",
+            "handlers": {},
+            "visible": "item.underkategori"
+        },
+        "z938h8hjgvny9wjy": {
+            "id": "z938h8hjgvny9wjy",
+            "type": "tags",
+            "content": {
+                "tags": "@{item.karakteristikk}",
+                "referenceColor": "#F3F7F4",
+                "seed": "",
+                "rotateHue": "no"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "t94c961uwssbohhi",
+            "handlers": {}
+        },
+        "35r7f5yb8ztl2o48": {
+            "id": "35r7f5yb8ztl2o48",
+            "type": "tags",
+            "content": {
+                "tags": "@{item.ingredienser}",
+                "referenceColor": "#F3F7F4",
+                "seed": "",
+                "rotateHue": "no"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "jezlzky8ob4644r8",
+            "handlers": {}
+        },
+        "lgh56d8bced1p0pd": {
+            "id": "lgh56d8bced1p0pd",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "ahdvv7swumst0vh4",
+            "handlers": {},
+            "visible": true
+        },
+        "d7s2myys7to3it91": {
+            "id": "d7s2myys7to3it91",
+            "type": "column",
+            "content": {
+                "width": "0.4",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "lgh56d8bced1p0pd",
+            "handlers": {},
+            "visible": true
+        },
+        "mf806826g4bj3n5v": {
+            "id": "mf806826g4bj3n5v",
+            "type": "column",
+            "content": {
+                "width": "0.6",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "lgh56d8bced1p0pd",
+            "handlers": {},
+            "visible": true
+        },
+        "49uwylb4lqgomgaf": {
+            "id": "49uwylb4lqgomgaf",
+            "type": "plotlygraph",
+            "content": {
+                "spec": "@{item.plot}"
+            },
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "ahdvv7swumst0vh4",
+            "handlers": {},
+            "visible": true
+        },
+        "u8e6itgdhqoa89xr": {
+            "id": "u8e6itgdhqoa89xr",
+            "type": "link",
+            "content": {
+                "url": "@{item.url}",
+                "target": "_blank",
+                "text": "Bestill",
+                "primaryTextColor": "#06070E"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "1dodwg5iae6mv16s",
+            "handlers": {},
+            "visible": true
+        },
+        "5rokdmrl6pyrsvkc": {
+            "id": "5rokdmrl6pyrsvkc",
+            "type": "header",
+            "content": {
+                "text": "@{item.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "ahdvv7swumst0vh4",
+            "handlers": {},
+            "visible": true
+        },
+        "dbvptav05uppacbm": {
+            "id": "dbvptav05uppacbm",
+            "type": "heading",
+            "content": {
+                "text": "@{item.pris_gammel} kr",
+                "headingType": "h4",
+                "alignment": "right",
+                "primaryTextColor": "#8E3B46"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "9mirtq9wz60dcpch",
+            "handlers": {},
+            "visible": true
+        },
+        "9mirtq9wz60dcpch": {
+            "id": "9mirtq9wz60dcpch",
+            "type": "horizontalstack",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "c544v0mrfn9mvyi3",
+            "handlers": {},
+            "visible": true
+        },
+        "1taorb1hbz5xybzf": {
+            "id": "1taorb1hbz5xybzf",
+            "type": "icon",
+            "content": {
+                "icon": "arrow_back",
+                "color": "#06070E"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "9mirtq9wz60dcpch",
+            "handlers": {},
+            "visible": true
+        },
+        "li3lm978esmqoe9u": {
+            "id": "li3lm978esmqoe9u",
+            "type": "columns",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "5rokdmrl6pyrsvkc",
+            "handlers": {},
+            "visible": true
+        },
+        "c544v0mrfn9mvyi3": {
+            "id": "c544v0mrfn9mvyi3",
+            "type": "column",
+            "content": {
+                "width": "0.8",
+                "contentHAlign": "start",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "li3lm978esmqoe9u",
+            "handlers": {},
+            "visible": true
+        },
+        "1dodwg5iae6mv16s": {
+            "id": "1dodwg5iae6mv16s",
+            "type": "column",
+            "content": {
+                "width": "0.2",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "li3lm978esmqoe9u",
+            "handlers": {},
+            "visible": true
+        },
+        "3wjly42273xg8s7s": {
+            "id": "3wjly42273xg8s7s",
+            "type": "html",
+            "content": {
+                "styles": "{\n  \"padding\": \"3px\",\n  \"padding-left\": \"15px\",\n  \"padding-right\": \"15px\",\n  \"min-height\": \"48px\",\n  \"min-width\": \"50px\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"border-radius\": \"8px\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"text-align\": \"center\",\n  \"border-radius\": \"8px\",\n  \"font-size\": \"22px\",\n  \"font-family\": \"Poppins, sans-serif\",\n  \"font-weight\": \"bold\",\n\"background\": \"@{item.bakgrunnsfarge}\",\n  \"color\": \"@{item.tekstfarge}\"\n}",
+                "htmlInside": "@{item.prisendring} %"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "h69l119ulwq8zfpv",
+            "handlers": {},
+            "visible": true
+        },
+        "t94c961uwssbohhi": {
+            "id": "t94c961uwssbohhi",
+            "type": "horizontalstack",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "id572w5jk0o5wjri",
+            "handlers": {},
+            "visible": "item.karakteristikk"
+        },
+        "kve4je7sopbnp30l": {
+            "id": "kve4je7sopbnp30l",
+            "type": "heading",
+            "content": {
+                "text": "Karakteristikk",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "t94c961uwssbohhi",
+            "handlers": {},
+            "visible": true
+        },
+        "jezlzky8ob4644r8": {
+            "id": "jezlzky8ob4644r8",
+            "type": "horizontalstack",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 2,
+            "parentId": "id572w5jk0o5wjri",
+            "handlers": {},
+            "visible": "item.ingredienser"
+        },
+        "t2c80sl4ft5gvx70": {
+            "id": "t2c80sl4ft5gvx70",
+            "type": "heading",
+            "content": {
+                "text": "Ingredienser",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "jezlzky8ob4644r8",
+            "handlers": {},
+            "visible": true
+        },
+        "w4yy8fb59ec10mcj": {
+            "id": "w4yy8fb59ec10mcj",
+            "type": "horizontalstack",
+            "content": {
+                "cssClasses": ""
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "id572w5jk0o5wjri",
+            "handlers": {},
+            "visible": "item.passer_til"
+        },
+        "9epefi751ih2xqh7": {
+            "id": "9epefi751ih2xqh7",
+            "type": "tags",
+            "content": {
+                "tags": "@{item.passer_til}",
+                "referenceColor": "#F3F7F4",
+                "seed": "",
+                "rotateHue": "no"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "w4yy8fb59ec10mcj",
+            "handlers": {}
+        },
+        "uhyc13iwxgv9o2tz": {
+            "id": "uhyc13iwxgv9o2tz",
+            "type": "heading",
+            "content": {
+                "text": "Passer til",
+                "headingType": "h4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "w4yy8fb59ec10mcj",
+            "handlers": {},
             "visible": true
         }
     }

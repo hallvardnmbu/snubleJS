@@ -7,9 +7,11 @@ import plotly.graph_objects as go
 
 # Colour scheme for the application.
 # Used for the style of the application and the plots.
-_COLOUR = {
-    'black': '#06070E',
+COLOUR = {
     'white': '#FFFFFF',
+
+    'black': '#06070E',
+    'blackish': '#e6e6e6',
 
     'red': '#8E3B46',
     'redish': '#f3ebec',
@@ -55,20 +57,20 @@ def graph(
             line={
                 'shape': 'hv',
                 'width': 3,
-                'color': _COLOUR['green'] if diff < 0 else _COLOUR['red'],
+                'color': COLOUR['green'] if diff < 0 else (COLOUR['red'] if diff > 0 else COLOUR['black']),
             },
             marker={
                 'size': 8,
-                'color': _COLOUR['green'] if diff < 0 else _COLOUR['red'],
+                'color': COLOUR['green'] if diff < 0 else (COLOUR['red'] if diff > 0 else COLOUR['black']),
             },
 
             fill='tozeroy',
-            fillcolor=_COLOUR['greenish'] if diff < 0 else _COLOUR['redish'],
+            fillcolor=COLOUR['greenish'] if diff < 0 else (COLOUR['redish'] if diff > 0 else COLOUR['blackish']),
         ))
 
         fig.update_layout(
-            plot_bgcolor=_COLOUR['white'],
-            height=200,
+            plot_bgcolor=COLOUR['white'],
+            height=160,
             dragmode='pan',
 
             margin={
@@ -82,7 +84,7 @@ def graph(
                 'text': '',
                 'font': {
                     'family': 'Poppins, sans-serif',
-                    'color': _COLOUR['black'],
+                    'color': COLOUR['black'],
                 }
             },
 
@@ -97,13 +99,13 @@ def graph(
                         'size': 16,
                         'weight': 'bold',
                         'family': 'Poppins, sans-serif',
-                        'color': _COLOUR['black'],
+                        'color': COLOUR['black'],
                     },
                 },
                 'tickfont': {
                     'size': 12,
                     'family': 'Poppins, sans-serif',
-                    'color': _COLOUR['black'],
+                    'color': COLOUR['black'],
                 },
                 'showgrid': False,
             },
@@ -115,13 +117,13 @@ def graph(
                         'size': 16,
                         'weight': 'bold',
                         'family': 'Poppins, sans-serif',
-                        'color': _COLOUR['black'],
+                        'color': COLOUR['black'],
                     },
                 },
                 'tickfont': {
                     'size': 12,
                     'family': 'Poppins, sans-serif',
-                    'color': _COLOUR['black'],
+                    'color': COLOUR['black'],
                 },
                 'ticksuffix': ' kr',
                 'tickvals': sorted(set(prices)),
