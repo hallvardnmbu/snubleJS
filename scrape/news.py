@@ -44,22 +44,26 @@ def _process_images(images):
 def _process(products) -> List[dict]:
     return [{
         'index': int(product.get('code', 0)),
-        'navn': product.get('name', '-'),
+        'navn': product.get('name', None),
         'volum': product.get('volume', {}).get('value', 0.0),
-        'land': product.get('main_country', {}).get('name', '-'),
-        'distrikt': product.get('district', {}).get('name', '-'),
-        'underdistrikt': product.get('sub_District', {}).get('name', '-'),
-        'kategori': product.get('main_category', {}).get('name', '-'),
-        'underkategori': product.get('main_sub_category', {}).get('name', '-'),
+        'land': product.get('main_country', {}).get('name', None),
+        'distrikt': product.get('district', {}).get('name', None),
+        'underdistrikt': product.get('sub_District', {}).get('name', None),
+        'kategori': product.get('main_category', {}).get('name', None),
+        'underkategori': product.get('main_sub_category', {}).get('name', None),
         'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
-        'status': product.get('status', '-'),
+        'status': product.get('status', None),
         'kan kjøpes': product.get('buyable', False),
         'utgått': product.get('expired', False),
         'tilgjengelig for bestilling': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('availableForPurchase', False),
-        'bestillingsinformasjon': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('infos', [{}])[0].get('readableValue', '-'),
+        'bestillingsinformasjon': product.get('productAvailability', {}).get(
+            'deliveryAvailability', {}).get('infos', [{}])[0].get('readableValue', None),
         'tilgjengelig i butikk': product.get('productAvailability', {}).get('storesAvailability', {}).get('availableForPurchase', False),
-        'butikkinformasjon': product.get('productAvailability', {}).get('storesAvailability', {}).get('infos', [{}])[0].get('readableValue', '-'),
-        'produktutvalg': product.get('product_selection', '-'),
+        'butikkinformasjon': product.get('productAvailability', {}).get('storesAvailability',
+                                                                        {}).get('infos',
+                                                                                [{}])[0].get(
+            'readableValue', None),
+        'produktutvalg': product.get('product_selection', None),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
         f'pris {_NOW}': product.get('price', {}).get('value', 0.0),
@@ -100,24 +104,24 @@ def _details(product: int) -> dict:
             return {
                 'index': int(details.get('code', 0)),
 
-                'farge': details.get('color', '-'),
+                'farge': details.get('color', None),
                 'karakteristikk': [characteristic['readableValue'] for characteristic in
                                    details.get('content', {}).get('characteristics', [])],
                 'ingredienser': [ingredient['readableValue'] for ingredient in
                                  details.get('content', {}).get('ingredients', [])],
                 **{trait["name"].lower(): trait["readableValue"]
                     for trait in details.get('content', {}).get('traits', [])},
-                'lukt': details.get('smell', '-'),
-                'smak': details.get('taste', '-'),
+                'lukt': details.get('smell', None),
+                'smak': details.get('taste', None),
 
-                'passer til': [element['name'] for element in details.get('isGoodFor', [])],
-                'lagring': details.get('storagePotential', {}).get('formattedValue', '-'),
-                'kork': details.get('cork', '-'),
+                'passer til': [element['name'] for element in details.get('content', {}).get('isGoodFor', [])],
+                'lagring': details.get('content', {}).get('storagePotential', {}).get('formattedValue', None),
+                'kork': details.get('cork', None),
 
-                'beskrivelse': {'lang': details.get('style', {}).get('description', '-'),
-                                'kort': details.get('style', {}).get('name', '-')},
-                'metode': details.get('method', '-'),
-                'årgang': details.get('year', '-'),
+                'beskrivelse': {'lang': details.get('content', {}).get('style', {}).get('description', None),
+                                'kort': details.get('content', {}).get('style', {}).get('name', None)},
+                'metode': details.get('method', None),
+                'årgang': details.get('year', None),
             }
         except Exception as err:
             print(f'{product}: Trying another proxy. {err}')
@@ -167,9 +171,12 @@ def details(products: List[int] = None, max_workers=5):
                     continue
                 if 'alkohol' in product:
                     try:
-                        product['alkohol'] = float(product['alkohol'].replace(' prosent', ''))
+                        product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
                     except Exception:
                         print(f'Failed to convert alcohol to float: {product["alkohol"]}')
+
+                product = {key: value if value else None for key, value in product.items()}
+
                 operations.append(
                     pymongo.UpdateOne(
                         {'index': product['index']},
@@ -180,7 +187,7 @@ def details(products: List[int] = None, max_workers=5):
         _DATABASE.bulk_write(operations)
 
 
-def news(max_workers=10):
+def news(max_workers=5):
     response = requests.get(_NEW.format(0), proxies=_PROXY.get(), timeout=3)
 
     if response.status_code != 200:
@@ -212,4 +219,5 @@ def news(max_workers=10):
 
 
 if __name__ == '__main__':
-    news()
+    # news()
+    details()

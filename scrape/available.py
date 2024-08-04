@@ -68,7 +68,7 @@ def stores():
         _store['navn'] = _store.pop('displayName')
         _store['adresse'] = _store.pop('address')['formattedAddress']
         _store['koordinater'] = _store.pop('geoPoint')
-        _store['sortiment'] = _store.pop('assortment', '-')
+        _store['sortiment'] = _store.pop('assortment', None)
         _store['klikk og hent'] = _store.pop('clickAndCollect')
         _store['mobilbetaling'] = _store.pop('mobileCheckoutEnabled')
 
@@ -95,11 +95,11 @@ def _product(index: int) -> dict:
                     'status': 'utgått',
                     'kan kjøpes': False,
                     'tilgjengelig for bestilling': False,
-                    'bestillingsinformasjon': '-',
+                    'bestillingsinformasjon': None,
                     'tilgjengelig i butikk': False,
-                    'butikkinformasjon': '-',
+                    'butikkinformasjon': None,
                     'utgått': True,
-                    'butikk': [],
+                    'butikk': None,
                 }
 
             product = response.get('products', [{}])[0]
@@ -109,7 +109,7 @@ def _product(index: int) -> dict:
 
                 'butikk': [element['name'] for _store in store for element in _store],
 
-                'status': product.get('status', '-'),
+                'status': product.get('status', None),
                 'kan kjøpes': product.get('buyable', False),
                 'utgått': False,
 
@@ -121,7 +121,7 @@ def _product(index: int) -> dict:
                     .get('productAvailability') \
                     .get('deliveryAvailability', {}) \
                     .get('infos', [{}])[0] \
-                    .get('readableValue', '-'),
+                    .get('readableValue', None),
                 'tilgjengelig i butikk': product \
                     .get('productAvailability') \
                     .get('storesAvailability', {}) \
@@ -130,7 +130,7 @@ def _product(index: int) -> dict:
                     .get('productAvailability') \
                     .get('storesAvailability', {}) \
                     .get('infos', [{}])[0] \
-                    .get('readableValue', '-'),
+                    .get('readableValue', None),
             }
         except Exception as err:
             print(f'{index}: Trying another proxy. {err}')
@@ -180,6 +180,9 @@ def available(products: List[int] = None, max_workers=10):
                 product = future.result()
                 if not product:
                     continue
+
+                if not product['butikk']:
+                    product['butikk'] = None
 
                 operation = pymongo.UpdateOne(
                     {'index': product['index']},
