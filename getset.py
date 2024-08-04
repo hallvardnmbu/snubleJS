@@ -4,13 +4,17 @@ from typing import List
 
 import pandas as pd
 
-from database import uniques, amount, load, search
+from database import uniques, load
 from visualise import COLOUR, graph
 
 
-_FEATURES = ['kategori', 'underkategori',
-             'distrikt', 'underdistrikt',
-             'volum', 'land', 'butikk']
+_FEATURES = [
+    'kategori', 'underkategori',
+    'land', 'distrikt', 'underdistrikt',
+    'volum',
+    'butikk',
+    'årgang', 'beskrivelse.kort', 'passer til', 'kork', 'lagring'
+]
 _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
 _FOCUS = None
 
@@ -55,7 +59,6 @@ def set_data(state, fresh: bool = True):
         See functions `set_{next/previous}_page`.
     """
     state['flag']['updating'] = True
-    searching = state['finn']['navn'] is not None
 
     # Removing the divider from the selection.
     state['valgt'] = {
@@ -67,27 +70,19 @@ def set_data(state, fresh: bool = True):
 
     # Loading data for the current selection.
     try:
-        if searching:
-            data = search(
-                name=state['finn']['navn'],
-                amount=int(state['data']['antall']) * 2,
+        data, total = load(
+            **state['valgt'].to_dict(),
 
-                filters=state['finn']['filter'],
+            sorting=focus,
+            ascending=state['data']['stigende'],
+            amount=state['data']['antall'],
+            page=state['side']['gjeldende'],
 
-                sorting=focus,
-                ascending=state['data']['stigende'],
+            search=state['finn']['navn'],
+            filters=state['finn']['filter'] if state['finn']['navn'] else True,
 
-                **state['valgt'].to_dict() if state['finn']['filter'] else {},
-            )
-        else:
-            data = load(
-                **state['valgt'].to_dict(),
-
-                sorting=focus,
-                ascending=state['data']['stigende'],
-                amount=int(state['data']['antall']),
-                page=state['side']['gjeldende'],
-            )
+            fresh=fresh,
+        )
     except KeyError:
         state['flag']['updating'] = False
         state['flag']['invalid'] = True
@@ -105,14 +100,8 @@ def set_data(state, fresh: bool = True):
     _discounts(state, data)
 
     # Setting the total number of pages.
-    if fresh and not searching:
-        state['side']['totalt'] = max(amount(
-            **state['valgt'].to_dict(),
-            sorting=focus
-        ) // int(state['data']['antall']), 1)
-        state['side']['gjeldende'] = 1
-    elif fresh and searching:
-        state['side']['totalt'] = 1
+    if fresh:
+        state['side']['totalt'] = max(total // state['data']['antall'], 1)
         state['side']['gjeldende'] = 1
 
     state['flag']['updating'] = False
@@ -311,7 +300,9 @@ def reset_selection(state):
 
     # Reset the dropdown.
     # Arbitrarily chosen, as all `set_{selection}` functions cascade downwards.
+    _dropdown(state, 'kategori')
     set_category(state)
+
 
 
 def _discounts(state, data: pd.DataFrame):
@@ -338,12 +329,14 @@ def _discounts(state, data: pd.DataFrame):
         data['pris_gammel'] = data[prices[-2]]
 
     data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
+    data['volum'] = data['volum'].apply(lambda x: round(x, 2))
 
     data['bakgrunnsfarge'] = data['prisendring'].apply(lambda x: COLOUR['greenish'] if x < 0 else (COLOUR['redish'] if x > 0 else COLOUR['blackish']))
     data['tekstfarge'] = data['prisendring'].apply(lambda x: COLOUR['green'] if x < 0 else (COLOUR['red'] if x > 0 else COLOUR['black']))
 
-    # Rename columns with spaces to underscores.
-    data.columns = [col.replace(' ', '_') for col in data.columns]
+    # Rename columns with spaces to underscores, and å -> a.
+    data.columns = [col.replace(' ', '_').replace('å', 'a')
+                    for col in data.columns]
 
     state['data']['verdier'] = {
         str(k): v
