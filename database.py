@@ -1,7 +1,7 @@
 """Logic for interacting with the MongoDB database."""
 
 import os
-from typing import Union, Any, List, Dict
+from typing import Union, Any, List, Tuple, Dict
 
 import pandas as pd
 from pymongo.mongo_client import MongoClient
@@ -13,17 +13,39 @@ _CLIENT = MongoClient(
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
 _DATABASE = _CLIENT['vinskraper']['varer']
+_MAP = {
+    'årgang': 'argang',
+    'beskrivelse.kort': 'beskrivelse',
+    'passer til': 'passer_til',
+}
 
 
 def uniques(
     extract: List[str],
+
     kategori: List[str] = [],
     underkategori: List[str] = [],
+
     volum: List[str] = [],
+
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+
+    argang: List[str] = [],
+    beskrivelse: List[str] = [],
+    kork: List[str] = [],
+    lagring: List[str] = [],
+
+    # Arrays in database:
     butikk: List[str] = [],
+    passer_til: List[str] = [],
+
+    fra: Union[None, float] = None,
+    til: Union[None, float] = None,
+    filter: str = '',
+    search: str = '',
+
     **kwargs: Dict[str, Union[float, None]]
 ) -> Dict[str, Union[list, Dict[str, str]]]:
     """
@@ -63,115 +85,48 @@ def uniques(
 
         **{field: value for field, value in [
             ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': butikk} if butikk else None)
+            ('butikk', {'$all': butikk} if butikk else None),
+            ('passer til', {'$all': passer_til} if passer_til else None)
         ] if value},
 
         **{field: {'$in': value} for field, value in [
-                    ('kategori', kategori),
-                    ('underkategori', underkategori),
-                    ('volum', [float(v) for v in volum]),
-                    ('land', land),
-                    ('distrikt', distrikt),
-                    ('underdistrikt', underdistrikt)
-                ] if value}
+            ('kategori', kategori),
+            ('underkategori', underkategori),
+            ('volum', [float(v) for v in volum]),
+            ('land', land),
+            ('distrikt', distrikt),
+            ('underdistrikt', underdistrikt),
+            ('årgang', argang),
+            ('beskrivelse.kort', beskrivelse),
+            ('kork', kork),
+            ('lagring', lagring),
+        ] if value}
     })
 
     mapping: Dict[str, Union[list, Dict[str, str]]] = {
-        feature: list(set(filtered.distinct(feature)) - {None, '-'})
+        _MAP[feature] if feature in _MAP else feature: list(set(filtered.distinct(feature)) - {None, '-'})
         for feature in extract
     }
 
     return mapping
 
 
-def amount(
-    kategori: List[str] = [],
-    underkategori: List[str] = [],
-    volum: List[str] = [],
-    land: List[str] = [],
-    distrikt: List[str] = [],
-    underdistrikt: List[str] = [],
-    butikk: List[str] = [],
-
-    fra: Union[None, float] = None,
-    til: Union[None, float] = None,
-
-    sorting: str = 'prisendring',
-) -> int:
-    """
-    Extract the maximum amount of records for the given parameters.
-
-    Parameters
-    ----------
-    kategori : list of str
-        The categories to include.
-    underkategori : list of str
-        The subcategories to include.
-    volum : list of str
-        The volumes to include.
-    land : list of str
-        The countries to include.
-    distrikt : list of str
-        The districts to include.
-    underdistrikt : list of str
-        The subdistricts to include.
-    butikk : list of str
-        The stores to include.
-    fra : float
-        The minimum value to include (wrt. `sorting`).
-    til : float
-        The maximum value to include (wrt. `sorting`).
-    sorting : str
-        The feature to sort the data by.
-
-    Returns
-    -------
-    int
-        The maximum amount of records for the given parameters.
-    """
-    query = {
-        'utgått': False,
-        'kan kjøpes': True,
-
-        **{field: value for field, value in [
-            ('tilgjengelig for bestilling', not bool(butikk)),
-            ('butikk', {'$all': butikk} if butikk else None)
-        ] if value},
-
-        **{field: {'$in': value} for field, value in [
-                    ('kategori', kategori),
-                    ('underkategori', underkategori),
-                    ('volum', [float(v) for v in volum]),
-                    ('land', land),
-                    ('distrikt', distrikt),
-                    ('underdistrikt', underdistrikt)
-                ] if value}
-    }
-
-    if fra or til:
-        between = {op: val for op, val in [
-            ('$gte', fra),
-            ('$lte', til)
-        ] if val}
-        if sorting == 'volum':
-            query['volum'] = {
-                **query.get('volum', {}),
-                **between
-            }
-        else:
-            query[sorting] = between
-
-    return _DATABASE.count_documents(query)
-
-
 def load(
     kategori: List[str] = [],
     underkategori: List[str] = [],
-    volum: List[str] = [],
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
+    volum: List[str] = [],
+
+    argang: List[str] = [],
+    beskrivelse: List[str] = [],
+    kork: List[str] = [],
+    lagring: List[str] = [],
+
+    # Arrays in database:
     butikk: List[str] = [],
+    passer_til: List[str] = [],
 
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
@@ -180,7 +135,11 @@ def load(
     ascending: bool = True,
     amount: int = 10,
     page: int = 1,
-) -> pd.DataFrame:
+    search: str = '',
+    filters: bool = False,
+
+    fresh: bool = True,
+) -> Tuple[pd.DataFrame, Union[int, None]]:
     """
     Load the data from the database.
 
@@ -212,11 +171,20 @@ def load(
         The amount of data to load.
     page : int
         The page of the data to load.
+    search : str
+        The name to search for.
+    filters : bool
+        Whether to apply the filters to the search.
+    fresh : bool
+        Whether to calculate the total amount of records.
 
     Returns
     -------
     pd.DataFrame
         The data from the database.
+    int
+        The total amount of records for the given parameters.
+        If `fresh` is False, the total amount is not calculated.
 
     Raises
     ------
@@ -231,35 +199,61 @@ def load(
         The pipeline is constructed based on the given parameters.
         The pipeline is then used to load the data from the database.
     """
-    pipeline = [{
+    pipeline: List[Any] = []
+
+    if search:
+        pipeline += [{
+            '$search': {
+                'index': 'navn',
+                'text': {
+                    'query': search,
+                    'path': 'navn',
+                }
+            }
+        }]
+
+    pipeline += [{
         '$match': {
             'utgått': False,
             'kan kjøpes': True,
 
             **{field: value for field, value in [
-                ('tilgjengelig for bestilling', not bool(butikk)),
-                ('butikk', {'$all': butikk} if butikk else None)
+                ('tilgjengelig for bestilling', not bool(butikk and filters)),
+                ('butikk', {'$all': butikk} if (butikk and filters) else None),
+                ('passer til', {'$all': passer_til} if (passer_til and filters) else None)
             ] if value},
 
             **{field: {'$in': value} for field, value in [
-                        ('kategori', kategori),
-                        ('underkategori', underkategori),
-                        ('volum', [float(v) for v in volum]),
-                        ('land', land),
-                        ('distrikt', distrikt),
-                        ('underdistrikt', underdistrikt)
-                    ] if value}
+                ('kategori', kategori),
+                ('underkategori', underkategori),
+                ('volum', [float(v) for v in volum]),
+                ('land', land),
+                ('distrikt', distrikt),
+                ('underdistrikt', underdistrikt),
+                ('årgang', argang),
+                ('beskrivelse.kort', beskrivelse),
+                ('kork', kork),
+                ('lagring', lagring),
+            ] if (value and filters)}
         }
-    },
-    {
+    }]
+
+    if fresh:
+        total = list(_DATABASE.aggregate(pipeline + [{'$count': 'amount'}]))
+        try:
+            total = total[0].get('amount', 0)
+        except IndexError:
+            raise KeyError('No records found.')
+    else:
+        total = None
+
+    pipeline += [{
         '$sort': {
             sorting: 1 if ascending else -1
         }
-    },
-    {
+    }, {
         '$skip': (page - 1) * amount
-    },
-    {
+    }, {
         '$limit': amount
     }]
 
@@ -269,142 +263,15 @@ def load(
             ('$lte', til)
         ] if val}
         if sorting == 'volum':
-            pipeline[0]['$match']['volum'] = {
-                **pipeline[0]['$match'].get('volum', {}),
-                **between
-            }
-        else:
-            pipeline[0]['$match'][sorting] = between
-
-    collection = list(_DATABASE.aggregate(pipeline))
-
-    data = pd.DataFrame(collection).set_index('index').drop(columns=['_id']).replace({'-': None})
-
-    return data
-
-
-def search(
-    name: str,
-    amount: int = 10,
-
-    filters: bool = False,
-
-    kategori: List[str] = [],
-    underkategori: List[str] = [],
-    volum: List[str] = [],
-    land: List[str] = [],
-    distrikt: List[str] = [],
-    underdistrikt: List[str] = [],
-    butikk: List[str] = [],
-
-    fra: Union[None, float] = None,
-    til: Union[None, float] = None,
-
-    sorting: Union[None, str] = None,
-    ascending: bool = True,
-) -> pd.DataFrame:
-    """
-    Search for the given name in the database.
-
-    Parameters
-    ----------
-    name : str
-        The name to search for.
-    amount : int
-        The number of results to return.
-    filters : bool
-        Whether to apply the filters to the search.
-        The filters are the rest of the parameters.
-    kategori : list of str
-        The categories to include.
-    underkategori : list of str
-        The subcategories to include.
-    volum : list of str
-        The volumes to include.
-    land : list of str
-        The countries to include.
-    distrikt : list of str
-        The districts to include.
-    underdistrikt : list of str
-        The subdistricts to include.
-    butikk : list of str
-        The stores to include.
-    fra : float
-        The minimum value to include (wrt. `sorting`).
-    til : float
-        The maximum value to include (wrt. `sorting`).
-    sorting : str
-        The feature to sorting by.
-    ascending : bool
-        Whether to sort the data in ascending order.
-
-    Returns
-    -------
-    pd.DataFrame
-    """
-    if not name:
-        return load(
-            kategori=kategori, underkategori=underkategori, volum=volum,
-            land=land, distrikt=distrikt, underdistrikt=underdistrikt
-        )
-
-    pipeline: List[Any] = [{
-        '$search': {
-            'index': 'navn',
-            'text': {
-                'query': name,
-                'path': 'navn',
-            }
-        }
-    }]
-
-    if filters:
-        pipeline += [{
-            '$match': {
-                'utgått': False,
-                'kan kjøpes': True,
-
-                **{field: value for field, value in [
-                    ('tilgjengelig for bestilling', not bool(butikk)),
-                    ('butikk', {'$all': butikk} if butikk else None)
-                ] if value},
-
-                **{field: {'$in': value} for field, value in [
-                            ('kategori', kategori),
-                            ('underkategori', underkategori),
-                            ('volum', [float(v) for v in volum]),
-                            ('land', land),
-                            ('distrikt', distrikt),
-                            ('underdistrikt', underdistrikt)
-                        ] if value}
-            }
-        }]
-        if sorting:
-            pipeline += [{
-                '$sort': {
-                    sorting: 1 if ascending else -1
-                }
-            }]
-
-    if fra or til:
-        between = {op: val for op, val in [
-            ('$gte', fra),
-            ('$lte', til)
-        ] if val}
-        if sorting == 'volum':
-            pipeline[1]['$match']['volum'] = {
-                **pipeline[1]['$match'].get('volum', {}),
+            pipeline[1 if search else 0]['$match']['volum'] = {
+                **pipeline[1 if search else 0]['$match'].get('volum', {}),
                 **between
             }
         else:
             pipeline[1]['$match'][sorting] = between
 
-    pipeline += [{
-        '$limit': amount
-    }]
-
     collection = list(_DATABASE.aggregate(pipeline))
 
     data = pd.DataFrame(collection).set_index('index').drop(columns=['_id']).replace({'-': None})
 
-    return data
+    return data, total
