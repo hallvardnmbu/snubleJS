@@ -99,7 +99,7 @@ STATE = writer.init_state({
 
     'data': {
         'antall': 10,
-        'stigende': True,
+        'stigende': ['True'],
         'fokus': 'prisendring',
         'dropdown': {
             'prisendring': 'Prisendring',
@@ -120,6 +120,7 @@ STATE = writer.init_state({
         'updating': False,
         'invalid': False,
         'valid': True,
+        'butikk': False,
 
         'mellom': True,
 
