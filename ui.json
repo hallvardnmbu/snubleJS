@@ -526,7 +526,7 @@
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
             },
-            "visible": "flag.between",
+            "visible": "flag.mellom",
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "valgt.fra"
@@ -548,7 +548,7 @@
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
             },
-            "visible": "flag.between",
+            "visible": "flag.mellom",
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "valgt.til"
@@ -648,7 +648,7 @@
             "position": 1,
             "parentId": "8kmf11rt8ontfjhn",
             "handlers": {},
-            "visible": "flag.between"
+            "visible": "flag.mellom"
         },
         "3umy0emxn9586tbq": {
             "id": "3umy0emxn9586tbq",
@@ -1119,96 +1119,7 @@
             },
             "isCodeManaged": false,
             "position": 0,
-            "parentId": "1dodwg5iae6mv16s",
-            "handlers": {},
-            "visible": true
-        },
-        "5rokdmrl6pyrsvkc": {
-            "id": "5rokdmrl6pyrsvkc",
-            "type": "header",
-            "content": {
-                "text": "@{item.pris} kr",
-                "primaryTextColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "ahdvv7swumst0vh4",
-            "handlers": {},
-            "visible": true
-        },
-        "dbvptav05uppacbm": {
-            "id": "dbvptav05uppacbm",
-            "type": "heading",
-            "content": {
-                "text": "@{item.pris_gammel} kr",
-                "headingType": "h4",
-                "alignment": "right",
-                "primaryTextColor": "#8E3B46"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "9mirtq9wz60dcpch",
-            "handlers": {},
-            "visible": "item.pris_gammel"
-        },
-        "9mirtq9wz60dcpch": {
-            "id": "9mirtq9wz60dcpch",
-            "type": "horizontalstack",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "c544v0mrfn9mvyi3",
-            "handlers": {},
-            "visible": true
-        },
-        "1taorb1hbz5xybzf": {
-            "id": "1taorb1hbz5xybzf",
-            "type": "icon",
-            "content": {
-                "icon": "arrow_back",
-                "color": "#06070E"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "9mirtq9wz60dcpch",
-            "handlers": {},
-            "visible": "item.pris_gammel"
-        },
-        "li3lm978esmqoe9u": {
-            "id": "li3lm978esmqoe9u",
-            "type": "columns",
-            "content": {},
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "5rokdmrl6pyrsvkc",
-            "handlers": {},
-            "visible": true
-        },
-        "c544v0mrfn9mvyi3": {
-            "id": "c544v0mrfn9mvyi3",
-            "type": "column",
-            "content": {
-                "width": "0.8",
-                "contentHAlign": "start",
-                "contentVAlign": "center"
-            },
-            "isCodeManaged": false,
-            "position": 0,
-            "parentId": "li3lm978esmqoe9u",
-            "handlers": {},
-            "visible": true
-        },
-        "1dodwg5iae6mv16s": {
-            "id": "1dodwg5iae6mv16s",
-            "type": "column",
-            "content": {
-                "width": "0.2",
-                "contentHAlign": "end",
-                "contentVAlign": "center"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "li3lm978esmqoe9u",
+            "parentId": "xnqjw4qz9v0oxbxy",
             "handlers": {},
             "visible": true
         },
@@ -1632,46 +1543,140 @@
         "m90p20vzb8ibinu6": {
             "id": "m90p20vzb8ibinu6",
             "type": "link",
-            "parentId": "lgvnl7rz19ii190j",
             "content": {
                 "url": "https://github.com/hallvardnmbu/snublejuice",
                 "target": "_blank",
                 "text": "Kildekode"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 0,
+            "parentId": "lgvnl7rz19ii190j",
+            "handlers": {},
             "visible": true
         },
         "qkxci5xn20k828v8": {
             "id": "qkxci5xn20k828v8",
             "type": "columns",
-            "parentId": "0tzqxesupzw3z68k",
             "content": {},
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 8,
+            "parentId": "0tzqxesupzw3z68k",
+            "handlers": {},
             "visible": true
         },
         "0n3jy8asc3b4p0kd": {
             "id": "0n3jy8asc3b4p0kd",
             "type": "column",
-            "parentId": "qkxci5xn20k828v8",
             "content": {
                 "width": "1",
                 "contentHAlign": "start",
                 "contentVAlign": "end"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 0,
+            "parentId": "qkxci5xn20k828v8",
+            "handlers": {},
             "visible": true
         },
         "lgvnl7rz19ii190j": {
             "id": "lgvnl7rz19ii190j",
             "type": "column",
-            "parentId": "qkxci5xn20k828v8",
             "content": {
                 "width": "1",
                 "contentHAlign": "end",
                 "contentVAlign": "end"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "qkxci5xn20k828v8",
+            "handlers": {},
+            "visible": true
+        },
+        "nd8z8u2ghv2dwci7": {
+            "id": "nd8z8u2ghv2dwci7",
+            "type": "text",
+            "content": {
+                "text": "(@{item.volumpris} kr / L)",
+                "useMarkdown": "yes",
+                "primaryTextColor": "#06070E",
+                "alignment": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "xnqjw4qz9v0oxbxy",
+            "handlers": {},
+            "visible": true
+        },
+        "zooubyrelx6osjxo": {
+            "id": "zooubyrelx6osjxo",
+            "type": "header",
+            "content": {
+                "text": "@{item.pris} kr",
+                "primaryTextColor": "#136F63"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "ahdvv7swumst0vh4",
+            "handlers": {},
+            "visible": true
+        },
+        "xnqjw4qz9v0oxbxy": {
+            "id": "xnqjw4qz9v0oxbxy",
+            "type": "horizontalstack",
+            "content": {
+                "contentHAlign": "start"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "k09bi0nwq0uo6ftl",
+            "handlers": {},
+            "visible": true
+        },
+        "dbvptav05uppacbm": {
+            "id": "dbvptav05uppacbm",
+            "type": "heading",
+            "content": {
+                "text": "F\u00d8R @{item.pris_gammel} kr",
+                "headingType": "h4",
+                "alignment": "left",
+                "primaryTextColor": "#8E3B46"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "a243ireg4kphs3b0",
+            "handlers": {},
+            "visible": "item.pris_gammel"
+        },
+        "o0pmx2o5sy78pdrc": {
+            "id": "o0pmx2o5sy78pdrc",
+            "type": "columns",
+            "parentId": "zooubyrelx6osjxo",
+            "content": {},
+            "handlers": {},
+            "position": 0,
+            "visible": true
+        },
+        "k09bi0nwq0uo6ftl": {
+            "id": "k09bi0nwq0uo6ftl",
+            "type": "column",
+            "parentId": "o0pmx2o5sy78pdrc",
+            "content": {
+                "width": "1",
+                "contentHAlign": "start",
+                "contentVAlign": "center"
+            },
+            "handlers": {},
+            "position": 0,
+            "visible": true
+        },
+        "a243ireg4kphs3b0": {
+            "id": "a243ireg4kphs3b0",
+            "type": "column",
+            "parentId": "o0pmx2o5sy78pdrc",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end",
+                "contentVAlign": "center"
             },
             "handlers": {},
             "position": 1,

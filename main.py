@@ -104,12 +104,9 @@ STATE = writer.init_state({
         'dropdown': {
             'prisendring': 'Prisendring',
             _price: 'Pris',
+            'volumpris': 'Volumpris',
+            'alkohol': 'Alkoholprosent',
             'navn': 'Navn',
-            'kategori': 'Kategori',
-            'underkategori': 'Underkategori',
-            'land': 'Land',
-            'distrikt': 'Distrikt',
-            'underdistrikt': 'Underdistrikt',
             'volum': 'Volum',
         },
         'verdier': None
@@ -124,7 +121,7 @@ STATE = writer.init_state({
         'invalid': False,
         'valid': True,
 
-        'between': True,
+        'mellom': True,
 
         'underkategori': False,
         'distrikt': False,
