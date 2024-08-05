@@ -41,6 +41,10 @@ def initialise(state):
         str(vol): f'{vol:g} cL'
         for vol in state['dropdown']['volum'].to_dict().values()
     }
+    state['dropdown']['argang'] = {
+        str(year): f'{year:g}'
+        for year in state['dropdown']['argang'].to_dict().values()
+    }
 
     set_data(state)
 
@@ -179,7 +183,7 @@ def _dropdown(
     # Update the dropdown for the current feature.
     # Including impossible values if `include_all` is `True`.
     state['dropdown'][feature] = {
-        str(cat): cat if feature != 'volum' else (f'{float(cat):g} cL' if cat not in _DIVIDER else cat)
+        str(cat): cat if feature not in ('volum', 'argang') else (f'{float(cat):g}' + (' cL' if feature == 'volum' else '') if cat not in _DIVIDER else cat)
         for cat in sorted(possible)
         + (_DIVIDER if others else [])
         + sorted(others, key=lambda x: x if feature != 'volum' else float(x))
