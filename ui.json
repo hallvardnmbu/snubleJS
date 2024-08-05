@@ -7,7 +7,7 @@
             "id": "root",
             "type": "root",
             "content": {
-                "appName": "vinskraper"
+                "appName": "snublejuice"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -28,7 +28,8 @@
                 "cssClasses": "",
                 "buttonColor": "#F3F7F4",
                 "buttonTextColor": "#136F63",
-                "key": ""
+                "key": "",
+                "pageMode": "compact"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -56,7 +57,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 6,
+            "position": 7,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": true
@@ -446,7 +447,7 @@
                 "proxyId": "a2m7fgkyh7e71jdo"
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 6,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.valid"
@@ -1612,6 +1613,68 @@
             "position": 0,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
+            "visible": true
+        },
+        "5k6rdzhkyb82qvnq": {
+            "id": "5k6rdzhkyb82qvnq",
+            "type": "text",
+            "content": {
+                "text": "\u00a9 2024 Hallvard H\u00f8yland Lavik",
+                "useMarkdown": "yes",
+                "alignment": ""
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "0n3jy8asc3b4p0kd",
+            "handlers": {},
+            "visible": true
+        },
+        "m90p20vzb8ibinu6": {
+            "id": "m90p20vzb8ibinu6",
+            "type": "link",
+            "parentId": "lgvnl7rz19ii190j",
+            "content": {
+                "url": "https://github.com/hallvardnmbu/snublejuice",
+                "target": "_blank",
+                "text": "Kildekode"
+            },
+            "handlers": {},
+            "position": 0,
+            "visible": true
+        },
+        "qkxci5xn20k828v8": {
+            "id": "qkxci5xn20k828v8",
+            "type": "columns",
+            "parentId": "0tzqxesupzw3z68k",
+            "content": {},
+            "handlers": {},
+            "position": 8,
+            "visible": true
+        },
+        "0n3jy8asc3b4p0kd": {
+            "id": "0n3jy8asc3b4p0kd",
+            "type": "column",
+            "parentId": "qkxci5xn20k828v8",
+            "content": {
+                "width": "1",
+                "contentHAlign": "start",
+                "contentVAlign": "end"
+            },
+            "handlers": {},
+            "position": 0,
+            "visible": true
+        },
+        "lgvnl7rz19ii190j": {
+            "id": "lgvnl7rz19ii190j",
+            "type": "column",
+            "parentId": "qkxci5xn20k828v8",
+            "content": {
+                "width": "1",
+                "contentHAlign": "end",
+                "contentVAlign": "end"
+            },
+            "handlers": {},
+            "position": 1,
             "visible": true
         }
     }

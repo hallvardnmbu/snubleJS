@@ -98,7 +98,7 @@ STATE = writer.init_state({
     # Ordered by the discount percentage.
 
     'data': {
-        'antall': 7,
+        'antall': 10,
         'stigende': True,
         'fokus': 'prisendring',
         'dropdown': {
