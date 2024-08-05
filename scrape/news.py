@@ -166,11 +166,14 @@ def details(products: List[int] = None, max_workers=5):
                 product = future.result()
                 if not product:
                     continue
+
                 if 'alkohol' in product:
                     try:
                         product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
                     except Exception:
-                        print(f'Failed to convert alcohol to float: {product["alkohol"]}')
+                        product['alkohol'] = 0.0
+                if product['årgang']:
+                    product['årgang'] = int(product['årgang'])
 
                 product = {key: value if value else None for key, value in product.items()}
 

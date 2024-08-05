@@ -90,7 +90,22 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                             100
                         ]},
                         0
-                    ]}
+                    ]},
+                }},
+                {'$set': {
+                    'volumpris': {'$cond': {
+                        'if': {'$and': [
+                            {'$ne': [f'$pris {_NOW}', None]},
+                            {'$ne': [f'$pris {_NOW}', 0]},
+                            {'$ne': ['$volum', None]},
+                            {'$ne': ['$volum', 0]},
+                        ]},
+                        'then': {'$multiply': [
+                            {'$divide': [f'$pris {_NOW}', '$volum']},
+                            100
+                        ]},
+                        'else': None
+                    }}
                 }}
             ],
             upsert=True
