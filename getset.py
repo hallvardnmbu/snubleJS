@@ -78,7 +78,7 @@ def set_data(state, fresh: bool = True):
             **state['valgt'].to_dict(),
 
             sorting=focus,
-            ascending=state['data']['stigende'],
+            ascending=len(state['data']['stigende']) > 0,
             amount=state['data']['antall'],
             page=state['side']['gjeldende'],
 
@@ -196,6 +196,12 @@ def _dropdown(
 
 
 def set_store(state):
+
+    if state['valgt']['butikk']:
+        state['flag']['butikk'] = True
+    else:
+        state['flag']['butikk'] = False
+
     set_category(state, main=False)
     set_country(state, main=False)
     set_volume(state, main=False)

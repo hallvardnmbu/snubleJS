@@ -47,7 +47,7 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 5,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.updating"
@@ -57,7 +57,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 7,
+            "position": 8,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": true
@@ -278,7 +278,7 @@
                 "valueVariable": "item"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 6,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.valid"
@@ -383,26 +383,6 @@
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {}
         },
-        "etd9cf3xfx7tvsqi": {
-            "id": "etd9cf3xfx7tvsqi",
-            "type": "switchinput",
-            "content": {
-                "label": "Vis lavest f\u00f8rst",
-                "separatorColor": "#8E3B46",
-                "accentColor": "#136F63"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "hkiku69lu2i26z2k",
-            "handlers": {
-                "wf-toggle": "getset.set_data"
-            },
-            "visible": "data.fokus",
-            "binding": {
-                "eventType": "wf-toggle",
-                "stateRef": "data.stigende"
-            }
-        },
         "ab9fej581ixb1r14": {
             "id": "ab9fej581ixb1r14",
             "type": "column",
@@ -447,7 +427,7 @@
                 "proxyId": "a2m7fgkyh7e71jdo"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 7,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.valid"
@@ -463,7 +443,7 @@
                 "errorColor": "#8E3B46"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 4,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": "flag.invalid"
@@ -1559,7 +1539,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 8,
+            "position": 9,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": true
@@ -1650,37 +1630,74 @@
         "o0pmx2o5sy78pdrc": {
             "id": "o0pmx2o5sy78pdrc",
             "type": "columns",
-            "parentId": "zooubyrelx6osjxo",
             "content": {},
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 0,
+            "parentId": "zooubyrelx6osjxo",
+            "handlers": {},
             "visible": true
         },
         "k09bi0nwq0uo6ftl": {
             "id": "k09bi0nwq0uo6ftl",
             "type": "column",
-            "parentId": "o0pmx2o5sy78pdrc",
             "content": {
                 "width": "1",
                 "contentHAlign": "start",
                 "contentVAlign": "center"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 0,
+            "parentId": "o0pmx2o5sy78pdrc",
+            "handlers": {},
             "visible": true
         },
         "a243ireg4kphs3b0": {
             "id": "a243ireg4kphs3b0",
             "type": "column",
-            "parentId": "o0pmx2o5sy78pdrc",
             "content": {
                 "width": "1",
                 "contentHAlign": "end",
                 "contentVAlign": "center"
             },
-            "handlers": {},
+            "isCodeManaged": false,
             "position": 1,
+            "parentId": "o0pmx2o5sy78pdrc",
+            "handlers": {},
             "visible": true
+        },
+        "scxsx66to0kjuhmi": {
+            "id": "scxsx66to0kjuhmi",
+            "type": "message",
+            "content": {
+                "message": "OBS: Tilgjengelighet i butikk kan avvike noe fra faktisk lagerbeholdning.",
+                "infoColor": "#F3F7F4"
+            },
+            "isCodeManaged": false,
+            "position": 3,
+            "parentId": "0tzqxesupzw3z68k",
+            "handlers": {},
+            "visible": "flag.butikk"
+        },
+        "7t9ueh99iyq3qqsf": {
+            "id": "7t9ueh99iyq3qqsf",
+            "type": "checkboxinput",
+            "content": {
+                "label": "",
+                "options": "{\n  \"True\": \"Vis lavest f\u00f8rst\"\n}",
+                "accentColor": "#136F63",
+                "orientation": ""
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "hkiku69lu2i26z2k",
+            "handlers": {
+                "wf-options-change": "getset.set_data"
+            },
+            "visible": "data.fokus",
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "data.stigende"
+            }
         }
     }
 }
