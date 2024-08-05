@@ -116,10 +116,10 @@ def set_focus(state):
 
     state['valgt']['fra'] = None
     state['valgt']['til'] = None
-    if state['data']['fokus'].startswith('pris') or state['data']['fokus'] == 'volum':
-        state['flag']['between'] = True
+    if state['data']['fokus'] not in ['navn']:
+        state['flag']['mellom'] = True
     else:
-        state['flag']['between'] = False
+        state['flag']['mellom'] = False
 
     _FOCUS = state['data']['fokus']
     set_data(state)
@@ -329,6 +329,7 @@ def _discounts(state, data: pd.DataFrame):
         data['pris_gammel'] = data[prices[-2]]
 
     data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
+    data['volumpris'] = data['volumpris'].apply(lambda x: round(x, 2))
     data['volum'] = data['volum'].apply(lambda x: round(x, 2))
 
     data['bakgrunnsfarge'] = data['prisendring'].apply(lambda x: COLOUR['greenish'] if x < 0 else (COLOUR['redish'] if x > 0 else COLOUR['blackish']))
