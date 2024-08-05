@@ -1,10 +1,7 @@
 """
 Scrape products from vinmonopolet's website and store the results to a database.
 
-TODO: Update this function to only fetch the updated prices.
-TODO: `./available.py` and `./news.py` handle the rest.
-
-CRON JOB: 0 06 1 * *
+CRON JOB: 0 06 1,14 * *
 """
 
 import os
@@ -60,6 +57,7 @@ class CATEGORY(enum.Enum):
     CIDER = 'sider'
     SAKE = 'sake'
     MEAD = 'mjød'
+    ALCOHOL_FREE = 'alkoholfritt'
 
 
 def _upsert(data: List[dict]) -> BulkWriteResult:
@@ -155,28 +153,46 @@ def _process_images(images):
 def _process(products) -> List[dict]:
     return [{
         'index': int(product.get('code', 0)),
-        'navn': product.get('name', None),
-        'volum': product.get('volume', {}).get('value', 0.0),
-        'land': product.get('main_country', {}).get('name', None),
-        'distrikt': product.get('district', {}).get('name', None),
-        'underdistrikt': product.get('sub_District', {}).get('name', None),
-        'kategori': product.get('main_category', {}).get('name', None),
-        'underkategori': product.get('main_sub_category', {}).get('name', None),
-        'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
+
         'status': product.get('status', None),
         'kan kjøpes': product.get('buyable', False),
-        'utgått': product.get('expired', False),
-        'tilgjengelig for bestilling': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('availableForPurchase', False),
-        'bestillingsinformasjon': product.get('productAvailability', {}).get(
-            'deliveryAvailability', {}).get('infos', [{}])[0].get('readableValue', None),
-        'tilgjengelig i butikk': product.get('productAvailability', {}).get('storesAvailability', {}).get('availableForPurchase', False),
-        'butikkinformasjon': product.get('productAvailability', {}).get('storesAvailability',
-                                                                        {}).get('infos',
-                                                                                [{}])[0].get(
-            'readableValue', None),
-        'produktutvalg': product.get('product_selection', None),
-        'bærekraftig': product.get('sustainable', False),
-        'bilde': _process_images(product.get('images')),
+        'utgått': product.get('expired', True),
+
+        'tilgjengelig for bestilling': product.get(
+            'productAvailability', {}
+        ).get(
+            'deliveryAvailability', {}
+        ).get(
+            'availableForPurchase', False
+        ),
+
+        'bestillingsinformasjon': product.get(
+            'productAvailability', {}
+        ).get(
+            'deliveryAvailability', {}
+        ).get(
+            'infos', [{}]
+        )[0].get(
+            'readableValue', None
+        ),
+
+        'tilgjengelig i butikk': product.get(
+            'productAvailability', {}
+        ).get(
+            'storesAvailability', {}
+        ).get(
+            'availableForPurchase', False
+        ),
+
+        'butikkinformasjon': product.get(
+            'productAvailability', {}
+        ).get(
+            'storesAvailability', {}
+        ).get('infos', [{}]
+        )[0].get(
+            'readableValue', None
+        ),
+
         f'pris {_NOW}': product.get('price', {}).get('value', 0.0),
     } for product in products]
 

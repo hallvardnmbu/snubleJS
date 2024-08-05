@@ -2,9 +2,6 @@
 Fetch new products.
 Fetch detailed information about products.
 
-TODO: Check if new products are within the `utgått` collection.
-TODO: If so, move them back to the `varer` collection.
-
 CRON JOB: 0 05 1/7 * *
 """
 
@@ -188,6 +185,7 @@ def details(products: List[int] = None, max_workers=5):
 
 
 def news(max_workers=5):
+    expired = set(_CLIENT['vinskraper']['utgått'].distinct('index'))
     response = requests.get(_NEW.format(0), proxies=_PROXY.get(), timeout=3)
 
     if response.status_code != 200:
@@ -202,6 +200,14 @@ def news(max_workers=5):
         results = list(executor.map(_news, range(pages)))
 
         new = list({product['index'] for result in results for product in result} - old)
+
+        # If a new product already exists, but is expired, move it back to the main collection.
+        _expired = set(new) & expired
+        if _expired:
+            moving = list(_CLIENT['vinskraper']['utgått'].find({'index': {'$in': list(_expired)}}))
+            _CLIENT['vinskraper']['utgått'].delete_many({'index': {'$in': list(_expired)}})
+            _DATABASE.insert_many(moving)
+            expired -= _expired
 
         operations = [pymongo.UpdateOne(
             {'index': product['index']},
