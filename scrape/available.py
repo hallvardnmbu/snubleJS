@@ -22,6 +22,7 @@ _CLIENT = MongoClient(
 )
 _DATABASE = _CLIENT['vinskraper']['varer']
 _EXPIRED = _CLIENT['vinskraper']['utgått']
+_EXISTING = _DATABASE.distinct('index')
 
 _PROXY = Proxy()
 
@@ -106,6 +107,7 @@ def _product(index: int) -> dict:
 
             return {
                 'index': index,
+                'oppdater': index not in _EXISTING,
 
                 'butikk': [element['name'] for _store in store for element in _store],
 
