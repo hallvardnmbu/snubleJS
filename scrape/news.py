@@ -29,7 +29,7 @@ _PROXY = Proxy()
 _NEW = "https://www.vinmonopolet.no/vmpws/v2/vmp/search?searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue"
 _DETAILS = 'https://www.vinmonopolet.no/vmpws/v3/vmp/products/{}?fields=FULL'
 
-_NOW = time.strftime('%Y-%m-01')
+_MONTH = time.strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
 
@@ -63,7 +63,8 @@ def _process(products) -> List[dict]:
         'produktutvalg': product.get('product_selection', None),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
-        f'pris {_NOW}': product.get('price', {}).get('value', 0.0),
+        f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
+        'ny': True,
     } for product in products]
 
 
@@ -197,7 +198,11 @@ def news(max_workers=5):
     response = response.json()
     pages = response.get('contentSearchResult', {}).get('pagination', {}).get('totalPages', 0)
 
-    ids = []
+    # Extracting the products that needs to be updated with detailed information.
+    # Removing the 'oppdater' key from the products (marking them as updated).
+    ids = list(_DATABASE.find({'oppdater': True}))
+    _DATABASE.update_many({'oppdater': True}, {'$unset': {'oppdater': ''}})
+
     old = set(_DATABASE.distinct('index'))
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         results = list(executor.map(_news, range(pages)))
@@ -208,6 +213,8 @@ def news(max_workers=5):
         _expired = set(new) & expired
         if _expired:
             moving = list(_CLIENT['vinskraper']['utgått'].find({'index': {'$in': list(_expired)}}))
+            for record in moving:
+                record['ny'] = True
             _CLIENT['vinskraper']['utgått'].delete_many({'index': {'$in': list(_expired)}})
             _DATABASE.insert_many(moving)
             expired -= _expired
@@ -216,7 +223,7 @@ def news(max_workers=5):
             {'index': product['index']},
             {'$set': product},
             upsert=True
-        ) for result in results for product in result]
+        ) for result in results for product in result if product['index'] in new]
 
         result = _DATABASE.bulk_write(operations)
         print(f'Inserted {result.upserted_count} new products.')
@@ -228,5 +235,5 @@ def news(max_workers=5):
 
 
 if __name__ == '__main__':
-    # news()
-    details()
+    news()
+    # details()
