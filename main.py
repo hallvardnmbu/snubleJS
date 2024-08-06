@@ -8,8 +8,8 @@ from getset import initialise, set_data, set_focus, set_store, set_country, set_
 
 
 # To prevent errors before the newest data is loaded, the newest column is set manually.
-_price = sorted([col for col in load(amount=1)[0].columns if col.startswith('pris ')],
-                key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))[-1]
+_prices = sorted([col for col in load(amount=1)[0].columns if col.startswith('pris ')],
+                  key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))
 
 
 STATE = writer.init_state({
@@ -101,15 +101,21 @@ STATE = writer.init_state({
         'antall': 10,
         'stigende': ['True'],
         'fokus': 'prisendring',
+        'prisendring': {
+            'valg': None,
+            'mulig': {
+                dato: dato.split(' ')[-1] for dato in _prices
+            }
+        },
         'dropdown': {
             'prisendring': 'Prisendring',
-            _price: 'Pris',
+            _prices[-1]: 'Pris',
             'volumpris': 'Volumpris',
             'alkohol': 'Alkoholprosent',
             'navn': 'Navn',
             'volum': 'Volum',
         },
-        'verdier': None
+        'verdier': None,
     },
 
     # flag

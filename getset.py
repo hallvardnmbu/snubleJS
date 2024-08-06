@@ -167,7 +167,8 @@ def _dropdown(
     # Omitting the current feature and the ones in the omit list.
     possible = uniques(
         extract=[feature],
-        **{k: v for k, v in state['valgt'].to_dict().items() if k not in (omit + [feature])},
+        **{k: v for k, v in state['valgt'].to_dict().items()
+            if k not in (omit + [feature])},
     )[feature]
 
     # Get the values that are not possible.
@@ -314,6 +315,15 @@ def reset_selection(state):
     set_category(state)
 
 
+def _prisendring(new, old):
+    """Safe percentage change calculation."""
+    if old == 0 or new == 0 or new is None or old is None:
+        return 0
+    try:
+        return round(100 * (new - old) / old, 2)
+    except (ZeroDivisionError, TypeError):
+        return 0
+
 
 def _discounts(state, data: pd.DataFrame):
     """
@@ -336,9 +346,13 @@ def _discounts(state, data: pd.DataFrame):
     if len(prices) < 2:
         data['pris_gammel'] = data['pris'].copy()
     else:
-        data['pris_gammel'] = data[prices[-2]]
+        valg = state['data']['prisendring']['valg'] if state['data']['prisendring']['valg'] else prices[-2]
+        data['pris_gammel'] = data[valg]
 
-    data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
+    # data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
+    data['prisendring'] = [_prisendring(new, old)
+                           for new, old in zip(data['pris'], data['pris_gammel'])]
+
     data['volumpris'] = data['volumpris'].apply(lambda x: round(x, 2))
     data['volum'] = data['volum'].apply(lambda x: round(x, 2))
 

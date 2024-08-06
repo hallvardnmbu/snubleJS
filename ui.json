@@ -538,11 +538,11 @@
             "id": "jybwlc2vw54cce00",
             "type": "column",
             "content": {
-                "width": "0.35",
+                "width": "0.5",
                 "contentHAlign": "end"
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
             "visible": true
@@ -569,19 +569,6 @@
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.butikk"
             }
-        },
-        "sko1reuiykt5larl": {
-            "id": "sko1reuiykt5larl",
-            "type": "column",
-            "content": {
-                "width": "0.15",
-                "contentHAlign": "end"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "a2m7fgkyh7e71jdo",
-            "handlers": {},
-            "visible": true
         },
         "w23jmw2xm892ak3z": {
             "id": "w23jmw2xm892ak3z",
@@ -1366,7 +1353,7 @@
             "content": {
                 "label": "",
                 "options": "@{dropdown.passer_til}",
-                "placeholder": "Passer til ...",
+                "placeholder": "Passer til",
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
@@ -1387,7 +1374,7 @@
             "content": {
                 "label": "",
                 "options": "@{dropdown.argang}",
-                "placeholder": "\u00c5rgang ...",
+                "placeholder": "\u00c5rgang",
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
@@ -1408,7 +1395,7 @@
             "content": {
                 "label": "",
                 "options": "@{dropdown.beskrivelse}",
-                "placeholder": "Beskrivelse ...",
+                "placeholder": "Beskrivelse",
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
@@ -1429,7 +1416,7 @@
             "content": {
                 "label": "",
                 "options": "@{dropdown.kork}",
-                "placeholder": "Kork ...",
+                "placeholder": "Kork",
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
@@ -1450,7 +1437,7 @@
             "content": {
                 "label": "",
                 "options": "@{dropdown.lagring}",
-                "placeholder": "Lagring ...",
+                "placeholder": "Lagring",
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
@@ -1698,6 +1685,51 @@
                 "eventType": "wf-options-change",
                 "stateRef": "data.stigende"
             }
+        },
+        "pv9u5ezhasiykpdv": {
+            "id": "pv9u5ezhasiykpdv",
+            "type": "multiselectinput",
+            "content": {
+                "label": "",
+                "options": "@{data.prisendring.mulig}",
+                "placeholder": "Referansepris",
+                "chipTextColor": "#06070E",
+                "maximumCount": "1"
+            },
+            "isCodeManaged": false,
+            "position": 8,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {
+                "wf-options-change": "getset.set_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "data.prisendring.valg"
+            }
+        },
+        "qq9oybiq7cfe205t": {
+            "id": "qq9oybiq7cfe205t",
+            "type": "separator",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 6,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {},
+            "visible": true
+        },
+        "q53tf536wzf0wvjb": {
+            "id": "q53tf536wzf0wvjb",
+            "type": "text",
+            "content": {
+                "text": "Vinmonopolet justerer prisene hver m\u00e5ned. Som standard er n\u00e5v\u00e6rende pris sammenliknet med **forrige m\u00e5neds**. Her kan dette referansepunktet endres.",
+                "useMarkdown": "yes"
+            },
+            "isCodeManaged": false,
+            "position": 7,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {},
+            "visible": true
         }
     }
 }
