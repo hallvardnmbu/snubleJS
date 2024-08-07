@@ -52,18 +52,12 @@ def _process(products) -> List[dict]:
         'status': product.get('status', None),
         'kan kjøpes': product.get('buyable', False),
         'utgått': product.get('expired', False),
-        'tilgjengelig for bestilling': product.get('productAvailability', {}).get('deliveryAvailability', {}).get('availableForPurchase', False),
-        'bestillingsinformasjon': product.get('productAvailability', {}).get(
-            'deliveryAvailability', {}).get('infos', [{}])[0].get('readableValue', None),
-        'tilgjengelig i butikk': product.get('productAvailability', {}).get('storesAvailability', {}).get('availableForPurchase', False),
-        'butikkinformasjon': product.get('productAvailability', {}).get('storesAvailability',
-                                                                        {}).get('infos',
-                                                                                [{}])[0].get(
-            'readableValue', None),
+
         'produktutvalg': product.get('product_selection', None),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
         f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
+        'volumpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 0.0),
         'ny': 0,
     } for product in products]
 
@@ -101,6 +95,41 @@ def _details(product: int) -> dict:
 
             return {
                 'index': int(details.get('code', 0)),
+
+                'navn': details.get('name', None),
+                'volum': details.get('volume', {}).get('value', 0.0),
+                'land': details.get('main_country', {}).get('name', None),
+                'distrikt': details.get('district', {}).get('name', None),
+                'underdistrikt': details.get('sub_District', {}).get('name', None),
+                'kategori': details.get('main_category', {}).get('name', None),
+                'underkategori': details.get(
+                    'main_sub_category', {}
+                ).get('name', None),
+                'url': f'https://www.vinmonopolet.no{details.get("url", "")}',
+                'status': details.get('status', None),
+                'kan kjøpes': details.get('buyable', False),
+                'utgått': details.get('expired', False),
+                'tilgjengelig for bestilling': details.get(
+                    'productAvailability', {}
+                ).get(
+                    'deliveryAvailability', {}
+                ).get(
+                    'availableForPurchase', False
+                ),
+                'bestillingsinformasjon': details.get(
+                    'productAvailability', {}
+                ).get(
+                    'deliveryAvailability', {}
+                ).get(
+                    'infos', [{}]
+                )[0].get(
+                    'readableValue', None
+                ),
+                'produktutvalg': details.get('product_selection', None),
+                'bærekraftig': details.get('sustainable', False),
+                'bilde': _process_images(details.get('images')),
+                f'pris {_MONTH}': details.get('price', {}).get('value', 0.0),
+                'ny': 0,
 
                 'farge': details.get('color', None),
                 'karakteristikk': [characteristic['readableValue'] for characteristic in
@@ -173,6 +202,8 @@ def details(products: List[int] = None, max_workers=5):
                         product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
                     except Exception:
                         product['alkohol'] = 0.0
+                else:
+                    product['alkohol'] = 0.0
                 if product['årgang']:
                     product['årgang'] = int(product['årgang'])
 
@@ -241,6 +272,6 @@ def news(max_workers=5):
         details(ids)
 
 
-if __name__ == '__main__':
-    news()
-    # details()
+# if __name__ == '__main__':
+#     news()
+#     # details()

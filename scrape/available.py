@@ -191,7 +191,7 @@ def available(products: List[int] = None, max_workers=10):
                     {'$set': product},
                     upsert=True
                 )
-                if product['utgått']:
+                if product['utgått'] or product['status'] in ('utgått', 'utgatt'):
                     expired.append(operation)
                     operations.append(pymongo.DeleteOne(
                         {'index': product['index']}
