@@ -78,7 +78,7 @@ def set_data(state, fresh: bool = True):
             **state['valgt'].to_dict(),
 
             sorting=focus,
-            ascending=len(state['data']['stigende']) > 0,
+            ascending=len(state['data']['stigende']) > 0 if focus != 'ny' else len(state['data']['stigende']) <= 0,
             amount=state['data']['antall'],
             page=state['side']['gjeldende'],
 
@@ -120,7 +120,7 @@ def set_focus(state):
 
     state['valgt']['fra'] = None
     state['valgt']['til'] = None
-    if state['data']['fokus'] not in ['navn']:
+    if state['data']['fokus'] not in ['navn', 'ny']:
         state['flag']['mellom'] = True
     else:
         state['flag']['mellom'] = False

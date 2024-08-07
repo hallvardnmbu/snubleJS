@@ -334,21 +334,6 @@
             "handlers": {},
             "visible": true
         },
-        "o8pxz0muqmnijls0": {
-            "id": "o8pxz0muqmnijls0",
-            "type": "heading",
-            "content": {
-                "text": "@{item.volum} cL \u2022 @{item.alkohol} % alk.",
-                "alignment": "right",
-                "headingType": "h4",
-                "primaryTextColor": "#06070E"
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "zp4ymmlwhtpez6vn",
-            "handlers": {},
-            "visible": true
-        },
         "toq8ettajnz2pzel": {
             "id": "toq8ettajnz2pzel",
             "type": "column",
@@ -1670,7 +1655,7 @@
             "type": "checkboxinput",
             "content": {
                 "label": "",
-                "options": "{\n  \"True\": \"Vis lavest f\u00f8rst\"\n}",
+                "options": "{\n  \"True\": \"Stigende rekkef\u00f8lge\"\n}",
                 "accentColor": "#136F63",
                 "orientation": ""
             },
@@ -1728,6 +1713,20 @@
             "isCodeManaged": false,
             "position": 7,
             "parentId": "b50j32rdwgjl27st",
+            "handlers": {},
+            "visible": true
+        },
+        "emvunmh3u7iduxdx": {
+            "id": "emvunmh3u7iduxdx",
+            "type": "text",
+            "content": {
+                "text": "**@{item.volum} cL**\n**@{item.alkohol} %** alk.",
+                "useMarkdown": "yes",
+                "alignment": "center"
+            },
+            "isCodeManaged": false,
+            "position": 1,
+            "parentId": "zp4ymmlwhtpez6vn",
             "handlers": {},
             "visible": true
         }
