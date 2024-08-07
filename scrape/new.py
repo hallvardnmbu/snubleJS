@@ -2,7 +2,7 @@
 Fetch new products.
 Fetch detailed information about products.
 
-CRON JOB: 0 05 1/7 * *
+CRON JOB: 0 05 1,14 * *
 """
 
 import os
@@ -51,14 +51,49 @@ def _process(products) -> List[dict]:
         'url': f'https://www.vinmonopolet.no{product.get("url", "")}',
         'status': product.get('status', None),
         'kan kjøpes': product.get('buyable', False),
-        'utgått': product.get('expired', False),
+        'utgått': product.get('expired', True),
 
         'produktutvalg': product.get('product_selection', None),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
         f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
-        'volumpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 0.0),
+        'volumpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 1.0),
         'ny': 0,
+
+        'tilgjengelig for bestilling': product.get(
+            'productAvailability', {}
+        ).get(
+            'deliveryAvailability', {}
+        ).get(
+            'availableForPurchase', False
+        ),
+
+        'bestillingsinformasjon': product.get(
+            'productAvailability', {}
+        ).get(
+            'deliveryAvailability', {}
+        ).get(
+            'infos', [{}]
+        )[0].get(
+            'readableValue', None
+        ),
+
+        'tilgjengelig i butikk': product.get(
+            'productAvailability', {}
+        ).get(
+            'storesAvailability', {}
+        ).get(
+            'availableForPurchase', False
+        ),
+
+        'butikkinformasjon': product.get(
+            'productAvailability', {}
+        ).get(
+            'storesAvailability', {}
+        ).get('infos', [{}]
+              )[0].get(
+            'readableValue', None
+        ),
     } for product in products]
 
 
@@ -69,10 +104,7 @@ def _news(page: int) -> List[dict]:
             response = requests.get(_NEW.format(page), proxies=_PROXY.get(), timeout=3)
             if response.status_code != 200:
                 raise ValueError()
-
-            response = response.json()
-            products = response.get('productSearchResult', {}).get('products', [])
-
+            products = response.json().get('productSearchResult', {}).get('products', [])
             return _process(products)
         except Exception as err:
             print(f'Error: Trying another proxy. {err}')
@@ -90,9 +122,7 @@ def _details(product: int) -> dict:
                                    timeout=3)
             if details.status_code != 200:
                 raise ValueError()
-
             details = details.json()
-
             return {
                 'index': int(details.get('code', 0)),
 
@@ -140,6 +170,7 @@ def _details(product: int) -> dict:
                     for trait in details.get('content', {}).get('traits', [])},
                 'lukt': details.get('smell', None),
                 'smak': details.get('taste', None),
+                'allergener': details.get('allergens', None),
 
                 'passer til': [element['name'] for element in details.get('content', {}).get('isGoodFor', [])],
                 'lagring': details.get('content', {}).get('storagePotential', {}).get('formattedValue', None),
@@ -149,6 +180,8 @@ def _details(product: int) -> dict:
                                 'kort': details.get('content', {}).get('style', {}).get('name', None)},
                 'metode': details.get('method', None),
                 'årgang': details.get('year', None),
+
+                'volumpris': details.get('litrePrice', {}).get('value', 0.0),
             }
         except Exception as err:
             print(f'{product}: Trying another proxy. {err}')
@@ -270,8 +303,3 @@ def news(max_workers=5):
         ids.extend(new)
     if ids:
         details(ids)
-
-
-# if __name__ == '__main__':
-#     news()
-#     # details()

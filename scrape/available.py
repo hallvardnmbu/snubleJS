@@ -1,7 +1,7 @@
 """
 Fetch information about all of Vinmonopolet's stores, and their stock.
 
-CRON JOB: 15 06 * * *
+CRON JOB: 15 6,8,14 * * *
 """
 
 import os
@@ -113,7 +113,7 @@ def _product(index: int) -> dict:
 
                 'status': product.get('status', None),
                 'kan kjøpes': product.get('buyable', False),
-                'utgått': False,
+                'utgått': product.get('expired', True),
 
                 'tilgjengelig for bestilling': product \
                     .get('productAvailability') \
@@ -201,7 +201,3 @@ def available(products: List[int] = None, max_workers=10):
         _DATABASE.bulk_write(operations)
         if expired:
             _EXPIRED.bulk_write(expired)
-
-
-if __name__ == '__main__':
-    available()
