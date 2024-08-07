@@ -353,7 +353,7 @@ def _discounts(state, data: pd.DataFrame):
     data['prisendring'] = [_prisendring(new, old)
                            for new, old in zip(data['pris'], data['pris_gammel'])]
 
-    data['volumpris'] = data['volumpris'].apply(lambda x: round(x, 2))
+    data['literpris'] = data['literpris'].apply(lambda x: round(x, 2))
     data['volum'] = data['volum'].apply(lambda x: round(x, 2))
 
     data['bakgrunnsfarge'] = data['prisendring'].apply(lambda x: COLOUR['greenish'] if x < 0 else (COLOUR['redish'] if x > 0 else COLOUR['blackish']))

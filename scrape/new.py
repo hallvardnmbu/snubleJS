@@ -57,7 +57,7 @@ def _process(products) -> List[dict]:
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
         f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
-        'volumpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 1.0),
+        'literpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 1.0),
         'ny': 0,
 
         'tilgjengelig for bestilling': product.get(
@@ -181,7 +181,7 @@ def _details(product: int) -> dict:
                 'metode': details.get('method', None),
                 'årgang': details.get('year', None),
 
-                'volumpris': details.get('litrePrice', {}).get('value', 0.0),
+                'literpris': details.get('litrePrice', {}).get('value', 0.0),
             }
         except Exception as err:
             print(f'{product}: Trying another proxy. {err}')

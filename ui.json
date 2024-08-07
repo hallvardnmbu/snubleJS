@@ -1548,7 +1548,7 @@
             "id": "nd8z8u2ghv2dwci7",
             "type": "text",
             "content": {
-                "text": "(@{item.volumpris} kr / L)",
+                "text": "(@{item.literpris} kr / L)",
                 "useMarkdown": "yes",
                 "primaryTextColor": "#06070E",
                 "alignment": "center"
