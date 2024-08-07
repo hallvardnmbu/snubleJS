@@ -64,7 +64,7 @@ def _process(products) -> List[dict]:
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
         f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
-        'ny': True,
+        'ny': 0,
     } for product in products]
 
 
@@ -189,6 +189,11 @@ def details(products: List[int] = None, max_workers=5):
 
 
 def news(max_workers=5):
+    _DATABASE.update_many(
+        {},
+        {'$inc': {'ny': 1}}  # Increment 'ny' field by 1 for all documents.
+    )
+
     expired = set(_CLIENT['vinskraper']['utgått'].distinct('index'))
     response = requests.get(_NEW.format(0), proxies=_PROXY.get(), timeout=3)
 
@@ -198,10 +203,12 @@ def news(max_workers=5):
     response = response.json()
     pages = response.get('contentSearchResult', {}).get('pagination', {}).get('totalPages', 0)
 
-    # Extracting the products that needs to be updated with detailed information.
-    # Removing the 'oppdater' key from the products (marking them as updated).
     ids = list(_DATABASE.find({'oppdater': True}))
-    _DATABASE.update_many({'oppdater': True}, {'$unset': {'oppdater': ''}})
+    _DATABASE.update_many(
+        {'oppdater': True},
+        {'$unset': {'oppdater': ''},
+         '$set': {'ny': 0}}
+    )
 
     old = set(_DATABASE.distinct('index'))
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -214,7 +221,7 @@ def news(max_workers=5):
         if _expired:
             moving = list(_CLIENT['vinskraper']['utgått'].find({'index': {'$in': list(_expired)}}))
             for record in moving:
-                record['ny'] = True
+                record['ny'] = 1
             _CLIENT['vinskraper']['utgått'].delete_many({'index': {'$in': list(_expired)}})
             _DATABASE.insert_many(moving)
             expired -= _expired
