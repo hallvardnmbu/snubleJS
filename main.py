@@ -111,7 +111,7 @@ STATE = writer.init_state({
             'ny': 'Nye produkter',
             'prisendring': 'Prisendring',
             _prices[-1]: 'Pris',
-            'volumpris': 'Volumpris',
+            'literpris': 'Literpris',
             'alkohol': 'Alkoholprosent',
             'navn': 'Navn',
             'volum': 'Volum',

@@ -248,6 +248,11 @@ def load(
         total = None
 
     pipeline += [{
+        sorting: {
+            '$exists': True,
+            '$ne': None
+        }
+    }, {
         '$sort': {
             sorting: 1 if ascending else -1
         }

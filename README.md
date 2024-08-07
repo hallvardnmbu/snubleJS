@@ -43,15 +43,8 @@ export mongodb_password=<password>
 
   (eller tilsvarende for ditt operativsystem). Hvor `<username>` og `<password>` er brukernavn og passord til din [MongoDB](https://www.mongodb.com)-database (hvilket kan opprettes gratis).
 
-  Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gjøres ved å kjøre;
-
-```bash
-python ./scrape/scrape.py
-```
-
-  (etter å ha oppretted databasen `vinskraper` og collection `varer`).
-
-  For å få fullstendig produktinformasjon, må også funksjonen `details` i `./scrape/news.py` kjøres.
+  Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gjøres ved å kjøre 
+  funksjonene i `./scrape/` (etter å ha oppretted databasen `vinskraper` og collection `varer`).
 
 </details>
 
@@ -65,9 +58,9 @@ python ./scrape/scrape.py
 
   Hver dag kjøres `./scrape/available.py` for å oppdatere databasen med tilgjengelige produkter.
 
-  Annenhver uke kjøres `./scrape/news.py` for å oppdatere databasen med ny informasjon om produkter.
+  Annenhver uke kjøres `./scrape/new.py` for å oppdatere databasen med ny informasjon om produkter.
 
-  Hver månedsskifte kjøres `./scrape/scrape.py` for å oppdatere databasen med prisendringer.
+  Hver månedsskifte kjøres `./scrape/price.py` for å oppdatere databasen med prisendringer.
 
 </details>
 
