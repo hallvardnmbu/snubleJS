@@ -247,12 +247,9 @@ def load(
     else:
         total = None
 
+
+
     pipeline += [{
-        sorting: {
-            '$exists': True,
-            '$ne': None
-        }
-    }, {
         '$sort': {
             sorting: 1 if ascending else -1
         }
@@ -273,7 +270,12 @@ def load(
                 **between
             }
         else:
-            pipeline[1]['$match'][sorting] = between
+            pipeline[1 if search else 0]['$match'][sorting] = between
+    pipeline[1 if search else 0]['$match'][sorting] = {
+        **pipeline[1 if search else 0]['$match'].get(sorting, {}),
+        **{'$exists': True,
+           '$ne': None}
+    }
 
     collection = list(_DATABASE.aggregate(pipeline))
 

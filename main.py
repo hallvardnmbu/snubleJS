@@ -108,13 +108,14 @@ STATE = writer.init_state({
             }
         },
         'dropdown': {
-            'ny': 'Nye produkter',
             'prisendring': 'Prisendring',
-            _prices[-1]: 'Pris',
             'literpris': 'Literpris',
-            'alkohol': 'Alkoholprosent',
+            'alkoholpris': 'Alkoholpris',
+            _prices[-1]: 'Pris',
             'navn': 'Navn',
             'volum': 'Volum',
+            'alkohol': 'Alkoholprosent',
+            'ny': 'Nye produkter',
         },
         'verdier': None,
     },

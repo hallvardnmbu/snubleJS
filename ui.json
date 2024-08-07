@@ -372,7 +372,7 @@
             "id": "ab9fej581ixb1r14",
             "type": "column",
             "content": {
-                "width": "0.5",
+                "width": "0.4",
                 "contentVAlign": "start"
             },
             "isCodeManaged": false,
@@ -523,7 +523,7 @@
             "id": "jybwlc2vw54cce00",
             "type": "column",
             "content": {
-                "width": "0.5",
+                "width": "0.6",
                 "contentHAlign": "end"
             },
             "isCodeManaged": false,
@@ -581,7 +581,7 @@
             "id": "hkiku69lu2i26z2k",
             "type": "column",
             "content": {
-                "width": "1"
+                "width": "0.7"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -593,7 +593,7 @@
             "id": "yjcylp0mnstfc5gf",
             "type": "column",
             "content": {
-                "width": "1",
+                "width": "0.4",
                 "contentHAlign": "end"
             },
             "isCodeManaged": false,

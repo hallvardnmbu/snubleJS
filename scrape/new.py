@@ -234,9 +234,7 @@ def details(products: List[int] = None, max_workers=5):
                     try:
                         product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
                     except Exception:
-                        product['alkohol'] = 0.0
-                else:
-                    product['alkohol'] = 0.0
+                        product['alkohol'] = None
                 if product['årgang']:
                     product['årgang'] = int(product['årgang'])
 
