@@ -93,7 +93,7 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                     ]},
                 }},
                 {'$set': {
-                    'volumpris': {'$cond': {
+                    'literpris': {'$cond': {
                         'if': {'$and': [
                             {'$ne': [f'$pris {_NOW}', None]},
                             {'$ne': [f'$pris {_NOW}', 0]},
@@ -104,6 +104,18 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                             {'$divide': [f'$pris {_NOW}', '$volum']},
                             100
                         ]},
+                        'else': None
+                    }}
+                }},
+                {'$set': {
+                    'alkoholpris': {'$cond': {
+                        'if': {'$and': [
+                            {'$ne': ['$literpris', None]},
+                            {'$ne': ['$literpris', 0]},
+                            {'$ne': ['$alkohol', None]},
+                            {'$ne': ['$alkohol', 0]},
+                        ]},
+                        'then': {'$divide': ['$literpris', '$alkohol']},
                         'else': None
                     }}
                 }}
