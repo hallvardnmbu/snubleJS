@@ -108,6 +108,7 @@ STATE = writer.init_state({
             }
         },
         'dropdown': {
+            'ny': 'Nye produkter',
             'prisendring': 'Prisendring',
             _prices[-1]: 'Pris',
             'volumpris': 'Volumpris',
