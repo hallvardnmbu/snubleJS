@@ -1,7 +1,7 @@
 """
-Scrape products from vinmonopolet's website and store the results to a database.
+Update the database with the latest prices.
 
-CRON JOB: 0 06 1,14 * *
+CRON JOB: 0 06 1 * *
 """
 
 import os
@@ -149,12 +149,10 @@ def _scrape_page(
                                     timeout=3)
             break
         except Exception as err:
-            print(f'├─ Error: '
-                  f'Page {page} (trying another proxy); {err}')
+            print(f'Error: Page {page} (trying another proxy); {err}')
             _PROXY.renew()
     else:
-        print(f'├─ Error: '
-              f'Failed to fetch page {page} after 10 attempts.')
+        print(f'Error: Failed to fetch page {page} after 10 attempts.')
         response = requests.models.Response()
         response.status_code = 500
 
@@ -240,18 +238,18 @@ def _scrape_category(category: CATEGORY) -> bool:
 
     items = []
     for page in range(10000):
-        response = _scrape_page(category, page)
+        products = _scrape_page(category, page)
 
-        if response.status_code != 200:
+        if products.status_code != 200:
             print(f'{category.name} Failed: '
-                  f'Page {page} (status code {response.status_code}): '
-                  f'{response.text}.')
+                  f'Page {page} (status code {products.status_code}): '
+                  f'{products.text}.')
             continue
 
         # ------------------------------------------------------------------------------------------
         # Parses the response and extracts the products.
 
-        products = response.json().get('productSearchResult', {}).get('products', [])
+        products = products.json().get('productSearchResult', {}).get('products', [])
         if not products:
             print(f'{category.name} No more products (final page: {page - 1}).')
             break
@@ -265,8 +263,7 @@ def _scrape_category(category: CATEGORY) -> bool:
     try:
         result = _upsert(items)
     except BulkWriteError as bwe:
-        print(f'{category.name} Error: '
-              f'Bulk write operation; {bwe.details}.')
+        print(f'{category.name} Error: Bulk write operation; {bwe.details}.')
         return False
     print(f'{category.name} Modified {result.modified_count} records')
     print(f'{category.name} Upserted {result.upserted_count} records')
@@ -306,7 +303,3 @@ def scrape(categories=None, max_workers=10):
         print("No expired documents found.")
 
     return failed
-
-
-if __name__ == '__main__':
-    scrape()
