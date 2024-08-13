@@ -1,15 +1,17 @@
 """State management and initialisation of the application."""
 
 import datetime
+from dateutil.relativedelta import relativedelta
+
 import writer
 
 from database import load
 from getset import initialise, set_data, set_focus, set_store, set_country, set_district, set_subdistrict, set_category, set_subcategory, set_volume, reset_selection, set_next_page, set_previous_page, set_page_one, set_page
 
 
-# To prevent errors before the newest data is loaded, the newest column is set manually.
-_prices = sorted([col for col in load(amount=1)[0].columns if col.startswith('pris ')],
-                  key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))
+_discounts = sorted([col for col in load(amount=1)[0].columns if col.startswith('prisendring ')],
+                    key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))
+_month = (datetime.date.today() - relativedelta(months=1)).strftime('%Y-%m-01')
 
 
 STATE = writer.init_state({
@@ -37,6 +39,7 @@ STATE = writer.init_state({
         'distrikt': {},
         'underdistrikt': {},
         'butikk': {},
+
         'passer_til': {},
         'argang': {},
         'beskrivelse': {},
@@ -51,11 +54,12 @@ STATE = writer.init_state({
             'distrikt': [],
             'underdistrikt': [],
             'butikk': [],
+
             'passer_til': [],
             'argang': [],
             'beskrivelse': [],
             'kork': [],
-            'lagring': []
+            'lagring': [],
         },
     },
 
@@ -71,12 +75,14 @@ STATE = writer.init_state({
         'distrikt': [],
         'underdistrikt': [],
         'butikk': [],
+
         'passer_til': [],
         'argang': [],
         'beskrivelse': [],
         'kork': [],
         'lagring': [],
 
+        'alkohol': None,
         'fra': None,
         'til': None,
     },
@@ -100,18 +106,18 @@ STATE = writer.init_state({
     'data': {
         'antall': 10,
         'stigende': ['True'],
-        'fokus': 'prisendring',
+        'fokus': _discounts[-2],
         'prisendring': {
-            'valg': None,
+            'valg': _discounts[-2],
             'mulig': {
-                dato: dato.split(' ')[-1] for dato in _prices
+                discounted: discounted.split(' ')[-1] for discounted in _discounts
             }
         },
         'dropdown': {
-            'prisendring': 'Prisendring',
+            _discounts[-2]: 'Prisendring',
             'literpris': 'Literpris',
             'alkoholpris': 'Alkoholpris',
-            _prices[-1]: 'Pris',
+            _discounts[-1].replace('endring', ''): 'Pris',
             'navn': 'Navn',
             'volum': 'Volum',
             'alkohol': 'Alkoholprosent',

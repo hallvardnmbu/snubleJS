@@ -1641,7 +1641,7 @@
             "id": "scxsx66to0kjuhmi",
             "type": "message",
             "content": {
-                "message": "OBS: Tilgjengelighet i butikk kan avvike noe fra faktisk lagerbeholdning.",
+                "message": "Tilgjengelighet i butikk kan derfor avvike noe fra faktisk lagerbeholdning. Oppdateres daglig 12:30.",
                 "infoColor": "#F3F7F4"
             },
             "isCodeManaged": false,
@@ -1671,34 +1671,12 @@
                 "stateRef": "data.stigende"
             }
         },
-        "pv9u5ezhasiykpdv": {
-            "id": "pv9u5ezhasiykpdv",
-            "type": "multiselectinput",
-            "content": {
-                "label": "",
-                "options": "@{data.prisendring.mulig}",
-                "placeholder": "Referansepris",
-                "chipTextColor": "#06070E",
-                "maximumCount": "1"
-            },
-            "isCodeManaged": false,
-            "position": 8,
-            "parentId": "b50j32rdwgjl27st",
-            "handlers": {
-                "wf-options-change": "getset.set_data"
-            },
-            "visible": true,
-            "binding": {
-                "eventType": "wf-options-change",
-                "stateRef": "data.prisendring.valg"
-            }
-        },
         "qq9oybiq7cfe205t": {
             "id": "qq9oybiq7cfe205t",
             "type": "separator",
             "content": {},
             "isCodeManaged": false,
-            "position": 6,
+            "position": 7,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": true
@@ -1711,7 +1689,7 @@
                 "useMarkdown": "yes"
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 8,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": true
@@ -1729,6 +1707,50 @@
             "parentId": "zp4ymmlwhtpez6vn",
             "handlers": {},
             "visible": true
+        },
+        "j57xdhbpdvlguu4m": {
+            "id": "j57xdhbpdvlguu4m",
+            "type": "numberinput",
+            "content": {
+                "label": "",
+                "placeholder": "Minste alkoholprosent",
+                "minValue": "0",
+                "maxValue": "100"
+            },
+            "isCodeManaged": false,
+            "position": 6,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {
+                "wf-number-change-finish": "getset.set_data",
+                "wf-number-change": "getset.set_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-number-change",
+                "stateRef": "valgt.alkohol"
+            }
+        },
+        "yh8d2m7oq2devg3x": {
+            "id": "yh8d2m7oq2devg3x",
+            "type": "selectinput",
+            "content": {
+                "label": "",
+                "options": "@{data.prisendring.mulig}",
+                "placeholder": "Referansepris",
+                "maximumCount": "1",
+                "chipTextColor": "#06070E"
+            },
+            "isCodeManaged": false,
+            "position": 9,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {
+                "wf-option-change": "getset.set_data"
+            },
+            "visible": true,
+            "binding": {
+                "eventType": "wf-option-change",
+                "stateRef": "data.prisendring.valg"
+            }
         }
     }
 }
