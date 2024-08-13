@@ -19,6 +19,7 @@ _DIVIDER = [' ', 'UTILGJENGELIGE VALG', '-------------------']
 _FOCUS = None
 
 
+
 def initialise(state):
     """
     Set the possible dropdown-values for each feature.
@@ -67,7 +68,7 @@ def set_data(state, fresh: bool = True):
     # Removing the divider from the selection.
     state['valgt'] = {
         feature: [v for v in values if v not in _DIVIDER]
-        if feature not in ('fra', 'til') else values
+        if feature not in ('fra', 'til', 'alkohol') else values
         for feature, values in state['valgt'].to_dict().items()
     }
     focus = state['data']['fokus'] if state['data']['fokus'] else 'prisendring'
@@ -307,22 +308,12 @@ def reset_selection(state):
         The current state of the application.
     """
     for feature in state['valgt'].to_dict():
-        state['valgt'][feature] = [] if feature not in ('fra', 'til') else None
+        state['valgt'][feature] = [] if feature not in ('fra', 'til', 'alkohol') else None
 
     # Reset the dropdown.
     # Arbitrarily chosen, as all `set_{selection}` functions cascade downwards.
     _dropdown(state, 'kategori')
     set_category(state)
-
-
-def _prisendring(new, old):
-    """Safe percentage change calculation."""
-    if old == 0 or new == 0 or new is None or old is None:
-        return 0
-    try:
-        return round(100 * (new - old) / old, 2)
-    except (ZeroDivisionError, TypeError):
-        return 0
 
 
 def _discounts(state, data: pd.DataFrame):
@@ -343,15 +334,12 @@ def _discounts(state, data: pd.DataFrame):
 
     data['plot'] = graph(data, prices)
 
+    chosen = state['data']['prisendring']['valg']
     if len(prices) < 2:
         data['pris_gammel'] = data['pris'].copy()
     else:
-        valg = state['data']['prisendring']['valg'] if state['data']['prisendring']['valg'] else prices[-2]
-        data['pris_gammel'] = data[valg]
-
-    # data['prisendring'] = data['prisendring'].apply(lambda x: round(x, 2))
-    data['prisendring'] = [_prisendring(new, old)
-                           for new, old in zip(data['pris'], data['pris_gammel'])]
+        data['pris_gammel'] = data[chosen.replace('endring', '') if chosen else prices[-2]]
+    data['prisendring'] = data[chosen].apply(lambda x: round(x, 2) if x else 0)
 
     data['literpris'] = data['literpris'].apply(lambda x: round(x, 2) if x else 0)
     data['alkoholpris'] = data['alkoholpris'].apply(lambda x: round(x, 2) if x else 0)

@@ -22,31 +22,19 @@ _MAP = {
 
 def uniques(
     extract: List[str],
-
     kategori: List[str] = [],
     underkategori: List[str] = [],
-
-    volum: List[str] = [],
-
     land: List[str] = [],
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
-
+    volum: List[str] = [],
     argang: List[str] = [],
     beskrivelse: List[str] = [],
     kork: List[str] = [],
     lagring: List[str] = [],
-
-    # Arrays in database:
     butikk: List[str] = [],
     passer_til: List[str] = [],
-
-    fra: Union[None, float] = None,
-    til: Union[None, float] = None,
-    filter: str = '',
-    search: str = '',
-
-    **kwargs: Dict[str, Union[float, None]]
+    **kwargs: Any
 ) -> Dict[str, Union[list, Dict[str, str]]]:
     """
     Extract the unique values for the given `extract` features from the database.
@@ -60,18 +48,28 @@ def uniques(
         The categories to include.
     underkategori : list of str
         The subcategories to include.
-    volum : list of str
-        The volumes to include.
     land : list of str
         The countries to include.
     distrikt : list of str
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    volum : list of str
+        The volumes to include.
+    argang : list of str
+        The years to include.
+    beskrivelse : list of str
+        The descriptions to include.
+    kork : list of str
+        The corks types to include.
+    lagring : list of str
+        The storage types to include.
     butikk : list of str
         The stores to include.
-    kwargs : dict
-        To prevent errors when passing the state's `valgt` dictionary.
+    passer_til : list of str
+        The food pairings to include.
+    kwargs : any
+        Added to prevent errors when passing the raw state's selection.
 
     Returns
     -------
@@ -118,26 +116,21 @@ def load(
     distrikt: List[str] = [],
     underdistrikt: List[str] = [],
     volum: List[str] = [],
-
     argang: List[str] = [],
     beskrivelse: List[str] = [],
     kork: List[str] = [],
     lagring: List[str] = [],
-
-    # Arrays in database:
     butikk: List[str] = [],
     passer_til: List[str] = [],
-
+    alkohol: Union[None, float] = None,
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
-
     sorting: str = 'prisendring',
     ascending: bool = True,
     amount: int = 10,
     page: int = 1,
     search: str = '',
     filters: bool = False,
-
     fresh: bool = True,
 ) -> Tuple[pd.DataFrame, Union[int, None]]:
     """
@@ -149,28 +142,42 @@ def load(
         The categories to include.
     underkategori : list of str
         The subcategories to include.
-    volum : list of str
-        The volumes to include.
     land : list of str
         The countries to include.
     distrikt : list of str
         The districts to include.
     underdistrikt : list of str
         The subdistricts to include.
+    volum : list of str
+        The volumes to include.
+    argang : list of str
+        The years to include.
+    beskrivelse : list of str
+        The descriptions to include.
+    kork : list of str
+        The corks types to include.
+    lagring : list of str
+        The storage types to include.
     butikk : list of str
         The stores to include.
+    passer_til : list of str
+        The food pairings to include.
+    alkohol : float
+        The minimum alcohol percentage to include.
     fra : float
         The minimum value to include (wrt. `sorting`).
     til : float
         The maximum value to include (wrt. `sorting`).
     sorting : str
-        The feature to sorting by.
+        The feature to sort by.
     ascending : bool
         Whether to sort the data in ascending order.
     amount : int
         The amount of data to load.
+        Number of items per page.
     page : int
         The page of the data to load.
+        I.e., the number of `amount` to skip.
     search : str
         The name to search for.
     filters : bool
@@ -238,26 +245,11 @@ def load(
         }
     }]
 
-    if fresh:
-        total = list(_DATABASE.aggregate(pipeline + [{'$count': 'amount'}]))
-        try:
-            total = total[0].get('amount', 0)
-        except IndexError:
-            raise KeyError('No records found.')
-    else:
-        total = None
-
-
-
-    pipeline += [{
-        '$sort': {
-            sorting: 1 if ascending else -1
+    if alkohol:
+        pipeline[1 if search else 0]['$match']['alkohol'] = {
+            **pipeline[1 if search else 0]['$match'].get('alkohol', {}),
+            **{'$gte': alkohol}
         }
-    }, {
-        '$skip': (page - 1) * amount
-    }, {
-        '$limit': amount
-    }]
 
     if fra or til:
         between = {op: val for op, val in [
@@ -274,8 +266,27 @@ def load(
     pipeline[1 if search else 0]['$match'][sorting] = {
         **pipeline[1 if search else 0]['$match'].get(sorting, {}),
         **{'$exists': True,
-           '$ne': None}
+        '$ne': None}
     }
+
+    if fresh:
+        total = list(_DATABASE.aggregate(pipeline + [{'$count': 'amount'}]))
+        try:
+            total = total[0].get('amount', 0)
+        except IndexError:
+            raise KeyError('No records found.')
+    else:
+        total = None
+
+    pipeline += [{
+        '$sort': {
+            sorting: 1 if ascending else -1
+        }
+    }, {
+        '$skip': (page - 1) * amount
+    }, {
+        '$limit': amount
+    }]
 
     collection = list(_DATABASE.aggregate(pipeline))
 
