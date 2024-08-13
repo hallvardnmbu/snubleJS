@@ -254,19 +254,21 @@ def details(products: List[int] = None, max_workers=5):
 
 
 def discounts():
-    today = datetime.date.today()
-    if today.day != 2:
+    current = datetime.date.today()
+    if current.day != 2:
         return
 
-    dates = [(datetime.date(2024, 7, 1) + relativedelta(months=i)).strftime('%Y-%m-%d')
-             for i in range(0, (today.year - 2024) + today.month - 6)]
+    months = [(datetime.date(2024, 7, 1) + relativedelta(months=i)).strftime('%Y-%m-%d')
+             for i in range(0, (current.year - 2024) + current.month - 6)]
+    current = current.strftime('%Y-%m-01')
 
     operations = [
         pymongo.UpdateOne(
             {'index': record['index']},
             {'$set': {
-                f'prisendring {_new}': 0 if (record.get(f'pris {_old}', 0) <= 0 or record.get(f'pris {_new}', 0) <= 0) else 100 * (record.get(f'pris {_new}', 1) - record.get(f'pris {_old}', 1)) / record.get(f'pris {_old}', 1)
-            } for _old, _new in zip(dates, dates[1:])}
+                f'prisendring {month}': 0 if (record.get(f'pris {month}', 0) <= 0 or record.get(f'pris {current}', 0) <= 0) else 100 * (record.get(f'pris {current}', 1) - record.get(f'pris {month}', 1)) / record.get(f'pris {month}', 1)
+                for month in months
+            }}
         )
         for record in _DATABASE.find({})
     ]
