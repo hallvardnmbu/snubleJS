@@ -1,14 +1,17 @@
 """
 Fetch new products.
 Fetch detailed information about products.
+Update the discount information.
 
-CRON JOB: 0 05 1,14 * *
+CRON JOB: 0 05 1,2,14 * *
 """
 
 import os
 import time
+import datetime
 from typing import List
 import concurrent.futures
+from dateutil.relativedelta import relativedelta
 
 import pymongo
 import requests
@@ -250,6 +253,27 @@ def details(products: List[int] = None, max_workers=5):
         _DATABASE.bulk_write(operations)
 
 
+def discounts():
+    today = datetime.date.today()
+    if today.day != 2:
+        return
+
+    dates = [(datetime.date(2024, 7, 1) + relativedelta(months=i)).strftime('%Y-%m-%d')
+             for i in range(0, (today.year - 2024) + today.month - 6)]
+
+    operations = [
+        pymongo.UpdateOne(
+            {'index': record['index']},
+            {'$set': {
+                f'prisendring {_new}': 0 if (record.get(f'pris {_old}', 0) <= 0 or record.get(f'pris {_new}', 0) <= 0) else 100 * (record.get(f'pris {_new}', 1) - record.get(f'pris {_old}', 1)) / record.get(f'pris {_old}', 1)
+            } for _old, _new in zip(dates, dates[1:])}
+        )
+        for record in _DATABASE.find({})
+    ]
+
+    _DATABASE.bulk_write(operations)
+
+
 def news(max_workers=5):
     _DATABASE.update_many(
         {},
@@ -294,10 +318,13 @@ def news(max_workers=5):
             upsert=True
         ) for result in results for product in result if product['index'] in new]
 
-        result = _DATABASE.bulk_write(operations)
-        print(f'Inserted {result.upserted_count} new products.')
-        print(f'Updated {result.modified_count} existing products.')
+        if operations:
+            result = _DATABASE.bulk_write(operations)
+            print(f'Inserted {result.upserted_count} new products.')
+            print(f'Updated {result.modified_count} existing products.')
 
         ids.extend(new)
     if ids:
         details(ids)
+
+    discounts()
