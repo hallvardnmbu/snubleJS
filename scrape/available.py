@@ -1,7 +1,7 @@
 """
 Fetch information about all of Vinmonopolet's stores, and their stock.
 
-CRON JOB: 15 6,8,14 * * *
+CRON JOB: 15 10 * * *
 """
 
 import os

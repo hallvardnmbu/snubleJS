@@ -80,7 +80,7 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
             [
                 {'$set': record},
                 {'$set': {
-                    'prisendring': {'$cond': [
+                    f'prisendring {_NOW}': {'$cond': [
                         {'$gt': [f'$pris {_OLD}', 0]},
                         {'$multiply': [
                             {'$divide': [
@@ -108,7 +108,7 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                     }}
                 }},
                 {'$set': {
-                    'alkoholpris': {'$cond': {
+                    'alkoholpris': {'$cond': {''
                         'if': {'$and': [
                             {'$ne': ['$literpris', None]},
                             {'$ne': ['$literpris', 0]},
