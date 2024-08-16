@@ -65,6 +65,10 @@ def set_data(state, fresh: bool = True):
     """
     state['flag']['updating'] = True
 
+    # Toggle inclusion of alcohol-free products if this category is chosen.
+    if 'Alkoholfritt' in state['valgt']['kategori']:
+        state['valgt']['alkoholfritt'] = ['True']
+
     # Removing the divider from the selection.
     state['valgt'] = {
         feature: [v for v in values if v not in _DIVIDER]

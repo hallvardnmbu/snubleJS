@@ -122,6 +122,7 @@ def load(
     lagring: List[str] = [],
     butikk: List[str] = [],
     passer_til: List[str] = [],
+    alkoholfritt: bool = True,
     alkohol: Union[None, float] = None,
     fra: Union[None, float] = None,
     til: Union[None, float] = None,
@@ -162,6 +163,8 @@ def load(
         The stores to include.
     passer_til : list of str
         The food pairings to include.
+    alkoholfritt : bool
+        Whether to include non-alcoholic beverages.
     alkohol : float
         The minimum alcohol percentage to include.
     fra : float
@@ -249,6 +252,11 @@ def load(
         pipeline[1 if search else 0]['$match']['alkohol'] = {
             **pipeline[1 if search else 0]['$match'].get('alkohol', {}),
             **{'$gte': alkohol}
+        }
+    if not alkoholfritt:
+        pipeline[1 if search else 0]['$match']['alkohol'] = {
+            **pipeline[1 if search else 0]['$match'].get('alkohol', {}),
+            **{'$ne': None}
         }
 
     if fra or til:
