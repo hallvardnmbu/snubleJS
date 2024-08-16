@@ -85,6 +85,8 @@ STATE = writer.init_state({
         'alkohol': None,
         'fra': None,
         'til': None,
+
+        'alkoholfritt': [],
     },
 
     # finn

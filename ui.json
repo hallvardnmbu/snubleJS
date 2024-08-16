@@ -437,7 +437,7 @@
             "id": "kn3bli1rptpp25dz",
             "type": "switchinput",
             "content": {
-                "label": "S\u00f8k med filter",
+                "label": "S\u00f8k med gjeldende valg",
                 "separatorColor": "#8E3B46",
                 "accentColor": "#136F63"
             },
@@ -1676,7 +1676,7 @@
             "type": "separator",
             "content": {},
             "isCodeManaged": false,
-            "position": 7,
+            "position": 9,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": true
@@ -1689,7 +1689,7 @@
                 "useMarkdown": "yes"
             },
             "isCodeManaged": false,
-            "position": 8,
+            "position": 10,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": true
@@ -1718,7 +1718,7 @@
                 "maxValue": "100"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 8,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {
                 "wf-number-change-finish": "getset.set_data",
@@ -1741,7 +1741,7 @@
                 "chipTextColor": "#06070E"
             },
             "isCodeManaged": false,
-            "position": 9,
+            "position": 11,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {
                 "wf-option-change": "getset.set_data"
@@ -1751,6 +1751,36 @@
                 "eventType": "wf-option-change",
                 "stateRef": "data.prisendring.valg"
             }
+        },
+        "c0aiga76izyk61hk": {
+            "id": "c0aiga76izyk61hk",
+            "type": "checkboxinput",
+            "content": {
+                "label": "",
+                "options": "{\n  \"True\": \"Inkluder alkoholfrie varer\"\n}",
+                "accentColor": "#8E3B46",
+                "orientation": ""
+            },
+            "isCodeManaged": false,
+            "position": 7,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {
+                "wf-options-change": "getset.set_data"
+            },
+            "binding": {
+                "eventType": "wf-options-change",
+                "stateRef": "valgt.alkoholfritt"
+            }
+        },
+        "56oxvvsy22mq4g5a": {
+            "id": "56oxvvsy22mq4g5a",
+            "type": "separator",
+            "content": {},
+            "isCodeManaged": false,
+            "position": 6,
+            "parentId": "b50j32rdwgjl27st",
+            "handlers": {},
+            "visible": true
         }
     }
 }
