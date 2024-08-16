@@ -286,6 +286,10 @@ def load(
     else:
         total = None
 
+    if page >= 1665:
+        # TODO: Raise error. This leads to MongoDB error, due to huge skip (below).
+        pass
+
     pipeline += [{
         '$sort': {
             sorting: 1 if ascending else -1
