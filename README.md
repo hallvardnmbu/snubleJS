@@ -36,8 +36,8 @@ writer run .
   OBS: For å kunne kjøres lokalt må enkelte miljøvariabler settes. Dette gjøres ved å kjøre;
 
 ```bash
-export mongodb_username=<username>
-export mongodb_password=<password>
+export MONGO_USR=<username>
+export MONGO_PWD=<password>
 ```
 
   (eller tilsvarende for ditt operativsystem). Hvor `<username>` og `<password>` er brukernavn og passord til din [MongoDB](https://www.mongodb.com)-database (hvilket kan opprettes gratis).

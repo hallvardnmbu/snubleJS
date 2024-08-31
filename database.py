@@ -8,7 +8,7 @@ from pymongo.mongo_client import MongoClient
 
 
 _CLIENT = MongoClient(
-    f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
+    f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
