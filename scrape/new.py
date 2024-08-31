@@ -111,8 +111,11 @@ def _news(page: int) -> List[dict]:
     for _ in range(10):
         try:
             response = requests.get(_NEW.format(page), proxies=_PROXY, timeout=3)
-            if response.status_code != 200:
-                raise ValueError()
+            if response.status_code == 429:
+                time.sleep(0.5)
+                continue
+            elif response.status_code != 200:
+                raise ValueError(f'Status code {response.status_code}: {response.text}')
             products = response.json().get('productSearchResult', {}).get('products', [])
             return _process(products)
         except Exception as err:

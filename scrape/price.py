@@ -6,6 +6,8 @@ CRON JOB: 0 06 1 * *
 
 import os
 import enum
+import time
+import itertools
 from typing import List
 import concurrent.futures
 from datetime import datetime, timedelta
@@ -29,13 +31,17 @@ _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         '&currentPage={}'
         '&q=%3Arelevance%3AmainCategory%3A{}')
 
-_PROXIES = iter([
+_PROXIES = itertools.cycle([
     {
         "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
     }
     for ip in os.environ.get('PROXY_IPS', '').split(',')
+] + [
+    {
+        "http": f"socks5://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('SOCKS_PRT')}"
+    }
+    for ip in os.environ.get('PROXY_IPS', '').split(',')
 ])
-_PROXY = next(_PROXIES)
 
 _SESSION = requests.Session()
 
@@ -137,7 +143,8 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
 
 def _scrape_page(
         category: CATEGORY,
-        page: int
+        page: int,
+        proxy: dict
 ) -> requests.models.Response:
     """
     Scrape a single page of products from the given category.
@@ -160,20 +167,15 @@ def _scrape_page(
         If it fails, it renews the proxy (`_PROXY.renew()`) and retries.
         Returns code `500` if it fails 10 consecutive times.
     """
-    global _PROXY
-
     for _ in range(10):
         try:
             response = _SESSION.get(_URL.format(page, category.value),
-                                    proxies=_PROXY,
+                                    proxies=proxy,
                                     timeout=3)
             break
         except Exception as err:
             print(f'Error: Page {page} (trying another proxy); {err}')
-            try:
-                _PROXY = next(_PROXIES)
-            except StopIteration:
-                raise ValueError('Failed to fetch new products. No more proxies.')
+            proxy = next(_PROXIES)
     else:
         print(f'Error: Failed to fetch page {page} after 10 attempts.')
         response = requests.models.Response()
@@ -233,7 +235,7 @@ def _process(products) -> List[dict]:
     } for product in products]
 
 
-def _scrape_category(category: CATEGORY) -> bool:
+def _scrape_category(category: CATEGORY, proxy: dict) -> bool:
     """
     Fetches all products from the given category.
 
@@ -261,7 +263,7 @@ def _scrape_category(category: CATEGORY) -> bool:
 
     items = []
     for page in range(10000):
-        products = _scrape_page(category, page)
+        products = _scrape_page(category, page, proxy)
 
         if products.status_code != 200:
             print(f'{category.name} Failed: '
@@ -300,8 +302,8 @@ def scrape(categories=None, max_workers=10):
     failed = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results = {executor.submit(_scrape_category, category): category
-                   for category in categories}
+        results = {executor.submit(_scrape_category, category, proxy): category
+                   for category, proxy in zip(categories, [next(_PROXIES) for _ in range(len(categories))])}
 
         for future in concurrent.futures.as_completed(results):
             try:
