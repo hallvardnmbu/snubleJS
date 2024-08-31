@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "writer_version": "0.6.1"
+        "writer_version": "0.7.2"
     },
     "components": {
         "root": {
@@ -12,7 +12,11 @@
             "isCodeManaged": false,
             "position": 0,
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "0tzqxesupzw3z68k": {
             "id": "0tzqxesupzw3z68k",
@@ -35,7 +39,11 @@
             "position": 0,
             "parentId": "root",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "s3sta0t5uu7g132t": {
             "id": "s3sta0t5uu7g132t",
@@ -47,20 +55,28 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 4,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": "flag.updating"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.updating",
+                "reversed": false
+            }
         },
         "4zfu8hplv46m9c6a": {
             "id": "4zfu8hplv46m9c6a",
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 8,
+            "position": 7,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "zplmt9yk42sf1ebc": {
             "id": "zplmt9yk42sf1ebc",
@@ -90,7 +106,11 @@
             "position": 6,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "hj32dzqb9nzctjjv": {
             "id": "hj32dzqb9nzctjjv",
@@ -102,7 +122,11 @@
             "position": 1,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "bw8kcsyi29r7lr81": {
             "id": "bw8kcsyi29r7lr81",
@@ -122,7 +146,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_category"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.kategori"
@@ -146,7 +174,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_subcategory"
             },
-            "visible": "flag.underkategori",
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.underkategori",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.underkategori"
@@ -162,7 +194,11 @@
             "position": 2,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "2dvjgz30ot5i8y3g": {
             "id": "2dvjgz30ot5i8y3g",
@@ -181,7 +217,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_country"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.land"
@@ -204,7 +244,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_district"
             },
-            "visible": "flag.distrikt",
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.distrikt",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.distrikt"
@@ -227,7 +271,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_subdistrict"
             },
-            "visible": "flag.underdistrikt",
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.underdistrikt",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.underdistrikt"
@@ -250,24 +298,15 @@
             "handlers": {
                 "wf-options-change": "getset.set_volume"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.volum"
             }
-        },
-        "12spwtc9asbazbop": {
-            "id": "12spwtc9asbazbop",
-            "type": "image",
-            "content": {
-                "src": "https://raw.githubusercontent.com/hallvardnmbu/snublejuice/main/static/snublejuice.jpg",
-                "caption": ""
-            },
-            "isCodeManaged": false,
-            "position": 1,
-            "parentId": "0tzqxesupzw3z68k",
-            "handlers": {},
-            "visible": true
         },
         "9c7nts048cad4qqp": {
             "id": "9c7nts048cad4qqp",
@@ -278,10 +317,14 @@
                 "valueVariable": "item"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 5,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": "flag.valid"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.valid",
+                "reversed": false
+            }
         },
         "8g3rs3om9x66w4e9": {
             "id": "8g3rs3om9x66w4e9",
@@ -294,7 +337,11 @@
             "position": 0,
             "parentId": "9c7nts048cad4qqp",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "8ftvarre9vbzeiur": {
             "id": "8ftvarre9vbzeiur",
@@ -304,7 +351,11 @@
             "position": 1,
             "parentId": "8g3rs3om9x66w4e9",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "zp4ymmlwhtpez6vn": {
             "id": "zp4ymmlwhtpez6vn",
@@ -318,7 +369,11 @@
             "position": 0,
             "parentId": "8ftvarre9vbzeiur",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "dr9rfhyoy40utkp2": {
             "id": "dr9rfhyoy40utkp2",
@@ -332,7 +387,11 @@
             "position": 0,
             "parentId": "zp4ymmlwhtpez6vn",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "toq8ettajnz2pzel": {
             "id": "toq8ettajnz2pzel",
@@ -344,7 +403,11 @@
             "position": 1,
             "parentId": "8ftvarre9vbzeiur",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "wilpsuvn417kzjud": {
             "id": "wilpsuvn417kzjud",
@@ -357,14 +420,18 @@
             "position": 0,
             "parentId": "ieiaw4qj6jppxruw",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "a2m7fgkyh7e71jdo": {
             "id": "a2m7fgkyh7e71jdo",
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 2,
+            "position": 1,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {}
         },
@@ -379,7 +446,11 @@
             "position": 0,
             "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "sc6gttqaegrsj32b": {
             "id": "sc6gttqaegrsj32b",
@@ -412,10 +483,14 @@
                 "proxyId": "a2m7fgkyh7e71jdo"
             },
             "isCodeManaged": false,
-            "position": 7,
+            "position": 6,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": "flag.valid"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.valid",
+                "reversed": false
+            }
         },
         "y2lpfc9izrfkpid5": {
             "id": "y2lpfc9izrfkpid5",
@@ -428,10 +503,14 @@
                 "errorColor": "#8E3B46"
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 3,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": "flag.invalid"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.invalid",
+                "reversed": false
+            }
         },
         "kn3bli1rptpp25dz": {
             "id": "kn3bli1rptpp25dz",
@@ -447,7 +526,11 @@
             "handlers": {
                 "wf-toggle": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-toggle",
                 "stateRef": "finn.filter"
@@ -458,7 +541,7 @@
             "type": "textinput",
             "content": {
                 "label": "",
-                "placeholder": "S\u00f8k etter navn . . .",
+                "placeholder": "S\u00f8k etter navn ...",
                 "accentColor": "#136F63"
             },
             "isCodeManaged": false,
@@ -468,7 +551,11 @@
                 "wf-change-finish": "getset.set_data",
                 "wf-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-change",
                 "stateRef": "finn.navn"
@@ -491,7 +578,11 @@
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
             },
-            "visible": "flag.mellom",
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.mellom",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "valgt.fra"
@@ -513,7 +604,11 @@
                 "wf-number-change": "getset.set_data",
                 "wf-number-change-finish": "getset.set_data"
             },
-            "visible": "flag.mellom",
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.mellom",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "valgt.til"
@@ -530,7 +625,11 @@
             "position": 1,
             "parentId": "a2m7fgkyh7e71jdo",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "izi3lobht49r1jn7": {
             "id": "izi3lobht49r1jn7",
@@ -549,7 +648,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_store"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.butikk"
@@ -565,7 +668,11 @@
             "position": 0,
             "parentId": "ab9fej581ixb1r14",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "8kmf11rt8ontfjhn": {
             "id": "8kmf11rt8ontfjhn",
@@ -575,7 +682,11 @@
             "position": 0,
             "parentId": "w23jmw2xm892ak3z",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "hkiku69lu2i26z2k": {
             "id": "hkiku69lu2i26z2k",
@@ -587,7 +698,11 @@
             "position": 0,
             "parentId": "8kmf11rt8ontfjhn",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "yjcylp0mnstfc5gf": {
             "id": "yjcylp0mnstfc5gf",
@@ -600,7 +715,11 @@
             "position": 1,
             "parentId": "8kmf11rt8ontfjhn",
             "handlers": {},
-            "visible": "flag.mellom"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.mellom",
+                "reversed": false
+            }
         },
         "3umy0emxn9586tbq": {
             "id": "3umy0emxn9586tbq",
@@ -612,7 +731,11 @@
             "position": 0,
             "parentId": "jybwlc2vw54cce00",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "qajdfpk6ke8kqx96": {
             "id": "qajdfpk6ke8kqx96",
@@ -622,7 +745,11 @@
             "position": 0,
             "parentId": "3umy0emxn9586tbq",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "yx3yms1snz0ogghk": {
             "id": "yx3yms1snz0ogghk",
@@ -636,7 +763,11 @@
             "position": 1,
             "parentId": "qajdfpk6ke8kqx96",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "rvbgi60n5dr9j1ts": {
             "id": "rvbgi60n5dr9j1ts",
@@ -654,7 +785,11 @@
                 "wf-number-change": "getset.set_page",
                 "wf-number-change-finish": "getset.set_page"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "side.gjeldende"
@@ -672,7 +807,11 @@
             "position": 2,
             "parentId": "qajdfpk6ke8kqx96",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "eebwn6l89rtj8e1k": {
             "id": "eebwn6l89rtj8e1k",
@@ -685,7 +824,11 @@
             "position": 0,
             "parentId": "j3f83z76m9z3t0dr",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "qp7kriyshnb95qsk": {
             "id": "qp7kriyshnb95qsk",
@@ -699,7 +842,11 @@
             "position": 0,
             "parentId": "qajdfpk6ke8kqx96",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "er6te3p8wutnx7sf": {
             "id": "er6te3p8wutnx7sf",
@@ -712,7 +859,11 @@
             "position": 0,
             "parentId": "qp7kriyshnb95qsk",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "hr792y96pu82gfvg": {
             "id": "hr792y96pu82gfvg",
@@ -722,7 +873,11 @@
             "position": 1,
             "parentId": "3umy0emxn9586tbq",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "6x9pqzjbzeuu8lun": {
             "id": "6x9pqzjbzeuu8lun",
@@ -737,7 +892,11 @@
             "position": 2,
             "parentId": "hr792y96pu82gfvg",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "tf7vls2e9egfb211": {
             "id": "tf7vls2e9egfb211",
@@ -751,7 +910,11 @@
             "position": 0,
             "parentId": "hr792y96pu82gfvg",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "1dpkhpo6hfzohp20": {
             "id": "1dpkhpo6hfzohp20",
@@ -769,7 +932,11 @@
             "handlers": {
                 "wf-click": "getset.set_previous_page"
             },
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "dwkzrqkmhenf24gt": {
             "id": "dwkzrqkmhenf24gt",
@@ -783,7 +950,11 @@
             "position": 1,
             "parentId": "hr792y96pu82gfvg",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "gpt766qr13l9opi7": {
             "id": "gpt766qr13l9opi7",
@@ -801,7 +972,11 @@
             "handlers": {
                 "wf-click": "getset.set_page_one"
             },
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "8cm33qeqcr3xuejn": {
             "id": "8cm33qeqcr3xuejn",
@@ -819,7 +994,11 @@
             "handlers": {
                 "wf-click": "getset.set_next_page"
             },
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "o9k7cnc9nbnus4vr": {
             "id": "o9k7cnc9nbnus4vr",
@@ -829,7 +1008,11 @@
             "position": 0,
             "parentId": "8g3rs3om9x66w4e9",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "ieiaw4qj6jppxruw": {
             "id": "ieiaw4qj6jppxruw",
@@ -844,7 +1027,11 @@
             "position": 0,
             "parentId": "o9k7cnc9nbnus4vr",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "h69l119ulwq8zfpv": {
             "id": "h69l119ulwq8zfpv",
@@ -858,7 +1045,11 @@
             "position": 1,
             "parentId": "o9k7cnc9nbnus4vr",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "x5x159myayf9gko3": {
             "id": "x5x159myayf9gko3",
@@ -868,7 +1059,11 @@
             "position": 0,
             "parentId": "toq8ettajnz2pzel",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "ahdvv7swumst0vh4": {
             "id": "ahdvv7swumst0vh4",
@@ -880,7 +1075,11 @@
             "position": 0,
             "parentId": "x5x159myayf9gko3",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "id572w5jk0o5wjri": {
             "id": "id572w5jk0o5wjri",
@@ -892,7 +1091,11 @@
             "position": 1,
             "parentId": "x5x159myayf9gko3",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "tcysbsj1jkzl7lrq": {
             "id": "tcysbsj1jkzl7lrq",
@@ -904,7 +1107,11 @@
             "position": 0,
             "parentId": "mf806826g4bj3n5v",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "g9ii64a99vy5efj4": {
             "id": "g9ii64a99vy5efj4",
@@ -917,7 +1124,11 @@
             "position": 0,
             "parentId": "tcysbsj1jkzl7lrq",
             "handlers": {},
-            "visible": "item.land"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.land",
+                "reversed": false
+            }
         },
         "66m4osk43bcnklyu": {
             "id": "66m4osk43bcnklyu",
@@ -930,7 +1141,11 @@
             "position": 1,
             "parentId": "tcysbsj1jkzl7lrq",
             "handlers": {},
-            "visible": "item.distrikt"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.distrikt",
+                "reversed": false
+            }
         },
         "5ucmkrotuaa4jkpw": {
             "id": "5ucmkrotuaa4jkpw",
@@ -943,7 +1158,11 @@
             "position": 2,
             "parentId": "tcysbsj1jkzl7lrq",
             "handlers": {},
-            "visible": "item.underdistrikt"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.underdistrikt",
+                "reversed": false
+            }
         },
         "hut03twxlm490kas": {
             "id": "hut03twxlm490kas",
@@ -955,7 +1174,11 @@
             "position": 0,
             "parentId": "d7s2myys7to3it91",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "7456sa06p5v927cc": {
             "id": "7456sa06p5v927cc",
@@ -968,7 +1191,11 @@
             "position": 0,
             "parentId": "hut03twxlm490kas",
             "handlers": {},
-            "visible": "item.kategori"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.kategori",
+                "reversed": false
+            }
         },
         "ltou2l9o70w4x477": {
             "id": "ltou2l9o70w4x477",
@@ -981,7 +1208,11 @@
             "position": 1,
             "parentId": "hut03twxlm490kas",
             "handlers": {},
-            "visible": "item.underkategori"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.underkategori",
+                "reversed": false
+            }
         },
         "z938h8hjgvny9wjy": {
             "id": "z938h8hjgvny9wjy",
@@ -996,7 +1227,11 @@
             "position": 1,
             "parentId": "t94c961uwssbohhi",
             "handlers": {},
-            "visible": ""
+            "visible": {
+                "expression": "custom",
+                "binding": "",
+                "reversed": false
+            }
         },
         "35r7f5yb8ztl2o48": {
             "id": "35r7f5yb8ztl2o48",
@@ -1020,7 +1255,11 @@
             "position": 0,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "d7s2myys7to3it91": {
             "id": "d7s2myys7to3it91",
@@ -1033,7 +1272,11 @@
             "position": 0,
             "parentId": "lgh56d8bced1p0pd",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "mf806826g4bj3n5v": {
             "id": "mf806826g4bj3n5v",
@@ -1046,7 +1289,11 @@
             "position": 1,
             "parentId": "lgh56d8bced1p0pd",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "49uwylb4lqgomgaf": {
             "id": "49uwylb4lqgomgaf",
@@ -1058,7 +1305,11 @@
             "position": 1,
             "parentId": "id572w5jk0o5wjri",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "u8e6itgdhqoa89xr": {
             "id": "u8e6itgdhqoa89xr",
@@ -1073,7 +1324,11 @@
             "position": 0,
             "parentId": "xnqjw4qz9v0oxbxy",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "3wjly42273xg8s7s": {
             "id": "3wjly42273xg8s7s",
@@ -1086,7 +1341,11 @@
             "position": 0,
             "parentId": "h69l119ulwq8zfpv",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "t94c961uwssbohhi": {
             "id": "t94c961uwssbohhi",
@@ -1096,7 +1355,11 @@
             "position": 4,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": "item.karakteristikk"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.karakteristikk",
+                "reversed": false
+            }
         },
         "kve4je7sopbnp30l": {
             "id": "kve4je7sopbnp30l",
@@ -1109,7 +1372,11 @@
             "position": 0,
             "parentId": "t94c961uwssbohhi",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "jezlzky8ob4644r8": {
             "id": "jezlzky8ob4644r8",
@@ -1119,7 +1386,11 @@
             "position": 5,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": "item.ingredienser"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.ingredienser",
+                "reversed": false
+            }
         },
         "t2c80sl4ft5gvx70": {
             "id": "t2c80sl4ft5gvx70",
@@ -1132,7 +1403,11 @@
             "position": 0,
             "parentId": "jezlzky8ob4644r8",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "w4yy8fb59ec10mcj": {
             "id": "w4yy8fb59ec10mcj",
@@ -1144,7 +1419,11 @@
             "position": 6,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": "item.passer_til"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.passer_til",
+                "reversed": false
+            }
         },
         "9epefi751ih2xqh7": {
             "id": "9epefi751ih2xqh7",
@@ -1159,7 +1438,11 @@
             "position": 1,
             "parentId": "w4yy8fb59ec10mcj",
             "handlers": {},
-            "visible": ""
+            "visible": {
+                "expression": "custom",
+                "binding": "",
+                "reversed": false
+            }
         },
         "uhyc13iwxgv9o2tz": {
             "id": "uhyc13iwxgv9o2tz",
@@ -1172,7 +1455,11 @@
             "position": 0,
             "parentId": "w4yy8fb59ec10mcj",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "wripy57me7j1u6ht": {
             "id": "wripy57me7j1u6ht",
@@ -1184,7 +1471,11 @@
             "position": 2,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": "item.beskrivelse.lang"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.beskrivelse.lang",
+                "reversed": false
+            }
         },
         "3gk673ccpas5lplv": {
             "id": "3gk673ccpas5lplv",
@@ -1194,7 +1485,11 @@
             "position": 3,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "aa4wqlx9aeoew9h4": {
             "id": "aa4wqlx9aeoew9h4",
@@ -1204,7 +1499,11 @@
             "position": 3,
             "parentId": "id572w5jk0o5wjri",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "9595xxhxodz5c4lf": {
             "id": "9595xxhxodz5c4lf",
@@ -1217,7 +1516,11 @@
             "position": 0,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.\u00e5rgang"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.\u00e5rgang",
+                "reversed": false
+            }
         },
         "ma53c3q8q07e7gs3": {
             "id": "ma53c3q8q07e7gs3",
@@ -1230,7 +1533,11 @@
             "position": 5,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.lukt"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.lukt",
+                "reversed": false
+            }
         },
         "zudixqk00qqjh8fy": {
             "id": "zudixqk00qqjh8fy",
@@ -1243,7 +1550,11 @@
             "position": 6,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.smak"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.smak",
+                "reversed": false
+            }
         },
         "j4j6w878pmudazgv": {
             "id": "j4j6w878pmudazgv",
@@ -1256,7 +1567,11 @@
             "position": 1,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.kork"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.kork",
+                "reversed": false
+            }
         },
         "b591gjm60sge7zc1": {
             "id": "b591gjm60sge7zc1",
@@ -1269,7 +1584,11 @@
             "position": 7,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.metode"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.metode",
+                "reversed": false
+            }
         },
         "5zjpbcjqdkm1o8u9": {
             "id": "5zjpbcjqdkm1o8u9",
@@ -1282,7 +1601,11 @@
             "position": 2,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.sukker"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.sukker",
+                "reversed": false
+            }
         },
         "z0eq4y13n4t00mh1": {
             "id": "z0eq4y13n4t00mh1",
@@ -1295,7 +1618,11 @@
             "position": 4,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.lagring"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.lagring",
+                "reversed": false
+            }
         },
         "4t78g2leno8vppke": {
             "id": "4t78g2leno8vppke",
@@ -1308,7 +1635,11 @@
             "position": 3,
             "parentId": "aa4wqlx9aeoew9h4",
             "handlers": {},
-            "visible": "item.syre"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.syre",
+                "reversed": false
+            }
         },
         "k6hvigujz4z7o49c": {
             "id": "k6hvigujz4z7o49c",
@@ -1330,7 +1661,11 @@
             "position": 2,
             "parentId": "id572w5jk0o5wjri",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "8yj0s2nvmetgjvih": {
             "id": "8yj0s2nvmetgjvih",
@@ -1347,7 +1682,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.passer_til"
@@ -1368,7 +1707,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.argang"
@@ -1389,7 +1732,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.beskrivelse"
@@ -1410,7 +1757,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.kork"
@@ -1431,7 +1782,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.lagring"
@@ -1452,7 +1807,11 @@
             "position": 0,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "7m2tx4j9u6uq5w1j": {
             "id": "7m2tx4j9u6uq5w1j",
@@ -1464,7 +1823,11 @@
             "position": 0,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "x90e7wrsple6uyt0": {
             "id": "x90e7wrsple6uyt0",
@@ -1476,7 +1839,11 @@
             "position": 0,
             "parentId": "4zfu8hplv46m9c6a",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "5k6rdzhkyb82qvnq": {
             "id": "5k6rdzhkyb82qvnq",
@@ -1490,7 +1857,11 @@
             "position": 0,
             "parentId": "0n3jy8asc3b4p0kd",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "m90p20vzb8ibinu6": {
             "id": "m90p20vzb8ibinu6",
@@ -1504,17 +1875,25 @@
             "position": 0,
             "parentId": "lgvnl7rz19ii190j",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "qkxci5xn20k828v8": {
             "id": "qkxci5xn20k828v8",
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 9,
+            "position": 8,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "0n3jy8asc3b4p0kd": {
             "id": "0n3jy8asc3b4p0kd",
@@ -1528,7 +1907,11 @@
             "position": 0,
             "parentId": "qkxci5xn20k828v8",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "lgvnl7rz19ii190j": {
             "id": "lgvnl7rz19ii190j",
@@ -1542,7 +1925,11 @@
             "position": 1,
             "parentId": "qkxci5xn20k828v8",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "nd8z8u2ghv2dwci7": {
             "id": "nd8z8u2ghv2dwci7",
@@ -1557,7 +1944,11 @@
             "position": 1,
             "parentId": "xnqjw4qz9v0oxbxy",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "zooubyrelx6osjxo": {
             "id": "zooubyrelx6osjxo",
@@ -1570,7 +1961,11 @@
             "position": 1,
             "parentId": "ahdvv7swumst0vh4",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "xnqjw4qz9v0oxbxy": {
             "id": "xnqjw4qz9v0oxbxy",
@@ -1582,7 +1977,11 @@
             "position": 0,
             "parentId": "k09bi0nwq0uo6ftl",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "dbvptav05uppacbm": {
             "id": "dbvptav05uppacbm",
@@ -1597,7 +1996,11 @@
             "position": 0,
             "parentId": "a243ireg4kphs3b0",
             "handlers": {},
-            "visible": "item.pris_gammel"
+            "visible": {
+                "expression": "custom",
+                "binding": "item.pris_gammel",
+                "reversed": false
+            }
         },
         "o0pmx2o5sy78pdrc": {
             "id": "o0pmx2o5sy78pdrc",
@@ -1607,7 +2010,11 @@
             "position": 0,
             "parentId": "zooubyrelx6osjxo",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "k09bi0nwq0uo6ftl": {
             "id": "k09bi0nwq0uo6ftl",
@@ -1621,7 +2028,11 @@
             "position": 0,
             "parentId": "o0pmx2o5sy78pdrc",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "a243ireg4kphs3b0": {
             "id": "a243ireg4kphs3b0",
@@ -1635,7 +2046,11 @@
             "position": 1,
             "parentId": "o0pmx2o5sy78pdrc",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "scxsx66to0kjuhmi": {
             "id": "scxsx66to0kjuhmi",
@@ -1645,10 +2060,14 @@
                 "infoColor": "#F3F7F4"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 2,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
-            "visible": "flag.butikk"
+            "visible": {
+                "expression": "custom",
+                "binding": "flag.butikk",
+                "reversed": false
+            }
         },
         "7t9ueh99iyq3qqsf": {
             "id": "7t9ueh99iyq3qqsf",
@@ -1665,7 +2084,11 @@
             "handlers": {
                 "wf-options-change": "getset.set_data"
             },
-            "visible": "data.fokus",
+            "visible": {
+                "expression": "custom",
+                "binding": "data.fokus",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-options-change",
                 "stateRef": "data.stigende"
@@ -1679,7 +2102,11 @@
             "position": 9,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "q53tf536wzf0wvjb": {
             "id": "q53tf536wzf0wvjb",
@@ -1692,7 +2119,11 @@
             "position": 10,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "emvunmh3u7iduxdx": {
             "id": "emvunmh3u7iduxdx",
@@ -1706,7 +2137,11 @@
             "position": 1,
             "parentId": "zp4ymmlwhtpez6vn",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         },
         "j57xdhbpdvlguu4m": {
             "id": "j57xdhbpdvlguu4m",
@@ -1724,7 +2159,11 @@
                 "wf-number-change-finish": "getset.set_data",
                 "wf-number-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-number-change",
                 "stateRef": "valgt.alkohol"
@@ -1746,7 +2185,11 @@
             "handlers": {
                 "wf-option-change": "getset.set_data"
             },
-            "visible": true,
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            },
             "binding": {
                 "eventType": "wf-option-change",
                 "stateRef": "data.prisendring.valg"
@@ -1780,7 +2223,11 @@
             "position": 6,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
-            "visible": true
+            "visible": {
+                "expression": true,
+                "binding": "",
+                "reversed": false
+            }
         }
     }
 }

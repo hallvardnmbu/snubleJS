@@ -147,3 +147,5 @@ STATE = writer.init_state({
 })
 
 initialise(STATE)
+
+STATE.import_stylesheet("style", "static/styles.css")

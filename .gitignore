@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+Icon?
+
+__pycache__/
+scrape/__pycache__/
+
+backup/
+node/
