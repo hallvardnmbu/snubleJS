@@ -55,7 +55,7 @@
                 "cssClasses": ""
             },
             "isCodeManaged": false,
-            "position": 4,
+            "position": 5,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -69,7 +69,7 @@
             "type": "sidebar",
             "content": {},
             "isCodeManaged": false,
-            "position": 7,
+            "position": 8,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -232,7 +232,7 @@
                 "valueVariable": "item"
             },
             "isCodeManaged": false,
-            "position": 5,
+            "position": 6,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -346,7 +346,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 1,
+            "position": 2,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {}
         },
@@ -399,7 +399,7 @@
                 "proxyId": "a2m7fgkyh7e71jdo"
             },
             "isCodeManaged": false,
-            "position": 6,
+            "position": 7,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -419,7 +419,7 @@
                 "errorColor": "#8E3B46"
             },
             "isCodeManaged": false,
-            "position": 3,
+            "position": 4,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -645,7 +645,7 @@
             "id": "3umy0emxn9586tbq",
             "type": "html",
             "content": {
-                "styles": "{\n  \"padding\": \"10px\",\n  \"width\": \"220px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(6, 7, 14)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"center\",\n  \"align-items\": \"center\",\n  \"border-radius\": \"10px\",\n  \"font-size\": \"12px\"\n}"
+                "styles": "{\n  \"padding\": \"10px\",\n  \"width\": \"220px\",\n  \"background\": \"rgb(243, 247, 244)\",\n  \"border\": \"1px solid rgb(6, 7, 14)\",\n  \"color\": \"rgb(6, 7, 14)\",\n  \"display\": \"flex\",\n  \"justify-content\": \"baseline\",\n  \"align-items\": \"baseline\",\n  \"border-radius\": \"10px\",\n  \"font-size\": \"12px\"\n}"
             },
             "isCodeManaged": false,
             "position": 0,
@@ -1599,7 +1599,7 @@
                 "containerBackgroundColor": "#f3ebec"
             },
             "isCodeManaged": false,
-            "position": 0,
+            "position": 1,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -1681,7 +1681,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 8,
+            "position": 9,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -1855,7 +1855,7 @@
                 "infoColor": "#F3F7F4"
             },
             "isCodeManaged": false,
-            "position": 2,
+            "position": 3,
             "parentId": "0tzqxesupzw3z68k",
             "handlers": {},
             "visible": {
@@ -2235,6 +2235,18 @@
                 "eventType": "wf-options-change",
                 "stateRef": "valgt.land"
             }
+        },
+        "ximtbccluznmconv": {
+            "id": "ximtbccluznmconv",
+            "type": "message",
+            "content": {
+                "message": "NB: Til tider problemer med data-henting.",
+                "infoColor": "#F3F7F4"
+            },
+            "isCodeManaged": false,
+            "position": 0,
+            "parentId": "0tzqxesupzw3z68k",
+            "handlers": {}
         }
     }
 }
