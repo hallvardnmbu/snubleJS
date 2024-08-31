@@ -5,6 +5,8 @@ CRON JOB: 15 10 * * *
 """
 
 import os
+import time
+import itertools
 from typing import List
 import concurrent.futures
 
@@ -22,13 +24,17 @@ _DATABASE = _CLIENT['vinskraper']['varer']
 _EXPIRED = _CLIENT['vinskraper']['utgått']
 _EXISTING = _DATABASE.distinct('index')
 
-_PROXIES = iter([
+_PROXIES = itertools.cycle([
     {
         "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
     }
     for ip in os.environ.get('PROXY_IPS', '').split(',')
+] + [
+    {
+        "http": f"socks5://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('SOCKS_PRT')}"
+    }
+    for ip in os.environ.get('PROXY_IPS', '').split(',')
 ])
-_PROXY = next(_PROXIES)
 
 _STORES = 'https://www.vinmonopolet.no/vmpws/v2/vmp/stores?fields=FULL&pageSize=1000'
 _PRODUCT = 'https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&q={}:relevance'
@@ -48,18 +54,14 @@ def stores():
         * assortiment type : str
         * click and collect : bool
     """
-    global _PROXY
-
+    proxy = next(_PROXIES)
     for _ in range(10):
         try:
-            response = requests.get(_STORES, params={"q": "*"}, proxies=_PROXY, timeout=3)
+            response = requests.get(_STORES, params={"q": "*"}, proxies=proxy, timeout=3)
             break
         except Exception as err:
             print(f'Error: Trying another proxy. {err}')
-            try:
-                _PROXY = next(_PROXIES)
-            except StopIteration:
-                raise ValueError('Failed to fetch store information. No proxies left.')
+            proxy = next(_PROXIES)
     else:
         raise ValueError('Failed to fetch store information. Tried 10 times.')
 
@@ -86,14 +88,15 @@ def stores():
     _CLIENT['vinskraper']['butikk'].insert_many(store)
 
 
-def _product(index: int) -> dict:
-    global _PROXY
-
+def _product(index: int, proxy: dict) -> dict:
     for _ in range(10):
         try:
-            response = requests.get(_PRODUCT.format(index), proxies=_PROXY, timeout=3)
-            if response.status_code != 200:
-                raise ValueError()
+            response = requests.get(_PRODUCT.format(index), proxies=proxy, timeout=5)
+            if response.status_code == 429:
+                time.sleep(0.5)
+                continue
+            elif response.status_code != 200:
+                raise ValueError(f'Status code {response.status_code}: {response.text}')
 
             response = response.json().get('productSearchResult', {})
 
@@ -147,10 +150,7 @@ def _product(index: int) -> dict:
             }
         except Exception as err:
             print(f'{index}: Trying another proxy. {err}')
-            try:
-                _PROXY = next(_PROXIES)
-            except StopIteration:
-                raise ValueError('Failed to fetch store information. No proxies left.')
+            proxy = next(_PROXIES)
 
     raise ValueError('Failed to fetch product information.')
 
@@ -190,8 +190,10 @@ def available(products: List[int] = None, max_workers=10):
         expired = []
         operations = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            results = {executor.submit(_product, product): product for product in
-                       products[i:i + step]}
+            _products = products[i:i + step]
+            _proxies = [next(_PROXIES) for _ in range(len(_products))]
+            results = {executor.submit(_product, product, proxy): product
+                       for product, proxy in zip(_products, _proxies)}
             for future in concurrent.futures.as_completed(results):
                 product = future.result()
                 if not product:
