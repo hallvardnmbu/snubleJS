@@ -111,6 +111,7 @@ def set_data(state, fresh: bool = True):
     # Setting the total number of pages.
     if fresh:
         state['side']['totalt'] = max(total // state['data']['antall'], 1)
+        state['side']['totalt'] = None if state['side']['totalt'] > 1665 else state['side']['totalt']
         state['side']['gjeldende'] = 1
 
     state['flag']['updating'] = False
@@ -135,7 +136,11 @@ def set_focus(state):
 
 
 def set_next_page(state):
-    if state['side']['gjeldende'] >= state['side']['totalt']:
+    if state['side']['gjeldende'] >= 1665:
+        state['side']['gjeldende'] = 1665
+        return
+    elif state['side']['totalt'] and state['side']['gjeldende'] >= state['side']['totalt']:
+        state['side']['gjeldende'] = state['side']['totalt']
         return
 
     state['side']['gjeldende'] += 1
@@ -158,6 +163,14 @@ def set_page_one(state):
 
 
 def set_page(state):
+    if not state['side']['gjeldende']:
+        return
+
+    if state['side']['gjeldende'] >= 1665:
+        state['side']['gjeldende'] = 1665
+    elif state['side']['totalt'] and state['side']['gjeldende'] >= state['side']['totalt']:
+        state['side']['gjeldende'] = state['side']['totalt']
+
     set_data(state, fresh=False)
 
 

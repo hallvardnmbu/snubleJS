@@ -57,3 +57,19 @@
 .CoreHeading {
     font-family: "JB-B", monospace !important;
 }
+
+.CoreSeparator {
+    height: 10px;
+}
+
+.collapser {
+    background-color: #f3f7f4 !important;
+}
+
+.collapser:hover {
+    background-color: #136f63 !important;
+}
+
+.WdsButton {
+    padding: 10px 10px !important;
+}
