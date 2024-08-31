@@ -1,12 +1,11 @@
-<body style="font-family:monospace;">
-
 # Snublejuice
 
 Kildekode til [snublejuice](https://snublejuice.no) – en applikasjon for å utforske og sammenlikne [vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
-<div style="text-align: center;">
-    <img src="./static/logo.jpg" style="width: 50%;">
-</div>
+<h1 align="center">
+  <img src="./static/logo.jpg" style="width: 50%;" alt="neurons">
+  <br>
+</h1>
 
 ---
 
@@ -43,7 +42,7 @@ export mongodb_password=<password>
 
   (eller tilsvarende for ditt operativsystem). Hvor `<username>` og `<password>` er brukernavn og passord til din [MongoDB](https://www.mongodb.com)-database (hvilket kan opprettes gratis).
 
-  Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gjøres ved å kjøre 
+  Første gang applikasjonen kjøres lokalt må databasen initialiseres. Dette gjøres ved å kjøre
   funksjonene i `./scrape/` (etter å ha oppretted databasen `vinskraper` og collection `varer`).
 
 </details>
@@ -63,5 +62,3 @@ export mongodb_password=<password>
   Hver månedsskifte kjøres `./scrape/price.py` for å oppdatere databasen med prisendringer.
 
 </details>
-
-</body>
