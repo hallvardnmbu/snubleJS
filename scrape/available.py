@@ -12,11 +12,9 @@ import pymongo
 import requests
 from pymongo.mongo_client import MongoClient
 
-from proxy import Proxy
-
 
 _CLIENT = MongoClient(
-    f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
+    f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
@@ -24,7 +22,13 @@ _DATABASE = _CLIENT['vinskraper']['varer']
 _EXPIRED = _CLIENT['vinskraper']['utgått']
 _EXISTING = _DATABASE.distinct('index')
 
-_PROXY = Proxy()
+_PROXIES = iter([
+    {
+        "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
+    }
+    for ip in os.environ.get('PROXY_IPS', '').split(',')
+])
+_PROXY = next(_PROXIES)
 
 _STORES = 'https://www.vinmonopolet.no/vmpws/v2/vmp/stores?fields=FULL&pageSize=1000'
 _PRODUCT = 'https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&q={}:relevance'
@@ -44,13 +48,18 @@ def stores():
         * assortiment type : str
         * click and collect : bool
     """
+    global _PROXY
+
     for _ in range(10):
         try:
-            response = requests.get(_STORES, params={"q": "*"}, proxies=_PROXY.get(), timeout=3)
+            response = requests.get(_STORES, params={"q": "*"}, proxies=_PROXY, timeout=3)
             break
         except Exception as err:
             print(f'Error: Trying another proxy. {err}')
-            _PROXY.renew()
+            try:
+                _PROXY = next(_PROXIES)
+            except StopIteration:
+                raise ValueError('Failed to fetch store information. No proxies left.')
     else:
         raise ValueError('Failed to fetch store information. Tried 10 times.')
 
@@ -78,9 +87,11 @@ def stores():
 
 
 def _product(index: int) -> dict:
+    global _PROXY
+
     for _ in range(10):
         try:
-            response = requests.get(_PRODUCT.format(index), proxies=_PROXY.get(), timeout=3)
+            response = requests.get(_PRODUCT.format(index), proxies=_PROXY, timeout=3)
             if response.status_code != 200:
                 raise ValueError()
 
@@ -136,7 +147,10 @@ def _product(index: int) -> dict:
             }
         except Exception as err:
             print(f'{index}: Trying another proxy. {err}')
-            _PROXY.renew()
+            try:
+                _PROXY = next(_PROXIES)
+            except StopIteration:
+                raise ValueError('Failed to fetch store information. No proxies left.')
 
     raise ValueError('Failed to fetch product information.')
 

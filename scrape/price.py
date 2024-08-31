@@ -16,11 +16,9 @@ from pymongo.errors import BulkWriteError
 from pymongo.results import BulkWriteResult
 from pymongo.mongo_client import MongoClient
 
-from proxy import Proxy
-
 
 _CLIENT = MongoClient(
-    f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
+    f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
@@ -30,7 +28,15 @@ _URL = ('https://www.vinmonopolet.no/vmpws/v2/vmp/'
         'search?searchType=product'
         '&currentPage={}'
         '&q=%3Arelevance%3AmainCategory%3A{}')
-_PROXY = Proxy()
+
+_PROXIES = iter([
+    {
+        "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
+    }
+    for ip in os.environ.get('PROXY_IPS', '').split(',')
+])
+_PROXY = next(_PROXIES)
+
 _SESSION = requests.Session()
 
 _OLD = (datetime.now() - timedelta(days=15)).strftime("%Y-%m-01")
@@ -154,15 +160,20 @@ def _scrape_page(
         If it fails, it renews the proxy (`_PROXY.renew()`) and retries.
         Returns code `500` if it fails 10 consecutive times.
     """
+    global _PROXY
+
     for _ in range(10):
         try:
             response = _SESSION.get(_URL.format(page, category.value),
-                                    proxies=_PROXY.get(),
+                                    proxies=_PROXY,
                                     timeout=3)
             break
         except Exception as err:
             print(f'Error: Page {page} (trying another proxy); {err}')
-            _PROXY.renew()
+            try:
+                _PROXY = next(_PROXIES)
+            except StopIteration:
+                raise ValueError('Failed to fetch new products. No more proxies.')
     else:
         print(f'Error: Failed to fetch page {page} after 10 attempts.')
         response = requests.models.Response()

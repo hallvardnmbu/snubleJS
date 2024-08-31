@@ -17,17 +17,21 @@ import pymongo
 import requests
 from pymongo.mongo_client import MongoClient
 
-from proxy import Proxy
-
 
 _CLIENT = MongoClient(
-    f'mongodb+srv://{os.environ.get("mongodb_username")}:{os.environ.get("mongodb_password")}'
+    f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
 )
 _DATABASE = _CLIENT['vinskraper']['varer']
 
-_PROXY = Proxy()
+_PROXIES = iter([
+    {
+        "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
+    }
+    for ip in os.environ.get('PROXY_IPS', '').split(',')
+])
+_PROXY = next(_PROXIES)
 
 _NEW = "https://www.vinmonopolet.no/vmpws/v2/vmp/search?searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue"
 _DETAILS = 'https://www.vinmonopolet.no/vmpws/v3/vmp/products/{}?fields=FULL'
@@ -102,26 +106,33 @@ def _process(products) -> List[dict]:
 
 def _news(page: int) -> List[dict]:
     """Extract new products from a single page."""
+    global _PROXY
+
     for _ in range(10):
         try:
-            response = requests.get(_NEW.format(page), proxies=_PROXY.get(), timeout=3)
+            response = requests.get(_NEW.format(page), proxies=_PROXY, timeout=3)
             if response.status_code != 200:
                 raise ValueError()
             products = response.json().get('productSearchResult', {}).get('products', [])
             return _process(products)
         except Exception as err:
             print(f'Error: Trying another proxy. {err}')
-            _PROXY.renew()
+            try:
+                _PROXY = next(_PROXIES)
+            except StopIteration:
+                raise ValueError('Failed to fetch new products. No more proxies.')
     else:
         raise ValueError('Failed to fetch new products. Tried 10 times.')
 
 
 def _details(product: int) -> dict:
     """Extract detailed information about a single product."""
+    global _PROXY
+
     for _ in range(10):
         try:
             details = requests.get(_DETAILS.format(product),
-                                   proxies=_PROXY.get(),
+                                   proxies=_PROXY,
                                    timeout=3)
             if details.status_code != 200:
                 raise ValueError()
@@ -188,7 +199,10 @@ def _details(product: int) -> dict:
             }
         except Exception as err:
             print(f'{product}: Trying another proxy. {err}')
-            _PROXY.renew()
+            try:
+                _PROXY = next(_PROXIES)
+            except StopIteration:
+                raise ValueError('Failed to fetch new products. No more proxies.')
 
     raise ValueError('Failed to fetch product information.')
 
@@ -277,13 +291,15 @@ def discounts():
 
 
 def news(max_workers=5):
+    global _PROXY
+
     _DATABASE.update_many(
         {},
         {'$inc': {'ny': 1}}  # Increment 'ny' field by 1 for all documents.
     )
 
     expired = set(_CLIENT['vinskraper']['utgått'].distinct('index'))
-    response = requests.get(_NEW.format(0), proxies=_PROXY.get(), timeout=3)
+    response = requests.get(_NEW.format(0), proxies=_PROXY, timeout=3)
 
     if response.status_code != 200:
         raise ValueError('Failed to fetch new products.')

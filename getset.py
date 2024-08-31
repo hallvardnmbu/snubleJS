@@ -356,7 +356,7 @@ def _discounts(state, data: pd.DataFrame):
         data['pris_gammel'] = data['pris'].copy()
     else:
         data['pris_gammel'] = data[chosen.replace('endring', '') if chosen else prices[-2]]
-    data['prisendring'] = data[chosen].apply(lambda x: round(x, 2) if x else 0)
+    data['prisendring'] = data[chosen].apply(lambda x: int(x) if x else 0)
 
     data['literpris'] = data['literpris'].apply(lambda x: round(x, 2) if x else 0)
     data['alkoholpris'] = data['alkoholpris'].apply(lambda x: round(x, 2) if x else 0)
