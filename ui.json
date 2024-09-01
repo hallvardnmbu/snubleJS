@@ -67,7 +67,9 @@
         "4zfu8hplv46m9c6a": {
             "id": "4zfu8hplv46m9c6a",
             "type": "sidebar",
-            "content": {},
+            "content": {
+                "sidebarBackgroundColor": "#ffffff"
+            },
             "isCodeManaged": false,
             "position": 8,
             "parentId": "0tzqxesupzw3z68k",

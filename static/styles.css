@@ -75,3 +75,12 @@
     align-items:;
     justify-content:;
 }
+
+.sidebarContainer {
+    flex-direction: column !important;
+}
+
+.CoreSidebar {
+    overflow: visible !important;
+    position: static !important;
+}
