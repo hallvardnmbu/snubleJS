@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Snublejuice</title>
+</head>
+<body>
+    <h1>Snublejuice</h1>
+    <ul>
+        <% data.forEach(item => { %>
+          <div>
+            <div class="item-container">
+              <div class="item-header-container">
+                <div class="item-header-title">
+                  <p><%= item.navn %></p>
+                </div>
+   
+                <div class="item-header-pricechange">
+                  <p><%= item.prisendring %></p>
+                </div>
+              </div>
+
+              
+              <div>
+                <p><%= item.kategori %></p>
+              </div>
+
+              <div>
+                <p><%= item.prisendring %></p>
+              </div>
+
+              <div>
+                <img src="<%= item.bilde.product %>" alt="bottle-image"/>
+              </div>
+            </div>
+          </div>
+            
+        <% }) %>
+    </ul>
+
+    <!-- Pagination Controls -->
+    <div>
+        <% if (currentPage > 1) { %>
+            <a href="/?page=<%= currentPage - 1 %>">Previous</a>
+        <% } %>
+
+        <span>Page <%= currentPage %> of <%= totalPages %></span>
+
+        <% if (currentPage < totalPages) { %>
+            <a href="/?page=<%= currentPage + 1 %>">Next</a>
+        <% } %>
+    </div>
+</body>
+</html>
