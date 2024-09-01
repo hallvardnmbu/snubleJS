@@ -217,3 +217,7 @@ def available(products: List[int] = None, max_workers=10):
         _DATABASE.bulk_write(operations)
         if expired:
             _EXPIRED.bulk_write(expired)
+
+
+if __name__ == '__main__':
+    available(max_workers=5)

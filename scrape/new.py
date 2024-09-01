@@ -297,6 +297,10 @@ def news(max_workers=5):
     global _PROXY
 
     _DATABASE.update_many(
+        {'ny': None},
+        {'$set': {'ny': 0}}  # Set 'ny' to 0 for all documents with 'ny' equal to None.
+    )
+    _DATABASE.update_many(
         {},
         {'$inc': {'ny': 1}}  # Increment 'ny' field by 1 for all documents.
     )
@@ -349,3 +353,13 @@ def news(max_workers=5):
         details(ids)
 
     discounts()
+
+
+if __name__ == '__main__':
+    news(max_workers=5)
+
+    ids = list(_DATABASE.find(
+        {'lukt': {'$exists': False}},
+        {'index': 1, '_id': 0}
+    ))
+    details(products=ids, max_workers=5)
