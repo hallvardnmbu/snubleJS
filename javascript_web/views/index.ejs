@@ -16,9 +16,9 @@
                 <div class="item-header-title">
                   <p><%= item.navn %></p>
                 </div>
-   
+
                 <div class="item-header-pricechange">
-                  <p>Prisendring <%= item.prisendring %>%</p>
+                  <p><%= Math.floor(item['prisendring 2024-09-01']) %> %</p>
                 </div>
               </div>
               
@@ -31,13 +31,23 @@
                   </div>
                 </div>
 
+
+              <div>
+                <p><%= item.kategori %></p>
+              </div>
+
+              <div>
+                <p><%= item.prisendring %></p>
+              </div>
+
+
                 <div class="item-information-container">
                   <p><%= item.kategori %></p>
                 </div>
               </div>
             </div>
           </div>
-            
+
         <% }) %>
     </ul>
 
