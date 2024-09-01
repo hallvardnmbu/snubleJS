@@ -11,7 +11,6 @@ from getset import initialise, set_data, set_focus, set_store, set_country, set_
 
 _discounts = sorted([col for col in load(amount=1)[0].columns if col.startswith('prisendring ')],
                     key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))
-print(_discounts)
 
 STATE = writer.init_state({
 
