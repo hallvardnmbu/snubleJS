@@ -18,21 +18,22 @@
                 </div>
    
                 <div class="item-header-pricechange">
-                  <p><%= item.prisendring %></p>
+                  <p>Prisendring <%= item.prisendring %>%</p>
                 </div>
               </div>
-
               
-              <div>
-                <p><%= item.kategori %></p>
-              </div>
+              <div class="item-main-container">
+                <div class="item-picture">
+                  <img src="<%= item.bilde.product %>" alt="bottle-image"/>
+                  <div class="item-picture-text">
+                    <p><%= item.volum %> cL</p>
+                    <p><%= item.alkohol%> % alk.</p>
+                  </div>
+                </div>
 
-              <div>
-                <p><%= item.prisendring %></p>
-              </div>
-
-              <div>
-                <img src="<%= item.bilde.product %>" alt="bottle-image"/>
+                <div class="item-information-container">
+                  <p><%= item.kategori %></p>
+                </div>
               </div>
             </div>
           </div>
