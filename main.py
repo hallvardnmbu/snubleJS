@@ -11,8 +11,7 @@ from getset import initialise, set_data, set_focus, set_store, set_country, set_
 
 _discounts = sorted([col for col in load(amount=1)[0].columns if col.startswith('prisendring ')],
                     key=lambda x: datetime.date(*[int(y) for y in x.split(' ')[-1].split('-')]))
-_month = (datetime.date.today() - relativedelta(months=1)).strftime('%Y-%m-01')
-
+print(_discounts)
 
 STATE = writer.init_state({
 
@@ -108,7 +107,7 @@ STATE = writer.init_state({
     'data': {
         'antall': 10,
         'stigende': ['True'],
-        'fokus': _discounts[-2],
+        'fokus': _discounts[-1],
         'prisendring': {
             'valg': _discounts[-2],
             'mulig': {
@@ -116,7 +115,7 @@ STATE = writer.init_state({
             }
         },
         'dropdown': {
-            _discounts[-2]: 'Prisendring',
+            _discounts[-1]: 'Prisendring',
             'literpris': 'Literpris',
             'alkoholpris': 'Alkoholpris',
             _discounts[-1].replace('endring', ''): 'Pris',
