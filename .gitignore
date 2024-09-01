@@ -8,3 +8,9 @@ scrape/__pycache__/
 backup/
 node/node_modules/
 node/package-lock.json
+
+node/.env
+
+javascript_web/node_modules/
+javascript_web/package-lock.json
+
