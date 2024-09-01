@@ -59,13 +59,6 @@ a:hover {
   text-align: left;
 } */
 
-img {
-  border: 1px solid lightgray;
-  border-radius: 20px;
-  /* padding: 10px; */
-  max-width: 366px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-}
 
 .columns {
   display: grid;
@@ -108,23 +101,50 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  
 }
 
 .item-header-title {
   font-size: 1.5rem;
   font-weight: bold;
-  padding: 1rem;
+  margin-left: 50px;
 }
 
 .item-header-pricechange {
+  display: flex; /* Make the container a flex container */
+  align-items: center; /* Vertically center the items */
+  justify-content: center; /* Horizontally center the items */
   font-size: 1.5rem;
   font-weight: bold;
-  background-color: grey;
+  background-color: rgb(243, 247, 244);
   border-radius: 10px;
   border: 1px solid black;
-  padding: 1rem;
-  margin-right: 1rem;
-  margin-top: 1rem;
+  margin-right: 20px;
+  margin-top: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 50px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
 
+.item-picture {
+  margin-left: 50px;
+}
+
+.item-picture-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-picture-text p {
+  font-weight: bold;
+}
+
+.item-main-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.item-information-container {
+  border: 1px solid black;
 }
