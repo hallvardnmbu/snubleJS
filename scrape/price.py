@@ -92,11 +92,14 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
             [
                 {'$set': record},
                 {'$set': {
-                    f'prisendring {_NOW}': {'$cond': [
-                        {'$gt': [f'$pris {_OLD}', 0]},
+                    f'prisendring {_OLD}': {'$cond': [
+                        {'if': {'and': [
+                            {'$gt': [f'$pris {_OLD}', 0]},
+                            {'$gt': [f'$pris {_NOW}', 0]}
+                        ]}},
                         {'$multiply': [
                             {'$divide': [
-                                {'$subtract': [record[f'pris {_NOW}'], f'$pris {_OLD}']},
+                                {'$subtract': [f'$pris {_NOW}', f'$pris {_OLD}']},
                                 f'$pris {_OLD}'
                             ]},
                             100
@@ -120,7 +123,7 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                     }}
                 }},
                 {'$set': {
-                    'alkoholpris': {'$cond': {''
+                    'alkoholpris': {'$cond': {
                         'if': {'$and': [
                             {'$ne': ['$literpris', None]},
                             {'$ne': ['$literpris', 0]},
@@ -328,3 +331,7 @@ def scrape(categories=None, max_workers=10):
         print("No expired documents found.")
 
     return failed
+
+
+if __name__ == '__main__':
+    scrape(max_workers=10)

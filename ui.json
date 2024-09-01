@@ -373,12 +373,12 @@
             "type": "selectinput",
             "content": {
                 "label": "",
-                "options": "{\n  \"prisendring 2024-07-01\": \"Prisendring\",\n  \"literpris\": \"Literpris\",\n  \"alkoholpris\": \"Alkoholpris\",\n  \"pris 2024-08-01\": \"Pris\",\n  \"navn\": \"Navn\",\n  \"volum\": \"Volum\",\n  \"alkohol\": \"Alkohol\",\n  \"ny\": \"Nyhet\"\n}",
+                "options": "@{data.dropdown}",
                 "accentColor": "#FFFFFF",
                 "chipTextColor": "#136F63",
                 "selectedColor": "#FFFFFF",
                 "maximumCount": "1",
-                "placeholder": "Sorter etter . . .",
+                "placeholder": "Sorter etter ...",
                 "containerBackgroundColor": "#FFFFFF"
             },
             "isCodeManaged": false,
@@ -2240,7 +2240,7 @@
             "id": "ximtbccluznmconv",
             "type": "message",
             "content": {
-                "message": "NB: Til tider problemer med data-henting.",
+                "message": "OBS: Problemer med data-henting av lagerbeholdning.",
                 "infoColor": "#F3F7F4"
             },
             "isCodeManaged": false,
