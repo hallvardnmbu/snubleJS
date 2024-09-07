@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="item-header-pricechange">
-                  <p>Prisendring <%= Math.floor(item['prisendring 2024-09-01']) %> %</p>
+                  <p>Prisendring <%= Math.floor(item[pricechangeKey]) %> %</p>
                 </div>
               </div>
               
@@ -30,16 +30,6 @@
                     <p><%= item.alkohol%> % alk.</p>
                   </div>
                 </div>
-
-
-              <div>
-                <p><%= item.kategori %></p>
-              </div>
-
-              <div>
-                <p><%= item.prisendring %></p>
-              </div>
-
 
                 <div class="item-information-container">
                   <nav class="item-nav">
@@ -59,10 +49,10 @@
                       </div>
                     </div>
                     <div class="prices">
-                      <p>Pris: <%= item.pris %> kr</p>
-                      <a>Bestill</a>
-                      <p>Pris per liter: <%= item['pris per liter'] %> kr</p>
-                      <p>FØR kr</p>
+                      <p class="item-price"><%= item[dateKey] || 'Price not available' %> kr</p>
+                      <a class="item-link">Bestill</a>
+                      <p class="item-literpris">(<%= Math.floor(item.literpris) %>kr / L)</p>
+                      <p>FØR <%= item[lastMonthPrice] || 'Price not available' %> kr</p>
                     </div>  
                   </div>
                   
@@ -72,17 +62,6 @@
                     <p>Passer til: <%= item.passerTil %></p>
                     <p>Karakteristikk: Fylde <%= item.fylde %>, Friskhet <%= item.friskhet %>, Sødme <%= item.sødme %></p>
                   </div>
-
-                  <!--
-                  <div class="item-category">
-                    <p><%= item.kategori %></p>
-                  </div>
-                  <div class="item-location">
-                    <p><%= item.land %></p>
-                    <p><%= item.distrikt%></p>
-                    <p><%= item.underdistrikt%></p>
-                  </div>
-                  -->
                 </div>
               </div>
             </div>
