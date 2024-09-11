@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/styles.css">
+    <script src="plotly-2.35.0.min.js" charset="utf-8"></script>
     <title>Snublejuice</title>
 </head>
 <body>
@@ -49,18 +50,68 @@
                       </div>
                     </div>
                     <div class="prices">
+                      <div class="prices-subcontainer">
                       <p class="item-price"><%= item[dateKey] || 'Price not available' %> kr</p>
                       <a class="item-link">Bestill</a>
                       <p class="item-literpris">(<%= Math.floor(item.literpris) %>kr / L)</p>
-                      <p>FØR <%= item[lastMonthPrice] || 'Price not available' %> kr</p>
-                    </div>  
+                      </div>
+                      <div class="previous-price">
+                        <p>FØR <%= item[lastMonthPrice] || 'Price not available' %> kr</p>
+                      </div>
+                    </div> 
+                    <div class="black-line"></div> 
+                    <div class="item-information">
+                      <div class="item-caracteristics">
+                        <p class="category-headers">Karakteristikk</p>
+                        <% if (Array.isArray(item.karakteristikk)) { %>
+                          <% item.karakteristikk.forEach(function(karakteristikk) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="caracteristic">
+                                <p><%= karakteristikk.toUpperCase() %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+                      <div class="item-caracteristics">
+                        <p class="category-headers">Ingredienser</p>
+                        <% if (Array.isArray(item.ingredienser)) { %>
+                          <% item.ingredienser.forEach(function(ingredienser) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="caracteristic">
+                                <p><%= ingredienser.toUpperCase() %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+                      <div class="item-caracteristics">
+                        <p class="category-headers">Passer til</p>
+                        <% if (Array.isArray(item['passer til'])) { %>
+                          <% item['passer til'].forEach(function(passerTil) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="caracteristic">
+                                <p><%= passerTil.toUpperCase() %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+                    </div>
                   </div>
                   
                   <!-- Detailed Information Section -->
                   <div id="details-<%= item.index %>" class="content-section">
-                    <p>Ingredienser: <%= item.farge %></p>
-                    <p>Passer til: <%= item.passerTil %></p>
-                    <p>Karakteristikk: Fylde <%= item.fylde %>, Friskhet <%= item.friskhet %>, Sødme <%= item.sødme %></p>
+                    <p>Prishistorikk</p>
+                    <div id="tester" style="width:600px;height:250px;">
+                      <script>
+                        TESTER = document.getElementById('tester');
+                        Plotly.newPlot( TESTER, [{
+                        x: [1, 2, 3, 4, 5],
+                        y: [1, 2, 4, 8, 16] }], {
+                        margin: { t: 0 } } );
+                      </script>
+                    </div>
                   </div>
                 </div>
               </div>
