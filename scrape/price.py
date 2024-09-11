@@ -45,8 +45,6 @@ _PROXIES = itertools.cycle([
 
 _SESSION = requests.Session()
 
-_OLD = (datetime.now() - timedelta(days=15)).strftime("%Y-%m-01")
-_NOW = datetime.now().strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
 
@@ -90,17 +88,20 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
         pymongo.UpdateOne(
             {'index': record['index']},
             [
+                {'$rename': {'pris': 'førpris'}},
                 {'$set': record},
+                {'$set': {'priser': {'$ifNull': ['$priser', []]}}},
+                {'$set': {'priser': {'$concatArrays': ['$priser', ['$pris']]}}},
                 {'$set': {
-                    f'prisendring {_OLD}': {'$cond': [
+                    'prisendring': {'$cond': [
                         {'if': {'and': [
-                            {'$gt': [f'$pris {_OLD}', 0]},
-                            {'$gt': [f'$pris {_NOW}', 0]}
+                            {'$gt': ['$førpris', 0]},
+                            {'$gt': ['$pris', 0]}
                         ]}},
                         {'$multiply': [
                             {'$divide': [
-                                {'$subtract': [f'$pris {_NOW}', f'$pris {_OLD}']},
-                                f'$pris {_OLD}'
+                                {'$subtract': ['$pris', '$førpris']},
+                                '$førpris'
                             ]},
                             100
                         ]},
@@ -110,13 +111,13 @@ def _upsert(data: List[dict]) -> BulkWriteResult:
                 {'$set': {
                     'literpris': {'$cond': {
                         'if': {'$and': [
-                            {'$ne': [f'$pris {_NOW}', None]},
-                            {'$ne': [f'$pris {_NOW}', 0]},
+                            {'$ne': ['$pris', None]},
+                            {'$ne': ['$pris', 0]},
                             {'$ne': ['$volum', None]},
                             {'$ne': ['$volum', 0]},
                         ]},
                         'then': {'$multiply': [
-                            {'$divide': [f'$pris {_NOW}', '$volum']},
+                            {'$divide': ['$pris', '$volum']},
                             100
                         ]},
                         'else': None
@@ -234,7 +235,7 @@ def _process(products) -> List[dict]:
             'readableValue', None
         ),
 
-        f'pris {_NOW}': product.get('price', {}).get('value', 0.0),
+        'pris': product.get('price', {}).get('value', 0.0),
     } for product in products]
 
 

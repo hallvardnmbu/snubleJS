@@ -1784,7 +1784,7 @@
             "id": "dbvptav05uppacbm",
             "type": "heading",
             "content": {
-                "text": "F\u00d8R @{item.pris_gammel} kr",
+                "text": "F\u00d8R @{item.f\u00f8rpris} kr",
                 "headingType": "h4",
                 "alignment": "left",
                 "primaryTextColor": "#8E3B46"
@@ -1795,7 +1795,7 @@
             "handlers": {},
             "visible": {
                 "expression": "custom",
-                "binding": "item.pris_gammel",
+                "binding": "item.f\u00f8rpris",
                 "reversed": false
             }
         },
@@ -1909,7 +1909,7 @@
             "id": "q53tf536wzf0wvjb",
             "type": "text",
             "content": {
-                "text": "Vinmonopolet justerer prisene hver m\u00e5ned. Som standard er n\u00e5v\u00e6rende pris sammenliknet med **forrige m\u00e5neds**. Her kan dette referansepunktet endres.",
+                "text": "Vinmonopolet justerer prisene hver m\u00e5ned. Som standard er n\u00e5v\u00e6rende pris sammenliknet med **forrige m\u00e5neds**.",
                 "useMarkdown": "yes"
             },
             "isCodeManaged": false,
@@ -1966,32 +1966,6 @@
                 "stateRef": "valgt.alkohol"
             }
         },
-        "yh8d2m7oq2devg3x": {
-            "id": "yh8d2m7oq2devg3x",
-            "type": "selectinput",
-            "content": {
-                "label": "",
-                "options": "@{data.prisendring.mulig}",
-                "placeholder": "Referansepris",
-                "maximumCount": "1",
-                "chipTextColor": "#06070E"
-            },
-            "isCodeManaged": false,
-            "position": 11,
-            "parentId": "b50j32rdwgjl27st",
-            "handlers": {
-                "wf-option-change": "getset.set_data"
-            },
-            "visible": {
-                "expression": true,
-                "binding": "",
-                "reversed": false
-            },
-            "binding": {
-                "eventType": "wf-option-change",
-                "stateRef": "data.prisendring.valg"
-            }
-        },
         "c0aiga76izyk61hk": {
             "id": "c0aiga76izyk61hk",
             "type": "checkboxinput",
@@ -2031,7 +2005,7 @@
             "type": "separator",
             "content": {},
             "isCodeManaged": false,
-            "position": 12,
+            "position": 11,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": {
@@ -2048,7 +2022,7 @@
                 "useMarkdown": "yes"
             },
             "isCodeManaged": false,
-            "position": 13,
+            "position": 12,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {},
             "visible": {
@@ -2062,7 +2036,7 @@
             "type": "columns",
             "content": {},
             "isCodeManaged": false,
-            "position": 14,
+            "position": 13,
             "parentId": "b50j32rdwgjl27st",
             "handlers": {}
         },
@@ -2242,8 +2216,9 @@
             "id": "ximtbccluznmconv",
             "type": "message",
             "content": {
-                "message": "OBS: Problemer med data-henting av lagerbeholdning.",
-                "infoColor": "#F3F7F4"
+                "message": "OBS: Problemer med oppdatering av lagerbeholdning.",
+                "infoColor": "#8E3B46",
+                "primaryTextColor": "#FFFFFF"
             },
             "isCodeManaged": false,
             "position": 0,
