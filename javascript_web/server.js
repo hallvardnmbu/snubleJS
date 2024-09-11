@@ -32,7 +32,7 @@ async function load({
   fra = null,
   til = null,
   sorting = null,
-  ascending = false,
+  ascending = true,
   amount = 10,
   page = 1,
   search = null,
@@ -45,8 +45,8 @@ async function load({
   if (!sorting) {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    sorting = `prisendring ${year}-${month}-01`; // Example: "prisendring 2024-09-01"
+    const month = String(today.getMonth()).padStart(2, '0'); //Taking last month to get correct price change
+    sorting = `prisendring ${year}-${month}-01`; // Example: "prisendring 2024-08-01"
   }
 
   if (search) {
@@ -147,7 +147,7 @@ MongoClient.connect(uri)
         const lastMonth = String(today.getMonth()).padStart(2, "0"); // Last month
         const lastMonthPrice = `pris ${year}-${lastMonth}-01`; // e.g., "pris 2024-08-01"
         const dateKey = `pris ${year}-${month}-01`; // e.g., "pris 2024-09-01"
-        const pricechangeKey = `prisendring ${year}-${month}-01`; // e.g., "prisendring 2024-09-01"
+        const pricechangeKey = `prisendring ${year}-${lastMonth}-01`; // e.g., "prisendring 2024-09-01". Takes last month to get correct price change
 
         let { data, total } = await load({
           collection: collection,
@@ -168,7 +168,7 @@ MongoClient.connect(uri)
           fra: null,
           til: null,
           sorting: null,
-          ascending: false,
+          ascending: true,
           amount: limit,
           page: page,
           search: "",
