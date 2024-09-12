@@ -41,7 +41,7 @@ def graph(
     for _, record in df.iterrows():
 
         dates = pd.date_range(
-            start=pd.Timestamp.now().replace(day=1),
+            end=pd.Timestamp.now() + pd.DateOffset(months=1),
             periods=len(record['priser']) + 1,
             freq='MS',
         )
