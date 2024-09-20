@@ -238,9 +238,10 @@ a:hover {
 
 .black-line {
   background-color: black;
-  height: 1.5px;
+  height: 2px;
   width: 98%;
   margin-left: 1%;
+  margin-top: 5px;
 }
 
 
@@ -272,9 +273,6 @@ a:hover {
   font-weight: bold;
 }
 
-.item-information {
-  
-}
 
 .caracteristic {
   background-color: rgb(235, 242, 235);
@@ -302,6 +300,16 @@ a:hover {
   margin-left: 20px;
 }
 
+.price-history-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.tester {
+  margin-top: 5px; /* Adjust this value to reduce the space */
+  padding: 0; /* Remove padding if there is any */
+}
 
 /* Hide non-active sections */
 .content-section {

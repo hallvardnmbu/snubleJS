@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/styles.css">
-    <script src="plotly-2.35.0.min.js" charset="utf-8"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>Snublejuice</title>
 </head>
 <body>
@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="item-header-pricechange">
-                  <p>Prisendring <%= Math.floor(item[pricechangeKey]) %> %</p>
+                  <p>Prisendring <%= Math.floor(item.prisendring) %> %</p>
                 </div>
               </div>
               
@@ -51,12 +51,12 @@
                     </div>
                     <div class="prices">
                       <div class="prices-subcontainer">
-                      <p class="item-price"><%= item[dateKey] || 'Price not available' %> kr</p>
+                      <p class="item-price"><%= item.pris || 'Price not available' %> kr</p>
                       <a class="item-link">Bestill</a>
                       <p class="item-literpris">(<%= Math.floor(item.literpris) %>kr / L)</p>
                       </div>
                       <div class="previous-price">
-                        <p>FØR <%= item[lastMonthPrice] || 'Price not available' %> kr</p>
+                        <p>FØR <%= item.førpris || 'Price not available' %> kr</p>
                       </div>
                     </div> 
                     <div class="black-line"></div> 
@@ -102,16 +102,15 @@
                   
                   <!-- Detailed Information Section -->
                   <div id="details-<%= item.index %>" class="content-section">
-                    <p>Prishistorikk</p>
-                    <div id="tester" style="width:600px;height:250px;">
-                      <script>
-                        TESTER = document.getElementById('tester');
-                        Plotly.newPlot( TESTER, [{
-                        x: [1, 2, 3, 4, 5],
-                        y: [1, 2, 4, 8, 16] }], {
-                        margin: { t: 0 } } );
-                      </script>
-                    </div>
+                    <p class="price-history-header">Prishistorikk</p>
+                    <div id="tester-<%= item.index %>" class="tester" style="width: 100%;height:175px;"></div>
+                    <script>
+                      // Pass the item.priser array to a global JavaScript variable
+                      window.priserData = window.priserData || {};
+                      window.priserData[<%= item.index %>] = <%= JSON.stringify(item.priser) %>;
+                    </script>
+
+                    <div class="black-line"></div> 
                   </div>
                 </div>
               </div>
