@@ -137,7 +137,7 @@ def _details(product: int) -> dict:
         try:
             details = requests.get(_DETAILS.format(product),
                                    proxies=_PROXY,
-                                   timeout=5)
+                                   timeout=3)
             if details.status_code != 200:
                 print(f'Failed to fetch product {product}.'
                       f'Status code {details.status_code}: {details.text}')
