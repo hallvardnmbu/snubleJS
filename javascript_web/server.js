@@ -31,7 +31,7 @@ async function load({
   alkohol = null,
   fra = null,
   til = null,
-  sorting = null,
+  sorting = "prisendring",
   ascending = true,
   amount = 10,
   page = 1,
@@ -42,12 +42,6 @@ async function load({
   let pipeline = [];
 
 
-  if (!sorting) {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth()).padStart(2, '0'); //Taking last month to get correct price change
-    sorting = `prisendring ${year}-${month}-01`; // Example: "prisendring 2024-08-01"
-  }
 
   if (search) {
     pipeline.push({
@@ -140,15 +134,6 @@ MongoClient.connect(uri)
         const page = parseInt(req.query.page) || 1; // Get the current page number from query string, default to 1
         const limit = 10; // Number of products to display per page
 
-            // Get the current date and format the key for the current month
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are 0-indexed
-        const lastMonth = String(today.getMonth()).padStart(2, "0"); // Last month
-        const lastMonthPrice = `pris ${year}-${lastMonth}-01`; // e.g., "pris 2024-08-01"
-        const dateKey = `pris ${year}-${month}-01`; // e.g., "pris 2024-09-01"
-        const pricechangeKey = `prisendring ${year}-${lastMonth}-01`; // e.g., "prisendring 2024-09-01". Takes last month to get correct price change
-
         let { data, total } = await load({
           collection: collection,
           kategori: [],
@@ -167,7 +152,7 @@ MongoClient.connect(uri)
           alkohol: null,
           fra: null,
           til: null,
-          sorting: null,
+          sorting: "prisendring",
           ascending: true,
           amount: limit,
           page: page,
@@ -180,9 +165,6 @@ MongoClient.connect(uri)
           data: data,
           currentPage: page,
           totalPages: total,
-          dateKey: dateKey,
-          pricechangeKey: pricechangeKey,
-          lastMonthPrice: lastMonthPrice,
         });
       } catch (err) {
         console.error(err);
