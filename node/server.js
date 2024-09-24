@@ -2,6 +2,9 @@ import express from "express";
 import { MongoClient } from "mongodb";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,7 +14,11 @@ const port = 3000;
 
 let collection;
 
-const uri = `mongodb+srv://web:ByiT9WakPCj8izEO@vinskraper.wykjrgz.mongodb.net/`;
+let usr = process.env.MONGO_USR;
+let pwd = process.env.MONGO_PWD;
+
+// const uri = `mongodb+srv://web:ByiT9WakPCj8izEO@vinskraper.wykjrgz.mongodb.net/`;
+const uri = `mongodb+srv://${usr}:${pwd}@vinskraper.wykjrgz.mongodb.net/`;
 
 async function load({
   collection,

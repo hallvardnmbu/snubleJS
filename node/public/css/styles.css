@@ -50,12 +50,13 @@ body {
     font-family: "JetBrainsMono", monospace;
     font-size: var(--small);
     font-weight: var(--normal);
-    display: grid;
+    margin: 0;
 }
 
 .informasjonsnavigasjon {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     border-bottom: var(--border) solid var(--black);
 }
 
@@ -82,11 +83,10 @@ section {
     border: var(--border) solid var(--black);
     background-color: white;
     padding: var(--padding);
-    margin: calc(var(--padding) * 2) 0px;
-    overflow: hidden;
-    /* box-shadow:
+    margin: calc(var(--padding) * 2) 25px 0px 0px;
+    box-shadow:
         5px 5px 0px var(--gray),
-        5px 5px 0px var(--border) var(--black); */
+        5px 5px 0px var(--border) var(--black);
 }
 
 section header {
@@ -107,6 +107,12 @@ section .produkt {
     justify-content: space-between;
     gap: calc(var(--padding) * 2);
     align-items: center;
+}
+@media (max-width: 600px) {
+    section .produkt {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
 
 section .produkt .bilde {
@@ -130,6 +136,8 @@ section .produkt .informasjon {
 .overskrift {
     padding: 0px;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: top;
 }
@@ -168,6 +176,7 @@ section .produkt .informasjon {
 .priser .gjeldende {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     gap: calc(var(--padding) * 2);
     margin-bottom: -20px;
@@ -210,6 +219,7 @@ section .produkt .informasjon {
 .beskrivelse {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--padding);
 }
