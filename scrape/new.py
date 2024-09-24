@@ -7,11 +7,10 @@ CRON JOB: 0 05 1,2,14 * *
 """
 
 import os
+import random
 import time
-import datetime
 from typing import List
 import concurrent.futures
-from dateutil.relativedelta import relativedelta
 
 import pymongo
 import requests
@@ -25,18 +24,19 @@ _CLIENT = MongoClient(
 )
 _DATABASE = _CLIENT['vinskraper']['varer']
 
-_PROXIES = iter([
+_PROXIES = [
     {
         "http": f"http://{os.environ.get('PROXY_USR')}:{os.environ.get('PROXY_PWD')}@{ip}:{os.environ.get('PROXY_PRT')}"
     }
     for ip in os.environ.get('PROXY_IPS', '').split(',')
-])
+]
+random.shuffle(_PROXIES)
+_PROXIES = iter(_PROXIES)
 _PROXY = next(_PROXIES)
 
 _NEW = "https://www.vinmonopolet.no/vmpws/v2/vmp/search?searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue"
 _DETAILS = 'https://www.vinmonopolet.no/vmpws/v3/vmp/products/{}?fields=FULL'
 
-_MONTH = time.strftime('%Y-%m-01')
 _IMAGE = {'thumbnail': 'https://bilder.vinmonopolet.no/bottle.png',
           'product': 'https://bilder.vinmonopolet.no/bottle.png'}
 
@@ -63,7 +63,8 @@ def _process(products) -> List[dict]:
         'produktutvalg': product.get('product_selection', None),
         'bærekraftig': product.get('sustainable', False),
         'bilde': _process_images(product.get('images')),
-        f'pris {_MONTH}': product.get('price', {}).get('value', 0.0),
+        'pris': product.get('price', {}).get('value', 0.0),
+        'prisendring': 0,
         'literpris': 100 * product.get('price', {}).get('value', 0.0) / product.get('volume', {}).get('value', 1.0),
         'ny': 0,
 
@@ -138,6 +139,8 @@ def _details(product: int) -> dict:
                                    proxies=_PROXY,
                                    timeout=3)
             if details.status_code != 200:
+                print(f'Failed to fetch product {product}.'
+                      f'Status code {details.status_code}: {details.text}')
                 raise ValueError()
             details = details.json()
             return {
@@ -175,7 +178,8 @@ def _details(product: int) -> dict:
                 'produktutvalg': details.get('product_selection', None),
                 'bærekraftig': details.get('sustainable', False),
                 'bilde': _process_images(details.get('images')),
-                f'pris {_MONTH}': details.get('price', {}).get('value', 0.0),
+                'pris': details.get('price', {}).get('value', 0.0),
+                'prisendring': 0,
                 'ny': 0,
 
                 'farge': details.get('color', None),
@@ -243,48 +247,47 @@ def details(products: List[int] = None, max_workers=5):
         print(f'Processing products {i} to {i + step} of {len(products)}.')
 
         operations = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            results = {executor.submit(_details, product): product for product in products[i:i + step]}
-            for future in concurrent.futures.as_completed(results):
-                product = future.result()
-                if not product:
-                    continue
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        #     results = {executor.submit(_details, product): product for product in products[i:i + step]}
+        #     for future in concurrent.futures.as_completed(results):
+        for id in products[i:i + step]:
+            time.sleep(1)
+            print(f'Fetching product {id}.')
+            product = _details(id['index'])
+                # product = future.result()
+            if not product:
+                continue
 
-                if 'alkohol' in product:
-                    try:
-                        product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
-                    except Exception:
-                        product['alkohol'] = None
-                if product['årgang']:
-                    product['årgang'] = int(product['årgang'])
+            if 'alkohol' in product:
+                try:
+                    product['alkohol'] = float(product['alkohol'].replace(' prosent', '').replace(',', '.'))
+                except Exception:
+                    product['alkohol'] = None
+            if product['årgang']:
+                product['årgang'] = int(product['årgang'])
 
-                product = {key: value if value else None for key, value in product.items()}
+            product = {key: value if value else None for key, value in product.items()}
 
-                operations.append(
-                    pymongo.UpdateOne(
-                        {'index': product['index']},
-                        {'$set': product},
-                        upsert=True
-                    )
+            operations.append(
+                pymongo.UpdateOne(
+                    {'index': product['index']},
+                    {'$set': product},
+                    upsert=True
                 )
+            )
         _DATABASE.bulk_write(operations)
 
 
 def discounts():
-    current = datetime.date.today()
-    if current.day != 2:
-        return
-
-    months = [(datetime.date(2024, 7, 1) + relativedelta(months=i)).strftime('%Y-%m-%d')
-             for i in range(0, (current.year - 2024) + current.month - 6)]
-    current = current.strftime('%Y-%m-01')
-
     operations = [
         pymongo.UpdateOne(
             {'index': record['index']},
             {'$set': {
-                f'prisendring {month}': 0 if (record.get(f'pris {month}', 0) <= 0 or record.get(f'pris {current}', 0) <= 0) else 100 * (record.get(f'pris {current}', 1) - record.get(f'pris {month}', 1)) / record.get(f'pris {month}', 1)
-                for month in months
+                'prisendring':
+                    0 if (record.get('førpris', 0) <= 0
+                          or record.get('pris', 0) <= 0)
+                    else 100 * (record.get('pris', 1) - record.get('førpris', 1))
+                         / record.get('førpris', 1)
             }}
         )
         for record in _DATABASE.find({})
@@ -309,7 +312,9 @@ def news(max_workers=5):
     response = requests.get(_NEW.format(0), proxies=_PROXY, timeout=3)
 
     if response.status_code != 200:
-        raise ValueError('Failed to fetch new products.')
+        print()
+        raise ValueError(f'Failed to fetch new products. '
+                         f'Status code {response.status_code}: {response.text}')
 
     response = response.json()
     pages = response.get('contentSearchResult', {}).get('pagination', {}).get('totalPages', 0)
@@ -356,10 +361,13 @@ def news(max_workers=5):
 
 
 if __name__ == '__main__':
-    news(max_workers=5)
+    print("Starting!")
+    # news(max_workers=1)
+    # print("Here!")
 
     ids = list(_DATABASE.find(
         {'lukt': {'$exists': False}},
         {'index': 1, '_id': 0}
     ))
-    details(products=ids, max_workers=5)
+    print(f'Fetching details for {len(ids)} products.')
+    details(products=ids, max_workers=1)

@@ -5,14 +5,17 @@
   "description": "",
   "main": "index.ejs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "available": "node scrape/available.cjs",
+    "price": "node scrape/price.cjs"
   },
   "author": "Carlos Hebbinghaus & Hallvard H. Lavik",
   "license": "GPL-3.0",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
+    "node-cron": "^3.0.3",
     "path": "^0.12.7",
     "plotly.js-dist": "^2.35.1"
   }
