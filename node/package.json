@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.ejs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "available": "node scrape/available.cjs",
+    "price": "node scrape/price.cjs"
   },
   "author": "Carlos Hebbinghaus & Hallvard H. Lavik",
   "license": "GPL-3.0",

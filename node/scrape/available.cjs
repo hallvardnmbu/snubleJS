@@ -206,13 +206,29 @@ await client.connect();
 
 async function main() {
   await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await updateAvailableProducts();
 }
 
 process.on("exit", () => {
   client.close();
 });
 
-// Schedule the task to run every 1 minute
+// Schedule the task to run every 1 minute.
 cron.schedule("*/1 * * * *", async () => {
   console.log("Running scheduled task...");
   try {
@@ -224,3 +240,5 @@ cron.schedule("*/1 * * * *", async () => {
 
 // Run the script immediately on startup
 main();
+
+// node available.js
