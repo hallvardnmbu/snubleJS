@@ -1,7 +1,8 @@
-const axios = require("axios");
-const { MongoClient } = require("mongodb");
-const dotenv = require("dotenv");
-const cron = require("node-cron");
+import axios from "axios";
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+import cron from "node-cron";
+
 dotenv.config();
 
 const client = new MongoClient(
@@ -34,6 +35,9 @@ const proxies = proxyIps.flatMap((ip) => [
     },
   },
 ]);
+
+// console.log(proxies);
+// console.exit(0);
 
 const storesUrl = "https://www.vinmonopolet.no/vmpws/v2/vmp/stores?fields=FULL&pageSize=1000";
 const productUrl =
@@ -95,6 +99,9 @@ async function fetchProduct(index, proxy) {
       if (response.status === 429) {
         await new Promise((resolve) => setTimeout(resolve, 500));
         continue;
+      } else if (response.status === 503 || response.status === 502) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        continue;
       } else if (response.status !== 200) {
         throw new Error(`Status code ${response.status}: ${response.data}`);
       }
@@ -150,6 +157,9 @@ async function updateAvailableProducts(products = null) {
     console.log("Fetching all products.");
     products = await varerCollection.distinct("index");
   }
+
+  // Shuffle the products.
+  products = products.sort(() => Math.random() - 0.5);
 
   const step = 1; // Process one product at a time
 

@@ -1,6 +1,7 @@
-const axios = require("axios");
-const { MongoClient } = require("mongodb");
-const dotenv = require("dotenv");
+import axios from "axios";
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+
 dotenv.config();
 
 const client = new MongoClient(

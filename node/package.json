@@ -5,12 +5,13 @@
   "description": "",
   "main": "index.ejs",
   "scripts": {
-    "available": "node scrape/available.cjs",
-    "price": "node scrape/price.cjs"
+    "available": "node scrape/available.mjs",
+    "price": "node scrape/price.mjs"
   },
   "author": "Carlos Hebbinghaus & Hallvard H. Lavik",
   "license": "GPL-3.0",
   "dependencies": {
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
