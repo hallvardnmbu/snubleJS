@@ -253,8 +253,7 @@ def details(products: List[int] = None, max_workers=5):
         for id in products[i:i + step]:
             time.sleep(1)
             print(f'Fetching product {id}.')
-            product = _details(id['index'])
-                # product = future.result()
+            product = _details(id)
             if not product:
                 continue
 
@@ -362,7 +361,7 @@ def news(max_workers=5):
 
 if __name__ == '__main__':
     print("Starting!")
-    # news(max_workers=1)
+    news(max_workers=1)
     # print("Here!")
 
     ids = list(_DATABASE.find(

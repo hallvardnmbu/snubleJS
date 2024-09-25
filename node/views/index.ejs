@@ -8,6 +8,29 @@
     <title>Snublejuice</title>
 </head>
 <body>
+    <header class="meny">
+        <form action="/" method="get" style="display:inline;" id="sortingForm">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="ascending" value="<%= ascending %>">
+
+            <select name="sorting" id="sorting" onchange="document.getElementById('sortingForm').submit();">
+                <option value="prisendring" <%= sorting === 'prisendring' ? 'selected' : '' %>>Prisendring</option>
+                <option value="navn" <%= sorting === 'navn' ? 'selected' : '' %>>Navn</option>
+                <option value="literpris" <%= sorting === 'literpris' ? 'selected' : '' %>>Literpris</option>
+                <!-- Add more sorting options as needed -->
+            </select>
+        </form>
+
+        <form action="/" method="get" style="display:inline;">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="sorting" value="<%= sorting %>">
+            <input type="hidden" name="ascending" value="<%= !ascending %>">
+            <button type="submit">
+                <%= ascending ? 'Stigende' : 'Synkende' %>
+            </button>
+        </form>
+    </header>
+
     <ul>
         <% data.forEach(item => { %>
             <section>
@@ -123,13 +146,13 @@
     <!-- Pagination Controls -->
     <footer>
         <% if (currentPage > 1) { %>
-            <a href="/?page=<%= currentPage - 1 %>">FORRIGE</a>
+            <a href="/?page=<%= currentPage - 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">FORRIGE</a>
         <% } %>
 
         <span><%= currentPage %> av <%= totalPages %></span>
 
         <% if (currentPage < totalPages) { %>
-            <a href="/?page=<%= currentPage + 1 %>">NESTE</a>
+            <a href="/?page=<%= currentPage + 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">NESTE</a>
         <% } %>
     </footer>
 
