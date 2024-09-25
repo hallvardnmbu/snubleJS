@@ -54,8 +54,8 @@
 
                 <div class="informasjon">
                   <nav class="informasjonsnavigasjon">
-                    <a href="#generelt-<%= item.index %>" class="fokus active" tab="generelt-<%= item.index %>">Generelt</a>
-                    <a href="#detaljer-<%= item.index %>" class="fokus" tab="detaljer-<%= item.index %>">Detaljer</a>
+                    <a href="#generelt-<%= item.index %>" class="fokus active" tab="generelt-<%= item.index %>">GENERELT</a>
+                    <a href="#detaljer-<%= item.index %>" class="fokus" tab="detaljer-<%= item.index %>">DETALJER</a>
                   </nav>
 
                   <div id="generelt-<%= item.index %>" class="fokus active">
@@ -72,23 +72,23 @@
                       </div>
                     </div>
 
-                    <div class="priser">
-                      <div class="gjeldende">
-                        <p class="pris"><strong><%= item.pris %></strong> kr</p>
-                        <a class="lenke">Bestill</a>
-                        <p class="literpris">(<%= Math.floor(item.literpris) %>kr / L)</p>
-                      </div>
-                      <div class="forrige">
-                        <p><s><strong><%= item.førpris || '-' %></strong></s></p>
-                      </div>
-                    </div>
+                    <table class="priser">
+                      <tr>
+                        <td class="pris"><strong><%= item.pris %></strong> kr</td>
+                        <td class="lenke"><a href="<%= item.url %>" target="_blank">BESTILL</a></td>
+                      </tr>
+                      <tr>
+                        <td class="forrige"><s><strong><%= item.førpris || '-' %></strong></s></td>
+                        <td class="literpris">(<%= Math.floor(item.literpris) %>kr / L)</td>
+                      </tr>
+                    </table>
 
                     <hr>
 
                     <div class="beskrivelser">
 
                       <div class="beskrivelse">
-                        <p class="beskrivelsestittel">Karakteristikk</p>
+                        <p class="beskrivelsestittel">KARAKTERISTIKK</p>
                         <% if (Array.isArray(item.karakteristikk)) { %>
                           <% item.karakteristikk.forEach(function(karakteristikk) { %>
                             <div style="display: flex; align-items: center">
@@ -101,7 +101,7 @@
                       </div>
 
                       <div class="beskrivelse">
-                        <p class="beskrivelsestittel">Ingredienser</p>
+                        <p class="beskrivelsestittel">INGREDIENSER</p>
                         <% if (Array.isArray(item.ingredienser)) { %>
                           <% item.ingredienser.forEach(function(ingredienser) { %>
                             <div style="display: flex; align-items: center">
@@ -114,7 +114,7 @@
                       </div>
 
                       <div class="beskrivelse">
-                        <p class="beskrivelsestittel">Passer til</p>
+                        <p class="beskrivelsestittel">PASSER TIL</p>
                         <% if (Array.isArray(item['passer til'])) { %>
                           <% item['passer til'].forEach(function(passerTil) { %>
                             <div style="display: flex; align-items: center">

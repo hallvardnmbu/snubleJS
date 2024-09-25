@@ -57,18 +57,20 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: var(--padding);
+    gap: calc(var(--padding) * 2);
     align-items: flex-end;
     border-bottom: var(--border) solid var(--black);
-    background-color: var(--gray);
+    /* background-color: var(--gray); */
     padding: var(--padding);
 }
 header select,
 header button {
     appearance: none;
     border-radius: 0;
-    border: var(--border) solid var(--darkgray);
+    /* border: var(--border) solid var(--darkgray); */
+    border: none;
     background-color: var(--gray);
+    box-shadow: 2px 2px 0px 0px var(--black);
     min-height: calc(var(--padding) * 3);
     min-width: var(--image);
     cursor: pointer;
@@ -86,26 +88,27 @@ header button:hover {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    border-bottom: var(--border) solid var(--black);
+    border-bottom: var(--border) solid var(--darkgray);
 }
 
 .informasjonsnavigasjon a {
     margin: 0px var(--padding);
     display: flex;
-    font-size: var(--medium);
+    font-size: var(--tiny);
+    font-weight: var(--bold);
     text-decoration: none;
     border-bottom: var(--border) solid transparent;
     color: var(--green);
 }
 
 .informasjonsnavigasjon a:hover {
-    border-bottom: var(--border) solid var(--black);
+    border-bottom: var(--border) solid var(--darkgray);
     background-color: var(--gray);
 }
 
 .informasjonsnavigasjon a.active {
     color: var(--black);
-    border-bottom: var(--border) solid var(--black);
+    border-bottom: var(--border) solid var(--darkgray);
 }
 
 section {
@@ -135,7 +138,7 @@ section .produkt {
     flex-direction: row;
     justify-content: space-between;
     gap: calc(var(--padding) * 2);
-    align-items: center;
+    align-items: flex-start;
 }
 @media (max-width: 600px) {
     section .produkt {
@@ -198,34 +201,27 @@ section .produkt .informasjon {
 }
 
 .priser {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width: 100%;
+    border-collapse: collapse;
 }
-.priser .gjeldende {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: calc(var(--padding) * 2);
-    margin-bottom: -20px;
-}
-.priser .gjeldende .pris {
+.priser .pris {
     font-size: var(--large);
     color: var(--green);
 }
-.priser .gjeldende .lenke {
-    font-size: var(--small);
+.priser .lenke,
+.priser .literpris {
+    text-align: right;
+    font-size: var(--tiny);
+}
+.priser .lenke a {
+    display: inline-block;
     text-decoration: underline;
     color: var(--black);
 }
-.priser .gjeldende .lenke:hover {
+.priser .lenke a:hover {
     background-color: var(--darkgray);
     cursor: pointer;
     color: var(--black);
-}
-.priser .gjeldende .literpris {
-    font-size: var(--small);
 }
 .priser .forrige {
     margin-top: -20px;
@@ -234,7 +230,7 @@ section .produkt .informasjon {
 }
 
 .informasjon hr {
-    background-color: var(--black);
+    background-color: var(--darkgray);
     height: var(--border);
     border: none;
 }
@@ -249,20 +245,20 @@ section .produkt .informasjon {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     gap: var(--padding);
 }
 
 .beskrivelsestittel {
-    font-size: var(--small);
+    font-size: var(--tiny);
+    font-weight: var(--bold);
 }
 
 .beskrivelseselement p {
-    font-size: var(--small);
+    font-size: var(--tiny);
     padding: 2px 5px;
     background-color: var(--gray);
-    /* border: var(--border) solid var(--black); */
-    /* border-radius: 5px; */
+    box-shadow: 2px 2px 0px var(--black);
 }
 
 .fokus {
