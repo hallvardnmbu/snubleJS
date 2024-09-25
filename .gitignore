@@ -5,8 +5,7 @@ Icon?
 __pycache__/
 scrape/__pycache__/
 
-backup/
+database/backup/
 
-javascript/
 node/node_modules/
 node/package-lock.json
