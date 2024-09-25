@@ -17,7 +17,6 @@ let collection;
 let usr = process.env.MONGO_USR;
 let pwd = process.env.MONGO_PWD;
 
-// const uri = `mongodb+srv://web:ByiT9WakPCj8izEO@vinskraper.wykjrgz.mongodb.net/`;
 const uri = `mongodb+srv://${usr}:${pwd}@vinskraper.wykjrgz.mongodb.net/`;
 
 async function load({
@@ -139,6 +138,9 @@ MongoClient.connect(uri)
         const page = parseInt(req.query.page) || 1; // Get the current page number from query string, default to 1
         const limit = 10; // Number of products to display per page
 
+        const sorting = req.query.sorting || "prisendring"; // Get the sorting parameter from query string, default to "prisendring"
+        const ascending = !(req.query.ascending === "false"); // Get the ascending parameter from query string, default to true
+
         let { data, total } = await load({
           collection: collection,
           kategori: [],
@@ -157,8 +159,8 @@ MongoClient.connect(uri)
           alkohol: null,
           fra: null,
           til: null,
-          sorting: "prisendring",
-          ascending: true,
+          sorting: sorting,
+          ascending: ascending,
           amount: limit,
           page: page,
           search: "",
@@ -170,6 +172,8 @@ MongoClient.connect(uri)
           data: data,
           currentPage: page,
           totalPages: total,
+          sorting: sorting,
+          ascending: ascending,
         });
       } catch (err) {
         console.error(err);

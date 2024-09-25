@@ -53,6 +53,35 @@ body {
     margin: 0;
 }
 
+.meny {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--padding);
+    align-items: flex-end;
+    border-bottom: var(--border) solid var(--black);
+    background-color: var(--gray);
+    padding: var(--padding);
+}
+header select,
+header button {
+    appearance: none;
+    border-radius: 0;
+    border: var(--border) solid var(--darkgray);
+    background-color: var(--gray);
+    min-height: calc(var(--padding) * 3);
+    min-width: var(--image);
+    cursor: pointer;
+    display: flex;
+    text-indent: 10px;
+    justify-content: left;
+    align-items: center;
+}
+header select:hover,
+header button:hover {
+    background-color: var(--darkgray);
+}
+
 .informasjonsnavigasjon {
     display: flex;
     flex-direction: row;
