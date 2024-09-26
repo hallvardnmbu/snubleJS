@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Snublejuice</title>
+</head>
+<body>
+    <header class="meny">
+        <form action="/" method="get" style="display:inline;" id="sortingForm">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="ascending" value="<%= ascending %>">
+
+            <select name="sorting" id="sorting" onchange="document.getElementById('sortingForm').submit();">
+                <option value="prisendring" <%= sorting === 'prisendring' ? 'selected' : '' %>>Prisendring</option>
+                <option value="navn" <%= sorting === 'navn' ? 'selected' : '' %>>Navn</option>
+                <option value="literpris" <%= sorting === 'literpris' ? 'selected' : '' %>>Literpris</option>
+                <!-- Add more sorting options as needed -->
+            </select>
+        </form>
+
+        <form action="/" method="get" style="display:inline;">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="sorting" value="<%= sorting %>">
+            <input type="hidden" name="ascending" value="<%= !ascending %>">
+            <button type="submit">
+                <%= ascending ? 'Stigende' : 'Synkende' %>
+            </button>
+        </form>
+    </header>
+
+    <% data.forEach(item => { %>
+        <section>
+          <div class="left">
+            <img src="<%= item.bilde.product %>" alt="flaske">
+            <p>Bottle</p>
+          </div>
+          <div class="right">
+            <div class="oppe">
+              <div class="overskrift">
+                <div class="navn">
+                  <p><%= item.navn %></p>
+                </div>
+                <nav class="informasjonsnavigasjon">
+                  <a href="#generelt-<%= item.index %>" class="fokus active" tab="generelt-<%= item.index %>">GENERELT</a>
+                  <a href="#detaljer-<%= item.index %>" class="fokus" tab="detaljer-<%= item.index %>">DETALJER</a>
+                </nav>
+              </div>
+              <div class="pisendring">
+                <p>Endring</p>
+              </div>
+            </div>
+            <div class="nede">
+              <p>Hei</p>
+            </div>
+          </div>
+        </section>
+    <% }) %>
+
+    <footer>
+        <% if (currentPage > 1) { %>
+            <a href="/?page=<%= currentPage - 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">FORRIGE</a>
+        <% } %>
+
+        <span><%= currentPage %> av <%= totalPages %></span>
+
+        <% if (currentPage < totalPages) { %>
+            <a href="/?page=<%= currentPage + 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">NESTE</a>
+        <% } %>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

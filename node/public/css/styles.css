@@ -25,12 +25,13 @@
 :root {
     --border: 2px;
     --padding: 10px;
-    --image: 120px;
+    --image: 100px;
 
-    --large: 1.5rem;
-    --medium: 1.2rem;
-    --small: 1rem;
-    --tiny: 0.8rem;
+    --large: 24px;
+    --medium: 18px;
+    --small: 16px;
+    --tiny: 14px;
+    --minute: 10px;
 
     --thin: 300;
     --normal: 400;
@@ -43,6 +44,7 @@
     --positive: rgba(0, 100, 0, 0.1);
     --gray: #eeeeee;
     --darkgray: #cccccc;
+    --darkergray: #666666;
     --black: black;
 }
 
@@ -50,6 +52,7 @@ body {
     font-family: "JetBrainsMono", monospace;
     font-size: var(--small);
     font-weight: var(--normal);
+    line-height: 1.2rem;
     margin: 0;
 }
 
@@ -98,10 +101,11 @@ header button:hover {
     font-weight: var(--bold);
     text-decoration: none;
     border-bottom: var(--border) solid transparent;
-    color: var(--green);
+    color: var(--darkergray);
 }
 
 .informasjonsnavigasjon a:hover {
+    color: var(--black);
     border-bottom: var(--border) solid var(--darkgray);
     background-color: var(--gray);
 }
@@ -122,15 +126,27 @@ section {
 }
 
 section header {
-    border-bottom: var(--border) solid var(--black);
+    /* border-bottom: var(--border) solid var(--darkgray); */
     font-size: var(--small);
+    font-weight: var(--bolder);
+    color: var(--black);
     padding: 0px var(--padding);
     margin: calc(-1 * var(--padding)) calc(-1 * var(--padding)) var(--padding)
         calc(-1 * var(--padding));
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--padding);
+    align-items: center;
+}
+section header .prisendring {
+    font-size: var(--tiny);
+    font-weight: var(--bolder);
+    color: var(--darkergray);
+}
+section header .prisendring strong {
+    font-size: var(--small);
+    font-weight: var(--bolder);
+    color: var(--black);
 }
 
 section .produkt {
@@ -138,7 +154,7 @@ section .produkt {
     flex-direction: row;
     justify-content: space-between;
     gap: calc(var(--padding) * 2);
-    align-items: flex-start;
+    /* align-items: flex-start; */
 }
 @media (max-width: 600px) {
     section .produkt {
@@ -150,6 +166,7 @@ section .produkt {
 section .produkt .bilde {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
     min-width: var(--image);
@@ -158,6 +175,16 @@ section .produkt .bilde {
 section .produkt .bilde img {
     max-width: var(--image);
     width: 100%;
+}
+section .produkt .bilde p {
+    font-weight: var(--thin);
+    color: var(--black);
+    font-size: var(--tiny);
+}
+section .produkt .bilde strong {
+    font-weight: var(--bolder);
+    color: var(--darkergray);
+    font-size: var(--small);
 }
 
 section .produkt .informasjon {
@@ -203,30 +230,52 @@ section .produkt .informasjon {
 .priser {
     width: 100%;
     border-collapse: collapse;
+    background-color: var(--gray);
+    box-shadow: 0 0 0 10px var(--gray);
 }
 .priser .pris {
-    font-size: var(--large);
+    font-size: var(--tiny);
+    font-weight: var(--bold);
     color: var(--green);
+}
+.priser .pris strong {
+    font-size: var(--large);
+    font-weight: var(--bolder);
 }
 .priser .lenke,
 .priser .literpris {
     text-align: right;
     font-size: var(--tiny);
+    font-weight: var(--bold);
+    color: var(--darkergray);
 }
 .priser .lenke a {
     display: inline-block;
-    text-decoration: underline;
-    color: var(--black);
+    font-weight: var(--bold);
+    color: var(--darkergray);
+    text-decoration-thickness: min(var(--border), 2px);
 }
 .priser .lenke a:hover {
-    background-color: var(--darkgray);
+    /* background-color: var(--darkergray); */
     cursor: pointer;
     color: var(--black);
 }
-.priser .forrige {
+/* .priser .forrige {
     margin-top: -20px;
     font-size: var(--large);
+    font-weight: var(--bolder);
     color: var(--red);
+} */
+
+.priser .forrige {
+    margin-top: -20px;
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    color: var(--red);
+}
+.priser .forrige strong {
+    font-size: var(--large);
+    font-weight: var(--bolder);
 }
 
 .informasjon hr {
@@ -236,29 +285,32 @@ section .produkt .informasjon {
 }
 
 .beskrivelser {
+    padding-top: var(--padding);
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: flex-start;
 }
 
 .beskrivelse {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     gap: var(--padding);
 }
 
 .beskrivelsestittel {
     font-size: var(--tiny);
-    font-weight: var(--bold);
+    font-weight: var(--bolder);
+    color: var(--black);
 }
 
 .beskrivelseselement p {
-    font-size: var(--tiny);
-    padding: 2px 5px;
+    font-size: var(--minute);
+    padding: 0 var(--border);
     background-color: var(--gray);
-    box-shadow: 2px 2px 0px var(--black);
+    color: var(--darkergray);
+    box-shadow: 2px 2px 0px var(--darkergray);
 }
 
 .fokus {
@@ -278,18 +330,19 @@ footer {
     justify-content: center;
     align-items: flex-end;
     border-top: var(--border) solid var(--black);
-    background-color: var(--gray);
+    /* background-color: var(--gray); */
     padding: var(--padding);
 }
 
 footer a {
-    color: var(--black);
-    text-decoration: none;
+    color: var(--darkergray);
+    text-decoration-thickness: min(var(--border), 2px);
     font-size: var(--tiny);
+    font-weight: var(--bold);
     margin: 0px calc(var(--padding) * 2);
 }
 
 footer a:hover {
-    font-weight: var(--bold);
-    background-color: var(--darkgray);
+    font-weight: var(--bolder);
+    background-color: var(--gray);
 }

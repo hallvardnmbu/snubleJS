@@ -9,3 +9,5 @@ database/backup/
 
 node/node_modules/
 node/package-lock.json
+
+bun/node_modules/

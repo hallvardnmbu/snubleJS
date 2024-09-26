@@ -39,7 +39,7 @@
                   <p><%= item.navn %></p>
                 </span>
                 <span>
-                  <p>Prisendring <strong><%= Math.floor(item.prisendring) %></strong> %</p>
+                  <p class="prisendring">PRISENDRING <strong><%= Math.floor(item.prisendring) %> %</strong></p>
                 </span>
               </header>
 
@@ -74,16 +74,14 @@
 
                     <table class="priser">
                       <tr>
-                        <td class="pris"><strong><%= item.pris %></strong> kr</td>
+                        <td class="pris">kr &nbsp;<strong><%= item.pris %></strong></td>
                         <td class="lenke"><a href="<%= item.url %>" target="_blank">BESTILL</a></td>
                       </tr>
                       <tr>
-                        <td class="forrige"><s><strong><%= item.førpris || '-' %></strong></s></td>
-                        <td class="literpris">(<%= Math.floor(item.literpris) %>kr / L)</td>
+                        <td class="forrige">før <strong><%= item.førpris || '-' %></strong></td>
+                        <td class="literpris"><%= Math.floor(item.literpris) %> kr / L</td>
                       </tr>
                     </table>
-
-                    <hr>
 
                     <div class="beskrivelser">
 
