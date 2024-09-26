@@ -5,8 +5,9 @@
   "description": "",
   "main": "index.ejs",
   "scripts": {
-    "available": "node scrape/available.mjs",
-    "price": "node scrape/price.mjs"
+    "server": "bun server.js",
+    "available": "bun scrape/available.mjs",
+    "price": "bun scrape/price.mjs"
   },
   "author": "Carlos Hebbinghaus & Hallvard H. Lavik",
   "license": "GPL-3.0",
