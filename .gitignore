@@ -2,12 +2,9 @@
 .idea/
 Icon?
 
-__pycache__/
-scrape/__pycache__/
+**/__pycache__/
 
 database/backup/
 
-node/node_modules/
-node/package-lock.json
-
-bun/node_modules/
+**/node_modules/
+**/package-lock.json
