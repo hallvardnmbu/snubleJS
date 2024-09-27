@@ -58,6 +58,7 @@
 body {
     line-height: 1rem;
     font-size: var(--small);
+    font-family: "JetBrainsMono", monospace;
 }
 
 section {

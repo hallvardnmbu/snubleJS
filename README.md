@@ -3,7 +3,7 @@
 Kildekode til [snublejuice](https://snublejuice.no) – en applikasjon for å utforske og sammenlikne [vinmonopolets](https://www.vinmonopolet.no) utvalg og prisendringer.
 
 <h1 align="center">
-  <img src="./static/logo.jpg" style="width: 50%;" alt="neurons">
+  <img src="./python/static/logo.jpg" style="width: 50%;" alt="snublejuice">
   <br>
 </h1>
 
