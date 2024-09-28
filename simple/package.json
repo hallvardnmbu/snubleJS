@@ -1,5 +1,5 @@
 {
-  "name": "snublejuice",
+  "name": "snubleJS",
   "module": "server.js",
   "type": "module",
   "devDependencies": {
