@@ -33,27 +33,22 @@
 
     <% data.forEach(item => { %>
         <section>
-          <div class="left">
+          <div class="image">
             <img src="<%= item.bilde.product %>" alt="flaske">
-            <p>Bottle</p>
+            <p><b><%= item.volum %></b> cL</p>
           </div>
-          <div class="right">
-            <div class="oppe">
-              <div class="overskrift">
-                <div class="navn">
-                  <p><%= item.navn %></p>
-                </div>
-                <nav class="informasjonsnavigasjon">
-                  <a href="#generelt-<%= item.index %>" class="fokus active" tab="generelt-<%= item.index %>">GENERELT</a>
-                  <a href="#detaljer-<%= item.index %>" class="fokus" tab="detaljer-<%= item.index %>">DETALJER</a>
-                </nav>
-              </div>
-              <div class="pisendring">
-                <p>Endring</p>
-              </div>
+          <div class="information">
+            <div class="name">
+              <p><%= item.navn %></p>
+              <p><b><%= item.kategori %> <%= item.underkategori %></b></p>
+              <p><%= item.land %> <%= item.distrikg %> <%= item.underdistrikg %></p>
             </div>
-            <div class="nede">
-              <p>Hei</p>
+            <div class="price">
+              <p>KR <b><%= item.pris %></b></p>
+              <p>|</p>
+              <p>FØR <b><%= item.førpris %></b></p>
+              <p>|</p>
+              <p>PRISENDRING <b><%= Math.floor(item.prisendring) %></b> %</p>
             </div>
           </div>
         </section>

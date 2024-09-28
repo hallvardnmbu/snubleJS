@@ -92,7 +92,6 @@ function processProducts(products) {
 
 async function getPage(page, _proxy) {
   for (let i = 0; i < 10; i++) {
-    console.log(`Fetching page ${page} with proxy ${JSON.stringify(_proxy)}`);
     const response = await session.get(URL.replace("{}", page), {
       proxy: _proxy,
       timeout: 10000,
