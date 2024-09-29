@@ -18,6 +18,7 @@ await client.connect();
 
 const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
+const itemIds = await itemCollection.distinct("index");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
   {
@@ -32,7 +33,8 @@ const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
 ]);
 
 const URL =
-  "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&currentPage={}&q=%3Arelevance";
+  "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue";
+
 const LINK = "https://www.vinmonopolet.no{}";
 
 const IMAGE = {
@@ -45,43 +47,56 @@ function processImages(images) {
 }
 
 function processProducts(products) {
-  return products.map((product) => ({
-    index: parseInt(product.code, 10) || null,
+  const processedProducts = [];
 
-    updated: true,
+  for (const product of products) {
+    const index = parseInt(product.code, 10) || null;
 
-    name: product.name || null,
-    price: product.price?.value || 0.0,
+    if (itemIds.includes(index)) {
+      break;
+    }
 
-    volume: product.volume?.value || 0.0,
-    literprice:
-      product.price?.value && product.volume?.value
-        ? product.price.value / (product.volume.value / 100.0)
-        : 0.0,
+    processedProducts.push({
+      index: index,
 
-    url: product.url ? LINK.replace("{}", product.url) : null,
-    images: product.images ? processImages(product.images) : IMAGE,
+      updated: true,
 
-    category: product.main_category?.name || null,
-    subcategory: product.main_sub_category?.name || null,
+      name: product.name || null,
+      price: product.price?.value || 0.0,
 
-    country: product.main_country?.name || null,
-    district: product.district?.name || null,
-    subdistrict: product.sub_District?.name || null,
+      volume: product.volume?.value || 0.0,
+      literprice:
+        product.price?.value && product.volume?.value
+          ? product.price.value / (product.volume.value / 100.0)
+          : 0.0,
 
-    selection: product.product_selection || null,
-    sustainable: product.sustainable || false,
+      url: product.url ? LINK.replace("{}", product.url) : null,
+      images: product.images ? processImages(product.images) : IMAGE,
 
-    buyable: product.buyable || false,
-    expired: product.expired || true,
-    status: product.status || null,
+      category: product.main_category?.name || null,
+      subcategory: product.main_sub_category?.name || null,
 
-    orderable: product.productAvailability?.deliveryAvailability?.availableForPurchase || false,
-    orderinfo: product.productAvailability?.deliveryAvailability?.infos?.[0]?.readableValue || null,
+      country: product.main_country?.name || null,
+      district: product.district?.name || null,
+      subdistrict: product.sub_District?.name || null,
 
-    instores: product.productAvailability?.storesAvailability?.availableForPurchase || false,
-    storeinfo: product.productAvailability?.storesAvailability?.infos?.[0]?.readableValue || null,
-  }));
+      selection: product.product_selection || null,
+      sustainable: product.sustainable || false,
+
+      buyable: product.buyable || false,
+      expired: product.expired || true,
+      status: product.status || null,
+
+      orderable: product.productAvailability?.deliveryAvailability?.availableForPurchase || false,
+      orderinfo:
+        product.productAvailability?.deliveryAvailability?.infos?.[0]?.readableValue || null,
+
+      instores: product.productAvailability?.storesAvailability?.availableForPurchase || false,
+      storeinfo: product.productAvailability?.storesAvailability?.infos?.[0]?.readableValue || null,
+    });
+  }
+
+  return processedProducts;
 }
 
 async function getPage(page, _proxy) {
@@ -109,42 +124,7 @@ async function getPage(page, _proxy) {
 }
 
 async function updateDatabase(data) {
-  const operations = data.map((record) => ({
-    updateOne: {
-      filter: { index: record.index },
-      update: [
-        { $rename: { price: "oldprice" } },
-        { $set: record },
-        { $set: { prices: { $ifNull: ["$prices", []] } } },
-        { $set: { prices: { $concatArrays: ["$prices", ["$price"]] } } },
-        {
-          $set: {
-            discount: {
-              $cond: {
-                if: {
-                  if: {
-                    $and: [{ $gt: ["$oldprice", 0] }, { $gt: ["$price", 0] }],
-                  },
-                },
-                then: {
-                  $multiply: [
-                    {
-                      $divide: [{ $subtract: ["$price", "$oldprice"] }, "$oldprice"],
-                    },
-                    100,
-                  ],
-                },
-                else: 0,
-              },
-            },
-          },
-        },
-      ],
-      upsert: true,
-    },
-  }));
-
-  return await itemCollection.bulkWrite(operations);
+  return await itemCollection.insertMany(data);
 }
 
 async function getProducts(_proxy) {
@@ -155,7 +135,7 @@ async function getProducts(_proxy) {
     try {
       let products = await getPage(page, _proxy);
       if (products.length === 0) {
-        console.log(`No more products (final page: ${page - 1}).`);
+        console.log(`No more new products (final page: ${page - 1}).`);
         break;
       } else {
         items = items.concat(products);
@@ -173,29 +153,26 @@ async function getProducts(_proxy) {
         throw new Error(`No items for the last 10 pages. Aborting.`);
       }
 
-      console.log(`Upserting ${items.length} products.`);
+      console.log(`Adding ${items.length} products.`);
 
       const result = await updateDatabase(items);
-      console.log(` Modified ${result.modifiedCount} records`);
-      console.log(` Upserted ${result.upsertedCount} records`);
+      console.log(` Inserted ${result.insertedCount} records`);
 
       items = [];
     }
   }
 
-  // Upsert the remaining products, if any.
+  // Insert the remaining products, if any.
   if (items.length === 0) {
     return;
   }
   const result = await updateDatabase(items);
-  console.log(` Modified ${result.modifiedCount} records`);
-  console.log(` Upserted ${result.upsertedCount} records`);
+  console.log(` Inserted ${result.insertedCount} records`);
 }
 
 const session = axios.create();
 
 async function main() {
-  itemCollection.updateMany({}, { $set: { updated: false } });
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
   await getProducts(_proxy);

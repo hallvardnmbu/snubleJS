@@ -9,12 +9,14 @@
 </head>
 <body>
     <header>
+        <div>SNUBLEJUICE.no</div>
+
         <div class="meny">
           <form action="/" method="get" style="display:inline;" id="sortingForm">
               <input type="hidden" name="currentPage" value="<%= currentPage %>">
               <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
 
-              <select name="sortBy" id="sorting" onchange="document.getElementById('sortingForm').submit();">
+              <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
                   <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
                   <option value="price" <%= sortBy === 'price' ? 'selected' : '' %>>Pris</option>
                   <option value="literprice" <%= sortBy === 'literprice' ? 'selected' : '' %>>Literpris</option>
@@ -48,7 +50,7 @@
 
     <% data.forEach(item => { %>
       <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
-        <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+        <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
           <div class="image">
             <img src="<%= item.images.product %>" alt="flaske">
             <p><b><%= item.volume %></b> cL</p>
@@ -132,7 +134,8 @@
               </script> -->
             </div>
             <div class="price">
-              <p>KR <b><%= item.price %></b> FØR <b><%= item.oldprice %></b></p>
+              <p>KR <b><%= item.price %></b>
+                <% if (item.oldprice) { %>FØR <b><%= item.oldprice %></b><% } %></p>
               <p>PRISENDRING <b><%= Math.floor(item.discount) %></b> %</p>
             </div>
           </div>
@@ -141,6 +144,9 @@
     <% }) %>
 
     <footer class="pagination">
+      <div>© Hallvard H. Lavik</div>
+      <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
+      <div>
         <% if (currentPage > 1) { %>
             <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>">FORRIGE</a>
         <% } %>
@@ -150,6 +156,7 @@
         <% if (currentPage < totalPages) { %>
             <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>">NESTE</a>
         <% } %>
+      </div>
     </footer>
 
     <script src="js/script.js"></script>

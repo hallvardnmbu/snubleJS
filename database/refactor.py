@@ -16,7 +16,7 @@ _NEW = MongoClient(
     f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@snublejuice.faktu.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=snublejuice'
-)['snublejuice']['varer']
+)['snublejuice']['products']
 # _DATABASE = _CLIENT['vinskraper']['varer']
 # _EXPIRED = _CLIENT['vinskraper']['utgått']
 
