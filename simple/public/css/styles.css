@@ -49,6 +49,7 @@ header {
     align-items: center;
     padding: var(--padding);
 }
+
 header select,
 header button,
 header button:visited {
@@ -65,17 +66,24 @@ header button:visited {
     text-align: left;
     padding: 0 var(--padding);
 }
+header select {
+    padding-right: calc(var(--padding) * 2);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right calc(var(--padding) / 2) bottom;
+}
 header select:hover,
 header button:hover {
     background-color: var(--gray);
 }
 
-.pagination {
+footer {
     display: flex;
     flex-direction: row;
     gap: var(--padding);
-    justify-content: right;
+    justify-content: space-between;
     margin-right: var(--padding);
+    margin-left: var(--padding);
 }
 
 section {
@@ -83,6 +91,14 @@ section {
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
     border-bottom: 5px solid var(--gray);
+}
+section:hover {
+    box-shadow: 0 0 0 10px var(--gray);
+    /* box-shadow: 0 -10px 0 0 currentColor; */
+    /* box-shadow:
+        10px 0 0 0 currentColor,
+        -10px 0 0 0 currentColor,
+        0 -10px 0 0 currentColor; */
 }
 
 p {
@@ -101,7 +117,7 @@ p {
 .image {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     text-align: center;
 }
 .image img {
@@ -140,9 +156,15 @@ p {
     padding-left: var(--padding);
     padding-right: var(--padding);
 }
-@media (max-width: 490px) {
+@media (max-width: 600px) {
     .price {
         flex-direction: column;
         align-items: flex-start;
+    }
+    footer,
+    header {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--padding);
     }
 }

@@ -85,7 +85,7 @@ async function load({
     matchStage["alcohol"] = { ...matchStage["alcohol"], $gte: alcohol };
   }
   if (!nonalcoholic) {
-    matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $ne: 0 };
+    matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
   }
 
   if (from || to) {
