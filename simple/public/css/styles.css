@@ -45,9 +45,27 @@ a:hover {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: var(--padding);
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    justify-content: left;
+    margin-right: var(--padding);
+    margin-left: var(--padding);
+}
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    justify-content: space-between;
+    margin-right: var(--padding);
+    margin-left: var(--padding);
 }
 
 header select,
@@ -60,11 +78,13 @@ header button:visited {
     appearance: none;
     border-radius: 0;
     border: none;
-    border-bottom: 2px solid var(--blackish);
     height: calc(var(--padding) * 2);
     cursor: pointer;
     text-align: left;
     padding: 0 var(--padding);
+}
+header select {
+    border-bottom: 2px solid var(--blackish);
 }
 header select {
     padding-right: calc(var(--padding) * 2);
@@ -77,28 +97,11 @@ header button:hover {
     background-color: var(--gray);
 }
 
-footer {
-    display: flex;
-    flex-direction: row;
-    gap: var(--padding);
-    justify-content: space-between;
-    margin-right: var(--padding);
-    margin-left: var(--padding);
-}
-
 section {
     display: flex;
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
     border-bottom: 5px solid var(--gray);
-}
-section:hover {
-    box-shadow: 0 0 0 10px var(--gray);
-    /* box-shadow: 0 -10px 0 0 currentColor; */
-    /* box-shadow:
-        10px 0 0 0 currentColor,
-        -10px 0 0 0 currentColor,
-        0 -10px 0 0 currentColor; */
 }
 
 p {

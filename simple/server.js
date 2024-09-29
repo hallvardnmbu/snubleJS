@@ -9,6 +9,24 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const categories = {
+  null: null,
+  alkoholfritt: "Alkoholfritt",
+  aromatisert: "Aromatisert vin",
+  brennevin: "Brennevin",
+  fruktvin: "Fruktvin",
+  hvitvin: "Hvitvin",
+  mjød: "Mjød",
+  musserende: "Musserende vin",
+  perlende: "Perlende vin",
+  rosévin: "Rosévin",
+  rødvin: "Rødvin",
+  sake: "Sake",
+  sider: "Sider",
+  sterkvin: "Sterkvin",
+  øl: "Øl",
+};
+
 const app = express();
 const port = 3000;
 
@@ -63,6 +81,7 @@ async function load({
   let matchStage = {
     // Only include updated products (i.e., non-expired ones).
     updated: true,
+    status: "aktiv",
 
     // Match the specified parameters if they are not null.
     ...(category && filters ? { category: category } : {}),
@@ -150,10 +169,11 @@ MongoClient.connect(
         const currentPage = parseInt(req.query.currentPage) || 1;
         const sortBy = req.query.sortBy || "discount";
         const sortAsc = !(req.query.sortAsc === "false");
+        const category = req.query.category || null;
 
         let { data, total } = await load({
           collection,
-          category: null,
+          category: categories[category],
           subcategory: null,
           country: null,
           district: null,
@@ -190,6 +210,7 @@ MongoClient.connect(
           totalPages: total,
           sortBy: sortBy,
           sortAsc: sortAsc,
+          category: category,
         });
       } catch (err) {
         console.error(err);
