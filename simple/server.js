@@ -1,5 +1,5 @@
 import express from "express";
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
@@ -16,28 +16,34 @@ let collection;
 
 async function load({
   collection,
-  kategori = [],
-  underkategori = [],
-  land = [],
-  distrikt = [],
-  underdistrikt = [],
-  volum = [],
-  argang = [],
-  beskrivelse = [],
-  kork = [],
-  lagring = [],
-  butikk = [],
-  passer_til = [],
-  alkoholfritt = false,
-  alkohol = null,
-  fra = null,
-  til = null,
-  sorting = "prisendring",
+  category = null,
+  subcategory = null,
+  country = null,
+  district = null,
+  subdistrict = null,
+  volume = null,
+  year = null,
+
+  nonalcoholic = false,
+
+  cork = null,
+  storage = null,
+
+  description = null,
+  store = null,
+  pair = null,
+
+  alcohol = null,
+  from = null,
+  to = null,
+
+  sort = "discount",
   ascending = true,
-  amount = 10,
+  limit = 10,
   page = 1,
+
   search = null,
-  filters = false,
+  filters = true,
   fresh = true,
 } = {}) {
   let pipeline = [];
@@ -45,54 +51,56 @@ async function load({
   if (search) {
     pipeline.push({
       $search: {
-        index: "navn",
+        index: "name",
         text: {
           query: search,
-          path: "navn",
+          path: "name",
         },
       },
     });
   }
 
   let matchStage = {
-    utgått: false,
-    "kan kjøpes": true,
-    ...(butikk.length && filters ? { butikk: { $all: butikk } } : {}),
-    ...(passer_til.length && filters ? { "passer til": { $all: passer_til } } : {}),
-    ...(kategori.length && filters ? { kategori: { $in: kategori } } : {}),
-    ...(underkategori.length && filters ? { underkategori: { $in: underkategori } } : {}),
-    ...(volum.length && filters ? { volum: { $in: volum.map((v) => parseFloat(v)) } } : {}),
-    ...(land.length && filters ? { land: { $in: land } } : {}),
-    ...(distrikt.length && filters ? { distrikt: { $in: distrikt } } : {}),
-    ...(underdistrikt.length && filters ? { underdistrikt: { $in: underdistrikt } } : {}),
-    ...(argang.length && filters
-      ? { årgang: { $in: argang.map((ar) => parseInt(ar.replace(".0", ""))) } }
-      : {}),
-    ...(beskrivelse.length && filters ? { "beskrivelse.kort": { $in: beskrivelse } } : {}),
-    ...(kork.length && filters ? { kork: { $in: kork } } : {}),
-    ...(lagring.length && filters ? { lagring: { $in: lagring } } : {}),
+    // Only include updated products (i.e., non-expired ones).
+    updated: true,
+
+    // Match the specified parameters if they are not null.
+    ...(category && filters ? { category: category } : {}),
+    ...(subcategory && filters ? { subcategory: subcategory } : {}),
+    ...(country && filters ? { country: country } : {}),
+    ...(district && filters ? { district: district } : {}),
+    ...(subdistrict && filters ? { subdistrict: subdistrict } : {}),
+    ...(volume && filters ? { volume: volume } : {}),
+    ...(year && filters ? { year: year } : {}),
+    ...(cork && filters ? { cork: cork } : {}),
+    ...(storage && filters ? { storage: storage } : {}),
+
+    // Parameters that are arrays are matched using the $in operator.
+    // ...(description.length && filters ? { "description.short": { $in: description } } : {}),
+    // ...(store.length && filters ? { store: { $in: store } } : {}),
+    // ...(pair.length && filters ? { pair: { $in: pair } } : {}),
   };
 
-  if (alkohol !== null) {
-    matchStage["alkohol"] = { ...matchStage["alkohol"], $gte: alkohol };
+  if (alcohol) {
+    matchStage["alcohol"] = { ...matchStage["alcohol"], $gte: alcohol };
   }
-  if (!alkoholfritt) {
-    matchStage["alkohol"] = { ...matchStage["alkohol"], $ne: null };
+  if (!nonalcoholic) {
+    matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $ne: 0 };
   }
 
-  if (fra !== null || til !== null) {
+  if (from || to) {
     let between = {};
-    if (fra !== null) between["$gte"] = fra;
-    if (til !== null) between["$lte"] = til;
+    if (from) between["$gte"] = from;
+    if (to) between["$lte"] = to;
 
-    if (sorting === "volum") {
-      matchStage["volum"] = { ...matchStage["volum"], ...between };
+    if (sort === "volume") {
+      matchStage["volume"] = { ...matchStage["volume"], ...between };
     } else {
-      matchStage[sorting] = between;
+      matchStage[sort] = between;
     }
   }
 
-  matchStage[sorting] = { ...matchStage[sorting], $exists: true, $ne: null };
+  matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
 
   pipeline.push({ $match: matchStage });
 
@@ -102,15 +110,15 @@ async function load({
     if (tot.length === 0) {
       throw new Error("No records found.");
     }
-    total = Math.floor(tot[0].amount / amount);
+    total = Math.floor(tot[0].amount / limit);
   } else {
     total = null;
   }
 
   pipeline.push(
-    { $sort: { [sorting]: ascending ? 1 : -1 } },
-    { $skip: (page - 1) * amount },
-    { $limit: amount },
+    { $sort: { [sort]: ascending ? 1 : -1 } },
+    { $skip: (page - 1) * limit },
+    { $limit: limit },
   );
 
   const data = await collection.aggregate(pipeline).toArray();
@@ -123,52 +131,65 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 MongoClient.connect(
-  `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@vinskraper.wykjrgz.mongodb.net/`,
+  `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@snublejuice.faktu.mongodb.net/?retryWrites=true&w=majority&appName=snublejuice`,
+  {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  },
 )
   .then((client) => {
-    const db = client.db("vinskraper");
-    collection = db.collection("varer");
+    const db = client.db("snublejuice");
+    collection = db.collection("products");
 
     // Route to display products with pagination
     app.get("/", async (req, res) => {
       try {
-        const page = parseInt(req.query.page) || 1;
-        const sorting = req.query.sorting || "prisendring";
-        const ascending = !(req.query.ascending === "false");
+        const currentPage = parseInt(req.query.currentPage) || 1;
+        const sortBy = req.query.sortBy || "discount";
+        const sortAsc = !(req.query.sortAsc === "false");
 
         let { data, total } = await load({
-          collection: collection,
-          kategori: [],
-          underkategori: [],
-          land: [],
-          distrikt: [],
-          underdistrikt: [],
-          volum: [],
-          argang: [],
-          beskrivelse: [],
-          kork: [],
-          lagring: [],
-          butikk: [],
-          passer_til: [],
-          alkoholfritt: false,
-          alkohol: null,
-          fra: null,
-          til: null,
-          sorting: sorting,
-          ascending: ascending,
-          amount: 10,
-          page: page,
-          search: "",
-          filters: false,
+          collection,
+          category: null,
+          subcategory: null,
+          country: null,
+          district: null,
+          subdistrict: null,
+          volume: null,
+          year: null,
+
+          nonalcoholic: false,
+
+          cork: null,
+          storage: null,
+
+          description: null,
+          store: null,
+          pair: null,
+
+          alcohol: null,
+          from: null,
+          to: null,
+
+          sort: sortBy,
+          ascending: sortAsc,
+          limit: 10,
+          page: currentPage,
+
+          search: null,
+          filters: true,
           fresh: true,
         });
 
         res.render("products", {
           data: data,
-          currentPage: page,
+          currentPage: currentPage,
           totalPages: total,
-          sorting: sorting,
-          ascending: ascending,
+          sortBy: sortBy,
+          sortAsc: sortAsc,
         });
       } catch (err) {
         console.error(err);
