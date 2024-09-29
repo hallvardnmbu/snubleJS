@@ -29,7 +29,7 @@
 
 body {
     line-height: 1rem;
-    font-size: var(--small);
+    font-size: 18px;
     font-family: "Fixedsys", monospace;
 }
 
@@ -130,6 +130,7 @@ p {
 .information {
     flex: 100%;
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -141,15 +142,16 @@ p {
 }
 .category {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 .country {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
 }
 .price {
     display: flex;
@@ -169,5 +171,11 @@ p {
         flex-direction: column;
         align-items: center;
         gap: var(--padding);
+    }
+    #dot {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
     }
 }
