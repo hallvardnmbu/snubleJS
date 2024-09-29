@@ -7,13 +7,18 @@ from pymongo.mongo_client import MongoClient
 from pymongo.results import BulkWriteResult
 
 
-_CLIENT = MongoClient(
+_OLD = MongoClient(
     f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@vinskraper.wykjrgz.mongodb.net/'
     f'?retryWrites=true&w=majority&appName=vinskraper'
-)
-_DATABASE = _CLIENT['vinskraper']['varer']
-_EXPIRED = _CLIENT['vinskraper']['utgått']
+)['vinskraper']
+_NEW = MongoClient(
+    f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
+    f'@snublejuice.faktu.mongodb.net/'
+    f'?retryWrites=true&w=majority&appName=snublejuice'
+)['snublejuice']['varer']
+# _DATABASE = _CLIENT['vinskraper']['varer']
+# _EXPIRED = _CLIENT['vinskraper']['utgått']
 
 
 def update_prices(records) -> BulkWriteResult:

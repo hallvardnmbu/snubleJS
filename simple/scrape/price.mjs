@@ -17,7 +17,7 @@ const client = new MongoClient(
 await client.connect();
 
 const database = client.db("snublejuice");
-const itemCollection = database.collection("varer");
+const itemCollection = database.collection("products");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
   {
@@ -29,15 +29,6 @@ const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
       password: process.env.PROXY_PWD,
     },
   },
-  // {
-  //   protocol: "socks5",
-  //   host: ip,
-  //   port: parseInt(process.env.SOCKS_PRT),
-  //   auth: {
-  //     username: process.env.PROXY_USR,
-  //     password: process.env.PROXY_PWD,
-  //   },
-  // },
 ]);
 
 const URL =
@@ -56,10 +47,13 @@ function processImages(images) {
 function processProducts(products) {
   return products.map((product) => ({
     index: parseInt(product.code, 10) || null,
+
+    updated: true,
+
     name: product.name || null,
     price: product.price?.value || 0.0,
-    volume: product.volume?.value || 0.0,
 
+    volume: product.volume?.value || 0.0,
     literprice:
       product.price?.value && product.volume?.value
         ? product.price.value / (product.volume.value / 100.0)
@@ -93,7 +87,7 @@ function processProducts(products) {
 async function getPage(page, _proxy) {
   for (let i = 0; i < 10; i++) {
     const response = await session.get(URL.replace("{}", page), {
-      proxy: _proxy,
+      // proxy: _proxy,
       timeout: 10000,
     });
 
@@ -101,6 +95,8 @@ async function getPage(page, _proxy) {
       return processProducts(response.data["productSearchResult"]["products"]);
     } else {
       console.log(`Status code ${response.status} at page ${page} (trying another proxy); ${err}`);
+
+      throw new Error(`Failed to fetch page ${page}. Aborting.`);
 
       // Rotate proxy.
       _proxy = proxies[(proxies.indexOf(_proxy) + 1) % proxies.length];
@@ -112,79 +108,37 @@ async function getPage(page, _proxy) {
   throw new Error(`Failed to fetch page ${page} after 10 attempts.`);
 }
 
-async function insert(data) {
-  return await itemCollection.insertMany(data);
-}
-
-async function upsert(data) {
+async function updateDatabase(data) {
   const operations = data.map((record) => ({
     updateOne: {
       filter: { index: record.index },
       update: [
-        { $rename: { pris: "førpris" } },
+        { $rename: { price: "oldprice" } },
         { $set: record },
-        { $set: { priser: { $ifNull: ["$priser", []] } } },
-        { $set: { priser: { $concatArrays: ["$priser", ["$pris"]] } } },
+        { $set: { prices: { $ifNull: ["$prices", []] } } },
+        { $set: { prices: { $concatArrays: ["$prices", ["$price"]] } } },
         {
           $set: {
-            prisendring: {
-              $cond: [
-                {
+            discount: {
+              $cond: {
+                if: {
                   if: {
-                    $and: [{ $gt: ["$førpris", 0] }, { $gt: ["$pris", 0] }],
+                    $and: [{ $gt: ["$oldprice", 0] }, { $gt: ["$price", 0] }],
                   },
                 },
-                {
+                then: {
                   $multiply: [
                     {
-                      $divide: [{ $subtract: ["$pris", "$førpris"] }, "$førpris"],
+                      $divide: [{ $subtract: ["$price", "$oldprice"] }, "$oldprice"],
                     },
                     100,
                   ],
                 },
-                0,
-              ],
+                else: 0,
+              },
             },
           },
         },
-        // {
-        //   $set: {
-        //     literpris: {
-        //       $cond: {
-        //         if: {
-        //           $and: [
-        //             {$ne: ["$pris", null]},
-        //             {$ne: ["$pris", 0]},
-        //             {$ne: ["$volum", null]},
-        //             {$ne: ["$volum", 0]},
-        //           ],
-        //         },
-        //         then: {
-        //           $multiply: [{$divide: ["$pris", "$volum"]}, 100],
-        //         },
-        //         else: null,
-        //       },
-        //     },
-        //   },
-        // },
-        // {
-        //   $set: {
-        //     alkoholpris: {
-        //       $cond: {
-        //         if: {
-        //           $and: [
-        //             {$ne: ["$literpris", null]},
-        //             {$ne: ["$literpris", 0]},
-        //             {$ne: ["$alkohol", null]},
-        //             {$ne: ["$alkohol", 0]},
-        //           ],
-        //         },
-        //         then: {$divide: ["$literpris", "$alkohol"]},
-        //         else: null,
-        //       },
-        //     },
-        //   },
-        // },
       ],
       upsert: true,
     },
@@ -197,26 +151,33 @@ async function getProducts(_proxy) {
   let items = [];
   for (let page = 0; page < 10000; page++) {
     // Fetch products of page.
+    console.log(`Page ${page}.`);
     try {
       let products = await getPage(page, _proxy);
-      console.log(`${products}`);
       if (products.length === 0) {
         console.log(`No more products (final page: ${page - 1}).`);
         break;
       } else {
         items = items.concat(products);
+        // Timeout 2sec
+        await new Promise((resolve) => setTimeout(resolve, 1100));
       }
     } catch (err) {
       console.log(`Error: Page ${page}. Skipping this. ${err}`);
+      break;
     }
 
     // Upsert to the database every 10 pages.
     if (page % 10 === 0) {
+      if (items.length === 0) {
+        throw new Error(`No items for the last 10 pages. Aborting.`);
+      }
+
       console.log(`Upserting ${items.length} products.`);
 
-      const result = await insert(items);
+      const result = await updateDatabase(items);
       console.log(` Modified ${result.modifiedCount} records`);
-      // console.log(` Upserted ${result.upsertedCount} records`);
+      console.log(` Upserted ${result.upsertedCount} records`);
       console.log(`Success.`);
 
       items = [];
@@ -227,15 +188,19 @@ async function getProducts(_proxy) {
   if (items.length === 0) {
     return;
   }
-  const result = await insert(items);
+  const result = await updateDatabase(items);
   console.log(` Modified ${result.modifiedCount} records`);
-  // console.log(` Upserted ${result.upsertedCount} records`);
+  console.log(` Upserted ${result.upsertedCount} records`);
   console.log(`Success.`);
 }
 
 const session = axios.create();
 
 async function main() {
+  itemCollection.updateMany({}, { $set: { updated: false } });
+  // TODO: Roter proxy hver X sider. Test ut proxyene.
+  // TODO: Sett sammen "gammel" data med ny! Sett updated = true på de som finnes i "ny" data.
+  // TODO: Lag script for å hente nyhetene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
   await getProducts(_proxy);
 }

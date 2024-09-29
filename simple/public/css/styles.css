@@ -1,79 +1,100 @@
 @font-face {
-    font-family: "JetBrainsMono";
-    src: url("./JetBrainsMono/Light.woff2") format("woff2");
-    font-weight: 300; /* Light */
+    font-family: "Fixedsys";
+    font-style: normal;
+    font-weight: normal;
+    src:
+        local("Fixedsys Excelsior 3.01"),
+        url("fonts/fixedsys/FSEX300.woff") format("woff");
 }
 
 @font-face {
-    font-family: "JetBrainsMono";
-    src: url("./JetBrainsMono/Regular.woff2") format("woff2");
-    font-weight: 400; /* Normal */
-}
-
-@font-face {
-    font-family: "JetBrainsMono";
-    src: url("./JetBrainsMono/Bold.woff2") format("woff2");
-    font-weight: 700; /* Bold */
-}
-
-@font-face {
-    font-family: "JetBrainsMono";
-    src: url("./JetBrainsMono/ExtraBold.woff2") format("woff2");
-    font-weight: 800; /* Bolder */
+    font-family: "Kongtext";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/kongtext/kongtext.ttf") format("truetype");
 }
 
 :root {
-    /* Font weight */
-    --light: 300;
-    --regular: 400;
-    --bold: 700;
-    --bolder: 800;
-
-    /* Font size */
-    --tiny: 10px;
-    --small: 14px;
-    --medium: 16px;
-    --normal: 18px;
-    --large: 24px;
-
-    /* Size */
-    --border: 2px;
     --padding: 10px;
     --image: 100px;
     --margin: 50px;
 
-    /* Colour */
     --black: black;
     --blackish: #666666;
     --darkgray: #cccccc;
     --gray: #eeeeee;
-
-    --green: darkgreen;
-    --red: #8e3b46;
-    --negative: rgba(100, 0, 0, 0.1);
-    --positive: rgba(0, 100, 0, 0.1);
+    --negative: rgba(100, 0, 0, 0.2);
+    --positive: rgba(0, 100, 0, 0.2);
 }
 
 body {
     line-height: 1rem;
     font-size: var(--small);
-    font-family: "JetBrainsMono", monospace;
+    font-family: "Fixedsys", monospace;
+}
+
+a,
+a:visited {
+    color: var(--blackish);
+    text-decoration-thickness: 2px;
+}
+a:hover {
+    background-color: var(--darkgray);
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding);
+}
+header select,
+header button,
+header button:visited {
+    font-family: "Fixedsys", monospace;
+    font-size: 16px;
+    color: var(--blackish);
+    background-color: transparent;
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid var(--blackish);
+    height: calc(var(--padding) * 2);
+    cursor: pointer;
+    text-align: left;
+    padding: 0 var(--padding);
+}
+header select:hover,
+header button:hover {
+    background-color: var(--gray);
+}
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    justify-content: right;
+    margin-right: var(--padding);
 }
 
 section {
     display: flex;
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
+    border-bottom: 5px solid var(--gray);
 }
 
 p {
-    font-weight: var(--bold);
-    font-size: var(--small);
     color: var(--blackish);
 }
-b {
-    font-size: var(--normal);
-    font-weight: var(--bolder);
+.name b {
+    font-size: 24px;
+    color: var(--black);
+}
+.price b,
+.image b {
+    font-family: "Kongtext", monospace;
     color: var(--black);
 }
 
@@ -82,7 +103,6 @@ b {
     flex-direction: column;
     justify-content: space-between;
     text-align: center;
-    width: calc(var(--image) + var(--delta) * 2);
 }
 .image img {
     width: var(--image);
@@ -93,19 +113,36 @@ b {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: var(--gray);
 }
-.name {
-    border-top: var(--border) solid var(--blackish);
+.name p,
+.description p {
     padding-left: var(--padding);
     padding-right: var(--padding);
+    text-align: justify;
+}
+.category {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.country {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 .price {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: var(--border) solid var(--blackish);
     padding-left: var(--padding);
     padding-right: var(--padding);
+}
+@media (max-width: 490px) {
+    .price {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
