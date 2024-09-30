@@ -9,20 +9,6 @@
 </head>
 <body>
   <header>
-      <form action="/" method="get" style="display:inline;" id="sortingForm">
-          <input type="hidden" name="currentPage" value="<%= currentPage %>">
-          <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-          <input type="hidden" name="category" value="<%= category %>">
-
-          <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
-              <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
-              <option value="price" <%= sortBy === 'price' ? 'selected' : '' %>>Pris</option>
-              <option value="literprice" <%= sortBy === 'literprice' ? 'selected' : '' %>>Literpris</option>
-              <option value="alcoholprice" <%= sortBy === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
-              <option value="alcohol" <%= sortBy === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
-          </select>
-      </form>
-
       <form action="/" method="get" style="display:inline;" id="categoryForm">
           <input type="hidden" name="currentPage" value="<%= currentPage %>">
           <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
@@ -47,6 +33,20 @@
           </select>
       </form>
 
+      <form action="/" method="get" style="display:inline;" id="sortingForm">
+          <input type="hidden" name="currentPage" value="<%= currentPage %>">
+          <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+          <input type="hidden" name="category" value="<%= category %>">
+
+          <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
+              <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
+              <option value="price" <%= sortBy === 'price' ? 'selected' : '' %>>Pris</option>
+              <option value="literprice" <%= sortBy === 'literprice' ? 'selected' : '' %>>Literpris</option>
+              <option value="alcoholprice" <%= sortBy === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
+              <option value="alcohol" <%= sortBy === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
+          </select>
+      </form>
+
       <form action="/" method="get" style="display:inline;">
           <input type="hidden" name="currentPage" value="<%= currentPage %>">
           <input type="hidden" name="sortBy" value="<%= sortBy %>">
@@ -58,7 +58,7 @@
       </form>
   </header>
 
-  <div class="pagination">
+  <div class="pagination" id="top">
     <div>SNUBLEJUICE.no</div>
     <div>
       <% if (currentPage > 1) { %>
@@ -111,14 +111,14 @@
           <div class="price">
             <p>KR <b><%= item.price %></b>
               <% if (item.oldprice) { %>FØR <b><%= item.oldprice %></b><% } %></p>
-            <p>PRISENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
           </div>
         </div>
       </section>
     </a>
   <% }) %>
 
-  <div class="pagination">
+  <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
     <div>
       <% if (currentPage > 1) { %>
