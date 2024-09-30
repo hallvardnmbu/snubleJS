@@ -113,7 +113,8 @@ async function updateDatabase(data) {
     updateOne: {
       filter: { index: record.index },
       update: [
-        { $rename: { price: "oldprice" } },
+        // { $rename: { price: "oldprice" } },
+        { $set: { oldprice: "$price" } },
         { $set: record },
         { $set: { prices: { $ifNull: ["$prices", []] } } },
         { $set: { prices: { $concatArrays: ["$prices", ["$price"]] } } },
@@ -135,6 +136,41 @@ async function updateDatabase(data) {
                   ],
                 },
                 else: 0,
+              },
+            },
+            literprice: {
+              $cond: {
+                if: {
+                  if: {
+                    $and: [{ $gt: ["$price", 0] }, { $gt: ["$volume", 0] }],
+                  },
+                },
+                then: {
+                  $multiply: [
+                    {
+                      $divide: ["$price", "$volume"],
+                    },
+                    100,
+                  ],
+                },
+                else: null,
+              },
+            },
+          },
+        },
+        {
+          $set: {
+            alcoholprice: {
+              $cond: {
+                if: {
+                  if: {
+                    $and: [{ $gt: ["$literprice", 0] }, { $gt: ["$alcohol", 0] }],
+                  },
+                },
+                then: {
+                  $divide: ["$literprice", "$alcohol"],
+                },
+                else: null,
               },
             },
           },

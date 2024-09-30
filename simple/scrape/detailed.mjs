@@ -67,13 +67,18 @@ function processInformation(product) {
     year: product.year || null,
   };
 
+  if (processed.volume > 0 && processed.price > 0) {
+    processed.literprice = (processed.price / processed.volume) * 100;
+  } else {
+    processed.literprice = null;
+  }
+
   // Check if "alkohol" is present in the processed object.
   if (processed.alkohol) {
     // Split the string at the first space character, and convert to float.
     processed.alcohol = parseFloat(processed.alkohol.split(" ")[0].replace(",", "."));
 
-    // Calculate the liter price and alcohol price.
-    processed.literprice = (processed.price / processed.volume) * 100;
+    // Calculate the alcohol price.
     processed.alcoholprice = processed.literprice / processed.alcohol;
 
     // Remove the "alkohol" key from the object.
