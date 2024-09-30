@@ -190,6 +190,17 @@ p {
     margin-left: var(--padding);
     margin-right: var(--padding);
 }
+
+#advanced {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#invisible {
+    display: block;
+}
+
 @media (max-width: 690px) {
     body {
         font-size: 20px;
@@ -222,13 +233,22 @@ p {
         align-items: center;
         margin-top: calc(3 * var(--padding));
     }
-    #dot {
-        position: absolute;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-    }
     #bottom {
         flex-direction: column-reverse;
+    }
+
+    #dot {
+        overflow: hidden;
+        display: none;
+    }
+
+    #advanced {
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: inherit;
+    }
+    #invisible {
+        display: none;
     }
 }

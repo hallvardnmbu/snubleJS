@@ -49,8 +49,8 @@
       </select>
     </form>
 
-    <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-      <button style="visibility: hidden;">Avansert</button>
+    <div id="advanced">
+      <button style="visibility: hidden;" id="invisible">Avansert</button>
 
       <form action="/" method="get" style="display:inline;">
         <input type="hidden" name="currentPage" value="<%= currentPage %>">
@@ -133,8 +133,8 @@
             <% } %>
           </div>
           <div class="price">
-            <p>KR <b><%= item.price %></b>
-              <% if (item.oldprice) { %>FØR <b><%= item.oldprice %></b><% } %></p>
+            <p>KR <b><%= Math.ceil(item.price) %></b>
+              <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
             <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
           </div>
         </div>
