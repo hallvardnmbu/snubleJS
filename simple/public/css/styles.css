@@ -103,6 +103,26 @@ header button:hover {
     background-color: var(--gray);
 }
 
+header label,
+header input {
+    font-family: "Fixedsys", monospace;
+    font-size: 20px;
+    color: var(--blackish);
+    background-color: transparent;
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    text-align: left;
+}
+header input {
+    cursor: pointer;
+    max-width: 80px;
+    min-width: 40px;
+    width: auto;
+    border-bottom: 2px solid var(--blackish);
+    text-align: center;
+}
+
 section {
     display: flex;
     flex-direction: row;

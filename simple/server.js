@@ -34,34 +34,42 @@ let collection;
 
 async function load({
   collection,
+
+  // Single parameters;
   category = null,
   subcategory = null,
   country = null,
   district = null,
   subdistrict = null,
-  volume = null,
   year = null,
-
-  nonalcoholic = false,
-
   cork = null,
   storage = null,
 
+  // Include non-alcoholic products;
+  nonalcoholic = false,
+
+  // Array parameters;
   description = null,
   store = null,
   pair = null,
 
+  // If specified, only include values >=;
+  volume = null,
   alcohol = null,
-  from = null,
-  to = null,
 
+  // Sorting;
   sort = "discount",
   ascending = true,
+
+  // Pagination;
   limit = 10,
   page = 1,
 
+  // Search, and whether to include filters (typically `false` for `search != null`);
   search = null,
   filters = true,
+
+  // Calculate total pages;
   fresh = true,
 } = {}) {
   let pipeline = [];
@@ -89,7 +97,6 @@ async function load({
     ...(country && filters ? { country: country } : {}),
     ...(district && filters ? { district: district } : {}),
     ...(subdistrict && filters ? { subdistrict: subdistrict } : {}),
-    ...(volume && filters ? { volume: volume } : {}),
     ...(year && filters ? { year: year } : {}),
     ...(cork && filters ? { cork: cork } : {}),
     ...(storage && filters ? { storage: storage } : {}),
@@ -100,23 +107,15 @@ async function load({
     // ...(pair.length && filters ? { pair: { $in: pair } } : {}),
   };
 
+  if (volume) {
+    matchStage["volume"] = { ...matchStage["volume"], $gte: volume };
+  }
+
   if (alcohol) {
     matchStage["alcohol"] = { ...matchStage["alcohol"], $gte: alcohol };
   }
   if (!nonalcoholic) {
     matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
-  }
-
-  if (from || to) {
-    let between = {};
-    if (from) between["$gte"] = from;
-    if (to) between["$lte"] = to;
-
-    if (sort === "volume") {
-      matchStage["volume"] = { ...matchStage["volume"], ...between };
-    } else {
-      matchStage[sort] = between;
-    }
   }
 
   matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
@@ -170,37 +169,46 @@ MongoClient.connect(
         const sortBy = req.query.sortBy || "discount";
         const sortAsc = !(req.query.sortAsc === "false");
         const category = req.query.category || null;
+        const minVolume = parseInt(req.query.minVolume) || null;
 
         let { data, total } = await load({
           collection,
+
+          // Single parameters;
           category: categories[category],
           subcategory: null,
           country: null,
           district: null,
           subdistrict: null,
-          volume: null,
           year: null,
-
-          nonalcoholic: false,
-
           cork: null,
           storage: null,
 
+          // Include non-alcoholic products;
+          nonalcoholic: false,
+
+          // Array parameters;
           description: null,
           store: null,
           pair: null,
 
+          // If specified, only include values >=;
+          volume: minVolume,
           alcohol: null,
-          from: null,
-          to: null,
 
+          // Sorting;
           sort: sortBy,
           ascending: sortAsc,
+
+          // Pagination;
           limit: 10,
           page: currentPage,
 
+          // Search, and whether to include filters (typically `false` for `search != null`);
           search: null,
           filters: true,
+
+          // Calculate total pages;
           fresh: true,
         });
 
@@ -211,6 +219,7 @@ MongoClient.connect(
           sortBy: sortBy,
           sortAsc: sortAsc,
           category: category,
+          minVolume: minVolume,
         });
       } catch (err) {
         console.error(err);
