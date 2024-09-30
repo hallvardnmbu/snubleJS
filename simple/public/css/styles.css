@@ -29,7 +29,7 @@
 
 body {
     line-height: 1rem;
-    font-size: 18px;
+    font-size: 26px;
     font-family: "Fixedsys", monospace;
 }
 
@@ -44,11 +44,15 @@ a:hover {
 
 header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--padding);
     justify-content: center;
     align-items: center;
-    padding: var(--padding);
+    margin-top: var(--padding);
+    margin-bottom: calc(3 * var(--padding));
+    padding-bottom: var(--padding);
+    border-bottom: 5px solid var(--gray);
 }
 
 footer {
@@ -58,10 +62,12 @@ footer {
     justify-content: left;
     margin-right: var(--padding);
     margin-left: var(--padding);
-    padding-bottom: var(--padding);
+    margin-bottom: var(--padding);
+    margin-top: var(--padding);
 }
 
 .pagination {
+    font-size: 26px;
     display: flex;
     flex-direction: row;
     gap: var(--padding);
@@ -74,16 +80,14 @@ header select,
 header button,
 header button:visited {
     font-family: "Fixedsys", monospace;
-    font-size: 16px;
+    font-size: 26px;
     color: var(--blackish);
     background-color: transparent;
     appearance: none;
     border-radius: 0;
     border: none;
-    height: calc(var(--padding) * 2);
     cursor: pointer;
     text-align: left;
-    padding: 0 var(--padding);
 }
 header select {
     border-bottom: 2px solid var(--blackish);
@@ -138,9 +142,12 @@ p {
 }
 .name p,
 .description p {
-    padding-left: var(--padding);
-    padding-right: var(--padding);
+    margin-left: var(--padding);
+    margin-right: var(--padding);
+}
+.description p {
     text-align: justify;
+    font-size: 18px;
 }
 .category {
     display: flex;
@@ -160,19 +167,26 @@ p {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-left: var(--padding);
-    padding-right: var(--padding);
+    margin-left: var(--padding);
+    margin-right: var(--padding);
 }
-@media (max-width: 600px) {
-    .price {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    footer,
-    header {
+@media (max-width: 690px) {
+    .pagination {
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+    }
+    .price {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+    }
+    .price,
+    .image {
+        line-height: 1.4rem;
+    }
+    footer {
+        flex-direction: column;
+        align-items: center;
+        margin-top: calc(3 * var(--padding));
     }
     #dot {
         position: absolute;

@@ -8,21 +8,6 @@
     <title>Snublejuice</title>
 </head>
 <body>
-  <div class="pagination">
-    <div>SNUBLEJUICE.no</div>
-    <div>
-      <% if (currentPage > 1) { %>
-          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>">FORRIGE</a>
-      <% } %>
-
-      <span><%= currentPage %> av <%= totalPages %></span>
-
-      <% if (currentPage < totalPages) { %>
-          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>">NESTE</a>
-      <% } %>
-    </div>
-  </div>
-
   <header>
       <form action="/" method="get" style="display:inline;" id="sortingForm">
           <input type="hidden" name="currentPage" value="<%= currentPage %>">
@@ -73,6 +58,21 @@
       </form>
   </header>
 
+  <div class="pagination">
+    <div>SNUBLEJUICE.no</div>
+    <div>
+      <% if (currentPage > 1) { %>
+          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>">FORRIGE</a>
+      <% } %>
+
+      <span><%= currentPage %> av <%= totalPages %></span>
+
+      <% if (currentPage < totalPages) { %>
+          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>">NESTE</a>
+      <% } %>
+    </div>
+  </div>
+
   <% data.forEach(item => { %>
     <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
       <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
@@ -118,11 +118,6 @@
     </a>
   <% }) %>
 
-  <footer>
-    <div>© Hallvard H. Lavik</div>
-    <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
-  </footer>
-
   <div class="pagination">
     <div>SNUBLEJUICE.no</div>
     <div>
@@ -137,6 +132,11 @@
       <% } %>
     </div>
   </div>
+
+  <footer>
+    <div>© Hallvard H. Lavik</div>
+    <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
+  </footer>
 
   <script src="js/script.js"></script>
 </body>
