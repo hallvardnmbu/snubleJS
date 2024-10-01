@@ -153,8 +153,9 @@ async function updateStores(_proxy, itemIds) {
 const session = axios.create();
 
 async function main() {
+  // Fetch products with discount.
   const itemIds = await itemCollection
-    .find({ discount: { $lte: -5.0 } })
+    .find({ discount: { $lt: 0.0 } })
     .project({ index: 1, _id: 0 })
     .toArray();
   // TODO: Roter proxy hver X sider. Test ut proxyene.

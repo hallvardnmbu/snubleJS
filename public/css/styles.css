@@ -125,6 +125,16 @@ header input {
     text-align: center;
 }
 
+#message {
+    margin-top: var(--margin);
+    margin-right: var(--padding);
+    margin-left: var(--padding);
+    padding: var(--padding);
+    text-align: center;
+    border: 2px solid var(--blackish);
+    background-color: var(--negative);
+}
+
 section {
     display: flex;
     flex-direction: row;
