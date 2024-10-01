@@ -106,7 +106,7 @@ async function load({
 
     // Parameters that are arrays are matched using the $in operator.
     // ...(description.length && filters ? { "description.short": { $in: description } } : {}),
-    // ...(store.length && filters ? { store: { $in: store } } : {}),
+    ...(store && filters ? { stores: { $in: [store] } } : {}),
     // ...(pair.length && filters ? { pair: { $in: pair } } : {}),
   };
 
@@ -135,7 +135,7 @@ async function load({
     if (tot.length === 0) {
       throw new Error("No records found.");
     }
-    total = Math.floor(tot[0].amount / limit);
+    total = Math.floor(tot[0].amount / limit) + 1;
   } else {
     total = null;
   }
@@ -160,7 +160,7 @@ MongoClient.connect(
   {
     serverApi: {
       version: ServerApiVersion.v1,
-      strict: true,
+      strict: false,
       deprecationErrors: true,
     },
   },
@@ -168,6 +168,15 @@ MongoClient.connect(
   .then((client) => {
     const db = client.db("snublejuice");
     collection = db.collection("products");
+
+    app.get("/api/stores", async (req, res) => {
+      try {
+        const stores = await collection.distinct("stores");
+        res.json(stores);
+      } catch (err) {
+        res.status(500).send(err);
+      }
+    });
 
     // Route to display products with pagination
     app.get("/", async (req, res) => {
@@ -178,6 +187,7 @@ MongoClient.connect(
         const category = req.query.category || null;
         const minVolume = parseInt(req.query.minVolume) || null;
         const news = req.query.news === "true";
+        const store = req.query.store || "null";
 
         let { data, total } = await load({
           collection,
@@ -200,7 +210,7 @@ MongoClient.connect(
 
           // Array parameters;
           description: null,
-          store: null,
+          store: store === "null" ? null : store,
           pair: null,
 
           // If specified, only include values >=;
@@ -232,6 +242,7 @@ MongoClient.connect(
           category: category,
           minVolume: minVolume,
           news: news,
+          store: store,
         });
       } catch (err) {
         console.error(err);
