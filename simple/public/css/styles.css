@@ -88,11 +88,10 @@ header button:visited {
     border: none;
     cursor: pointer;
     text-align: left;
-}
-header select {
     border-bottom: 2px solid var(--blackish);
 }
 header select {
+    min-width: 250px;
     padding-right: calc(var(--padding) * 2);
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
     background-repeat: no-repeat;
@@ -103,6 +102,9 @@ header button:hover {
     background-color: var(--gray);
 }
 
+#newsForm button {
+    font-size: 20px;
+}
 header label,
 header input {
     font-family: "Fixedsys", monospace;
@@ -215,6 +217,9 @@ p {
     header button:visited {
         font-size: 20px;
     }
+    header select {
+        min-width: 200px;
+    }
     .name b {
         font-size: 24px;
     }
@@ -247,6 +252,7 @@ p {
         display: flex;
         flex-direction: column;
         justify-content: inherit;
+        gap: var(--padding);
     }
     #invisible {
         display: none;

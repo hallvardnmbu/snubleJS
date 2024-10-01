@@ -14,6 +14,7 @@
       <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
       <input type="hidden" name="sortBy" value="<%= sortBy %>">
       <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= news %>">
 
       <select name="category" id="category" onchange="document.getElementById('categoryForm').submit();">
         <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
@@ -39,6 +40,7 @@
       <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
       <input type="hidden" name="category" value="<%= category %>">
       <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= news %>">
 
       <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
         <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
@@ -55,16 +57,17 @@
       <form action="/" method="get" style="display:inline;">
         <input type="hidden" name="currentPage" value="<%= currentPage %>">
         <input type="hidden" name="sortBy" value="<%= sortBy %>">
-        <input type="hidden" name="sortAsc" value="<%= !sortAsc %>">
+        <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
         <input type="hidden" name="category" value="<%= category %>">
         <input type="hidden" name="minVolume" value="<%= minVolume %>">
+        <input type="hidden" name="news" value="<%= news %>">
 
         <button type="submit">
             <%= sortAsc ? 'Stigende' : 'Synkende' %>
         </button>
       </form>
 
-      <button onclick="toggleVisibility(['volumeForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>
+      <button onclick="toggleVisibility(['volumeForm', 'newsForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>
     </div>
 
     <form id="volumeForm" action="/" method="get" style="display: none; padding-top: 10px; border-top: 5px solid var(--gray); width: 100%; text-align: center;">
@@ -72,10 +75,24 @@
       <input type="hidden" name="sortBy" value="<%= sortBy %>">
       <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
       <input type="hidden" name="category" value="<%= category %>">
+      <input type="hidden" name="news" value="<%= news %>">
 
       <label for="minVolume">Volum over</label>
       <input type="number" id="minVolume" name="minVolume" min="0" step="1" value="<%= minVolume || '' %>">
       <label for="minVolume">cL</label>
+    </form>
+
+    <form id="newsForm" action="/" method="get" style="display: none;">
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
+      <input type="hidden" name="sortBy" value="<%= sortBy %>">
+      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+      <input type="hidden" name="category" value="<%= category %>">
+      <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= !news %>">
+
+      <button type="submit">
+          <%= news ? 'Kun nyheter' : 'Alle produkter' %>
+      </button>
     </form>
 
     <label id="disclaimer-1" style="display: none;">Under utvikling.</label>
@@ -86,13 +103,13 @@
     <div>SNUBLEJUICE.no</div>
     <div>
       <% if (currentPage > 1) { %>
-          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>">FORRIGE</a>
+          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">FORRIGE</a>
       <% } %>
 
       <span><%= currentPage %> av <%= totalPages %></span>
 
       <% if (currentPage < totalPages) { %>
-          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>">NESTE</a>
+          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">NESTE</a>
       <% } %>
     </div>
   </div>
@@ -146,13 +163,13 @@
     <div>SNUBLEJUICE.no</div>
     <div>
       <% if (currentPage > 1) { %>
-          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>">FORRIGE</a>
+          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">FORRIGE</a>
       <% } %>
 
       <span><%= currentPage %> av <%= totalPages %></span>
 
       <% if (currentPage < totalPages) { %>
-          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>">NESTE</a>
+          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">NESTE</a>
       <% } %>
     </div>
   </div>
