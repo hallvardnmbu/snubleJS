@@ -19,12 +19,6 @@ await client.connect();
 const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
 
-// Extract all item ids with a discount of 5% or more.
-const itemIds = await itemCollection
-  .find({ discount: { $leq: -5.0 } }, { _id: 0, index: 1 })
-  .toArray()
-  .map((item) => item.index);
-
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
   {
     protocol: "http",
@@ -38,130 +32,110 @@ const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
 ]);
 
 const URL =
-  "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue";
+  "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&q={}:relevance";
 
-const LINK = "https://www.vinmonopolet.no{}";
-
-const IMAGE = {
-  thumbnail: "https://bilder.vinmonopolet.no/bottle.png",
-  product: "https://bilder.vinmonopolet.no/bottle.png",
-};
-
-function processImages(images) {
-  return images ? images.reduce((acc, img) => ({ ...acc, [img.format]: img.url }), {}) : IMAGE;
-}
-
-function processProducts(products) {
-  const processedProducts = [];
-
-  for (const product of products) {
-    const index = parseInt(product.code, 10) || null;
-
-    if (itemIds.includes(index)) {
-      break;
-    }
-
-    processedProducts.push({
-      index: index,
-
-      updated: true,
-
-      name: product.name || null,
-      price: product.price?.value || 0.0,
-
-      volume: product.volume?.value || 0.0,
-      literprice:
-        product.price?.value && product.volume?.value
-          ? product.price.value / (product.volume.value / 100.0)
-          : 0.0,
-
-      url: product.url ? LINK.replace("{}", product.url) : null,
-      images: product.images ? processImages(product.images) : IMAGE,
-
-      category: product.main_category?.name || null,
-      subcategory: product.main_sub_category?.name || null,
-
-      country: product.main_country?.name || null,
-      district: product.district?.name || null,
-      subdistrict: product.sub_District?.name || null,
-
-      selection: product.product_selection || null,
-      sustainable: product.sustainable || false,
-
-      buyable: product.buyable || false,
-      expired: product.expired || true,
-      status: product.status || null,
-
-      orderable: product.productAvailability?.deliveryAvailability?.availableForPurchase || false,
-      orderinfo:
-        product.productAvailability?.deliveryAvailability?.infos?.[0]?.readableValue || null,
-
-      instores: product.productAvailability?.storesAvailability?.availableForPurchase || false,
-      storeinfo: product.productAvailability?.storesAvailability?.infos?.[0]?.readableValue || null,
-    });
-  }
-
-  return processedProducts;
-}
-
-async function getPage(page, _proxy) {
+async function processId(index, _proxy) {
   for (let i = 0; i < 5; i++) {
-    const response = await session.get(URL.replace("{}", page), {
-      // proxy: _proxy,
-      timeout: 10000,
-    });
+    try {
+      const response = await session.get(URL.replace("{}", index), {
+        // proxy: _proxy,
+        timeout: 10000,
+      });
 
-    if (response.status === 200) {
-      return processProducts(response.data["productSearchResult"]["products"]);
-    } else {
-      console.log(`Status code ${response.status} at page ${page} (trying another proxy); ${err}`);
+      if (response.status === 429) {
+        console.log("Rate limited, waiting 10s.");
+        await new Promise((resolve) => setTimeout(resolve, 10001));
+        continue;
+      } else if (response.status !== 200) {
+        throw new Error(`Status code ${response.status}: ${response.data}`);
+      }
 
-      throw new Error(`Failed to fetch page ${page}. Aborting.`);
+      const responseData = response.data.productSearchResult || {};
 
-      // Rotate proxy.
-      _proxy = proxies[(proxies.indexOf(_proxy) + 1) % proxies.length];
+      const store = responseData.facets
+        ? responseData.facets
+            .filter((element) => element.name.toLowerCase() === "butikker")
+            .map((element) => element.values || [])
+        : [];
 
-      // Delay before retrying.
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!responseData.products || responseData.products.length === 0) {
+        return {
+          index: index,
+          status: "utgått",
+          buyable: false,
+          orderable: false,
+          orderinfo: null,
+          instores: false,
+          storeinfo: null,
+          stores: null,
+        };
+      }
+
+      const product = responseData.products[0];
+
+      return {
+        index: index,
+
+        stores: store.flat().map((element) => element.name),
+
+        status: product.status || null,
+        buyable: product.buyable || false,
+        expired: product.expired || true,
+
+        orderable: product.productAvailability?.deliveryAvailability?.availableForPurchase || false,
+        orderinfo:
+          product.productAvailability?.deliveryAvailability?.infos?.[0]?.readableValue || null,
+        instores: product.productAvailability?.storesAvailability?.availableForPurchase || false,
+        storeinfo:
+          product.productAvailability?.storesAvailability?.infos?.[0]?.readableValue || null,
+      };
+    } catch (err) {
+      throw new Error(`Failed to fetch product information for index ${index}: ${err}`);
     }
   }
-  throw new Error(`Failed to fetch page ${page} after 5 attempts.`);
+
+  throw new Error("Failed to fetch product information.");
 }
 
 async function updateDatabase(data) {
-  return await itemCollection.insertMany(data);
+  const operations = data.map((record) => ({
+    updateOne: {
+      filter: { index: record.index },
+      update: { $set: record },
+      upsert: true,
+    },
+  }));
+
+  return await itemCollection.bulkWrite(operations);
 }
 
-async function getProducts(_proxy) {
+async function updateStores(_proxy, itemIds) {
   let items = [];
-  for (let page = 0; page < 10000; page++) {
-    // Fetch products of page.
-    console.log(`Page ${page}.`);
+  for (const element of itemIds) {
+    const id = element["index"];
+    console.log(`Id ${id}.`);
     try {
-      let products = await getPage(page, _proxy);
-      if (products.length === 0) {
-        console.log(`No more new products (final page: ${page - 1}).`);
+      let product = await processId(id, _proxy);
+      if (!product) {
+        console.log(`Unable to find product of Id ${id}. Aborting.`);
         break;
       } else {
-        items = items.concat(products);
+        items.push(product);
         // Timeout 1.1sec
         await new Promise((resolve) => setTimeout(resolve, 1100));
       }
     } catch (err) {
-      console.log(`Error: Page ${page}. Skipping this. ${err}`);
+      console.log(`Error: Id ${id}. Skipping this. ${err}`);
       break;
     }
 
-    // Upsert to the database every 10 pages.
-    if (page % 10 === 0) {
-      if (items.length === 0) {
-        throw new Error(`No items for the last 10 pages. Aborting.`);
-      }
-
+    // Upsert to the database every 10 items.
+    if (items.length >= 10) {
       console.log(`Adding ${items.length} products.`);
 
       const result = await updateDatabase(items);
-      console.log(` Inserted ${result.insertedCount} records`);
+      console.log(` Modified ${result.modifiedCount} records`);
+      console.log(` Upserted ${result.upsertedCount} records`);
 
       items = [];
     }
@@ -172,15 +146,20 @@ async function getProducts(_proxy) {
     return;
   }
   const result = await updateDatabase(items);
-  console.log(` Inserted ${result.insertedCount} records`);
+  console.log(` Modified ${result.modifiedCount} records`);
+  console.log(` Upserted ${result.upsertedCount} records`);
 }
 
 const session = axios.create();
 
 async function main() {
+  const itemIds = await itemCollection
+    .find({ discount: { $lte: -5.0 } })
+    .project({ index: 1, _id: 0 })
+    .toArray();
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
-  await getProducts(_proxy);
+  await updateStores(_proxy, itemIds);
 }
 
 await main();

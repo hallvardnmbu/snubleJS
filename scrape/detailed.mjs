@@ -164,7 +164,8 @@ async function updateInformation(_proxy, itemIds) {
     return;
   }
   const result = await updateDatabase(items);
-  console.log(` Inserted ${result.insertedCount} records`);
+  console.log(` Modified ${result.modifiedCount} records`);
+  console.log(` Upserted ${result.upsertedCount} records`);
 }
 
 const session = axios.create();
