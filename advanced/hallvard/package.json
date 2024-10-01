@@ -1,0 +1,24 @@
+{
+  "name": "snubleJS",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.ejs",
+  "scripts": {
+    "server": "bun server.js",
+    "available": "bun scrape/available.mjs",
+    "price": "bun scrape/price.mjs"
+  },
+  "author": "Carlos Hebbinghaus & Hallvard H. Lavik",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "node-cron": "^3.0.3",
+    "path": "^0.12.7",
+    "plotly.js-dist": "^2.35.1"
+  }
+}

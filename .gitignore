@@ -1,0 +1,10 @@
+.DS_Store
+.idea/
+Icon?
+
+**/__pycache__/
+
+database/backup/
+
+**/node_modules/
+**/package-lock.json

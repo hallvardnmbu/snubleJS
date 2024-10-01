@@ -1,0 +1,348 @@
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("./fonts/JetBrainsMono/Regular.woff2") format("woff2");
+    font-weight: 400; /* Normal weight */
+}
+
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("./fonts/JetBrainsMono/Light.woff2") format("woff2");
+    font-weight: 300; /* Light weight */
+}
+
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("./fonts/JetBrainsMono/Bold.woff2") format("woff2");
+    font-weight: 700; /* Bold weight */
+}
+
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("./fonts/JetBrainsMono/ExtraBold.woff2") format("woff2");
+    font-weight: 800; /* Extra Bold weight */
+}
+
+:root {
+    --border: 2px;
+    --padding: 10px;
+    --image: 100px;
+
+    --large: 24px;
+    --medium: 18px;
+    --small: 16px;
+    --tiny: 14px;
+    --minute: 10px;
+
+    --thin: 300;
+    --normal: 400;
+    --bold: 700;
+    --bolder: 800;
+
+    --green: darkgreen;
+    --red: #8e3b46;
+    --negative: rgba(100, 0, 0, 0.1);
+    --positive: rgba(0, 100, 0, 0.1);
+    --gray: #eeeeee;
+    --darkgray: #cccccc;
+    --darkergray: #666666;
+    --black: black;
+}
+
+body {
+    font-family: "JetBrainsMono", monospace;
+    font-size: var(--small);
+    font-weight: var(--normal);
+    line-height: 1.2rem;
+    margin: 0;
+}
+
+.meny {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: calc(var(--padding) * 2);
+    align-items: flex-end;
+    border-bottom: var(--border) solid var(--black);
+    /* background-color: var(--gray); */
+    padding: var(--padding);
+}
+header select,
+header button {
+    appearance: none;
+    border-radius: 0;
+    /* border: var(--border) solid var(--darkgray); */
+    border: none;
+    background-color: var(--gray);
+    box-shadow: 2px 2px 0px 0px var(--black);
+    min-height: calc(var(--padding) * 3);
+    min-width: var(--image);
+    cursor: pointer;
+    display: flex;
+    text-indent: 10px;
+    justify-content: left;
+    align-items: center;
+}
+header select:hover,
+header button:hover {
+    background-color: var(--darkgray);
+}
+
+.informasjonsnavigasjon {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: var(--border) solid var(--darkgray);
+}
+
+.informasjonsnavigasjon a {
+    margin: 0px var(--padding);
+    display: flex;
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    text-decoration: none;
+    border-bottom: var(--border) solid transparent;
+    color: var(--darkergray);
+}
+
+.informasjonsnavigasjon a:hover {
+    color: var(--black);
+    border-bottom: var(--border) solid var(--darkgray);
+    background-color: var(--gray);
+}
+
+.informasjonsnavigasjon a.active {
+    color: var(--black);
+    border-bottom: var(--border) solid var(--darkgray);
+}
+
+section {
+    border: var(--border) solid var(--black);
+    background-color: white;
+    padding: var(--padding);
+    margin: calc(var(--padding) * 2) 25px 0px 0px;
+    box-shadow:
+        5px 5px 0px var(--gray),
+        5px 5px 0px var(--border) var(--black);
+}
+
+section header {
+    /* border-bottom: var(--border) solid var(--darkgray); */
+    font-size: var(--small);
+    font-weight: var(--bolder);
+    color: var(--black);
+    padding: 0px var(--padding);
+    margin: calc(-1 * var(--padding)) calc(-1 * var(--padding)) var(--padding)
+        calc(-1 * var(--padding));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+section header .prisendring {
+    font-size: var(--tiny);
+    font-weight: var(--bolder);
+    color: var(--darkergray);
+}
+section header .prisendring strong {
+    font-size: var(--small);
+    font-weight: var(--bolder);
+    color: var(--black);
+}
+
+section .produkt {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: calc(var(--padding) * 2);
+    /* align-items: flex-start; */
+}
+@media (max-width: 600px) {
+    section .produkt {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+section .produkt .bilde {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: var(--image);
+}
+
+section .produkt .bilde img {
+    max-width: var(--image);
+    width: 100%;
+}
+section .produkt .bilde p {
+    font-weight: var(--thin);
+    color: var(--black);
+    font-size: var(--tiny);
+}
+section .produkt .bilde strong {
+    font-weight: var(--bolder);
+    color: var(--darkergray);
+    font-size: var(--small);
+}
+
+section .produkt .informasjon {
+    width: 100%;
+    font-weight: var(--thin);
+}
+
+.overskrift {
+    padding: 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: top;
+}
+.kategori {
+    text-align: left;
+}
+.hovedkategori {
+    font-size: var(--large);
+    font-weight: var(--bold);
+}
+.underkategori {
+    font-size: var(--medium);
+    font-weight: var(--normal);
+}
+.lokasjon {
+    text-align: right;
+}
+.lokasjon .land {
+    font-size: var(--large);
+    font-weight: var(--bold);
+}
+.lokasjon .distrikt {
+    font-size: var(--medium);
+    font-weight: var(--normal);
+}
+.lokasjon .underdistrikt {
+    font-size: var(--small);
+    font-weight: var(--thin);
+}
+
+.priser {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--gray);
+    box-shadow: 0 0 0 10px var(--gray);
+}
+.priser .pris {
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    color: var(--green);
+}
+.priser .pris strong {
+    font-size: var(--large);
+    font-weight: var(--bolder);
+}
+.priser .lenke,
+.priser .literpris {
+    text-align: right;
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    color: var(--darkergray);
+}
+.priser .lenke a {
+    display: inline-block;
+    font-weight: var(--bold);
+    color: var(--darkergray);
+    text-decoration-thickness: min(var(--border), 2px);
+}
+.priser .lenke a:hover {
+    /* background-color: var(--darkergray); */
+    cursor: pointer;
+    color: var(--black);
+}
+/* .priser .forrige {
+    margin-top: -20px;
+    font-size: var(--large);
+    font-weight: var(--bolder);
+    color: var(--red);
+} */
+
+.priser .forrige {
+    margin-top: -20px;
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    color: var(--red);
+}
+.priser .forrige strong {
+    font-size: var(--large);
+    font-weight: var(--bolder);
+}
+
+.informasjon hr {
+    background-color: var(--darkgray);
+    height: var(--border);
+    border: none;
+}
+
+.beskrivelser {
+    padding-top: var(--padding);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.beskrivelse {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--padding);
+}
+
+.beskrivelsestittel {
+    font-size: var(--tiny);
+    font-weight: var(--bolder);
+    color: var(--black);
+}
+
+.beskrivelseselement p {
+    font-size: var(--minute);
+    padding: 0 var(--border);
+    background-color: var(--gray);
+    color: var(--darkergray);
+    box-shadow: 2px 2px 0px var(--darkergray);
+}
+
+.fokus {
+    display: none;
+}
+.fokus.active {
+    display: block;
+}
+
+.graf {
+    width: 100%;
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    border-top: var(--border) solid var(--black);
+    /* background-color: var(--gray); */
+    padding: var(--padding);
+}
+
+footer a {
+    color: var(--darkergray);
+    text-decoration-thickness: min(var(--border), 2px);
+    font-size: var(--tiny);
+    font-weight: var(--bold);
+    margin: 0px calc(var(--padding) * 2);
+}
+
+footer a:hover {
+    font-weight: var(--bolder);
+    background-color: var(--gray);
+}

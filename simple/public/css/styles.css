@@ -1,0 +1,260 @@
+@font-face {
+    font-family: "Fixedsys";
+    font-style: normal;
+    font-weight: normal;
+    src:
+        local("Fixedsys Excelsior 3.01"),
+        url("fonts/fixedsys/FSEX300.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Kongtext";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/kongtext/kongtext.ttf") format("truetype");
+}
+
+:root {
+    --padding: 10px;
+    --image: 100px;
+    --margin: 50px;
+
+    --black: black;
+    --blackish: #666666;
+    --darkgray: #cccccc;
+    --gray: #eeeeee;
+    --negative: rgba(100, 0, 0, 0.2);
+    --positive: rgba(0, 100, 0, 0.2);
+}
+
+body {
+    line-height: 1rem;
+    font-size: 22px;
+    font-family: "Fixedsys", monospace;
+}
+
+a,
+a:visited {
+    color: var(--blackish);
+    text-decoration-thickness: 2px;
+}
+a:hover {
+    background-color: var(--darkgray);
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: var(--padding);
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--padding);
+    margin-bottom: calc(3 * var(--padding));
+    padding-bottom: var(--padding);
+    border-bottom: 5px solid var(--gray);
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    justify-content: left;
+    margin-right: var(--padding);
+    margin-left: var(--padding);
+    margin-bottom: var(--padding);
+    margin-top: var(--padding);
+}
+
+.pagination {
+    font-size: 26px;
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    justify-content: space-between;
+    margin-right: var(--padding);
+    margin-left: var(--padding);
+}
+
+header select,
+header button,
+header button:visited {
+    font-family: "Fixedsys", monospace;
+    font-size: 26px;
+    color: var(--blackish);
+    background-color: transparent;
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    border-bottom: 2px solid var(--blackish);
+}
+header select {
+    min-width: 250px;
+    padding-right: calc(var(--padding) * 2);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right calc(var(--padding) / 2) bottom;
+}
+header select:hover,
+header button:hover {
+    background-color: var(--gray);
+}
+
+#newsForm button {
+    font-size: 20px;
+}
+header label,
+header input {
+    font-family: "Fixedsys", monospace;
+    font-size: 20px;
+    color: var(--blackish);
+    background-color: transparent;
+    appearance: none;
+    border-radius: 0;
+    border: none;
+    text-align: left;
+}
+header input {
+    cursor: pointer;
+    max-width: 80px;
+    min-width: 40px;
+    width: auto;
+    border-bottom: 2px solid var(--blackish);
+    text-align: center;
+}
+
+section {
+    display: flex;
+    flex-direction: row;
+    margin: var(--margin) var(--padding) var(--margin) var(--padding);
+    border-bottom: 5px solid var(--gray);
+}
+
+p {
+    color: var(--blackish);
+}
+.name b {
+    font-size: 24px;
+    color: var(--black);
+}
+.price b,
+.image b {
+    font-family: "Kongtext", monospace;
+    color: var(--black);
+}
+
+.image {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: center;
+}
+.image img {
+    width: var(--image);
+}
+
+.information {
+    flex: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.name p,
+.description p {
+    margin-left: var(--padding);
+    margin-right: var(--padding);
+}
+.description p {
+    text-align: justify;
+    font-size: 18px;
+}
+.category {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.country {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+}
+.price {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: var(--padding);
+    margin-right: var(--padding);
+}
+
+#advanced {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#invisible {
+    display: block;
+}
+
+@media (max-width: 690px) {
+    body {
+        font-size: 20px;
+    }
+    .pagination {
+        font-size: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    header select,
+    header button,
+    header button:visited {
+        font-size: 20px;
+    }
+    header select {
+        min-width: 200px;
+    }
+    .name b {
+        font-size: 24px;
+    }
+    .description p {
+        font-size: 16px;
+    }
+    .price {
+        flex-wrap: wrap-reverse;
+    }
+    .price,
+    .image {
+        line-height: 1.4rem;
+    }
+    footer {
+        flex-direction: column;
+        align-items: center;
+        margin-top: calc(3 * var(--padding));
+    }
+    #bottom {
+        flex-direction: column-reverse;
+    }
+
+    #dot {
+        overflow: hidden;
+        display: none;
+    }
+
+    #advanced {
+        width: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: inherit;
+        gap: var(--padding);
+    }
+    #invisible {
+        display: none;
+    }
+}

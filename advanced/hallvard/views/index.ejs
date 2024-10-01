@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Snublejuice</title>
+</head>
+<body>
+    <header class="meny">
+        <form action="/" method="get" style="display:inline;" id="sortingForm">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="ascending" value="<%= ascending %>">
+
+            <select name="sorting" id="sorting" onchange="document.getElementById('sortingForm').submit();">
+                <option value="prisendring" <%= sorting === 'prisendring' ? 'selected' : '' %>>Prisendring</option>
+                <option value="navn" <%= sorting === 'navn' ? 'selected' : '' %>>Navn</option>
+                <option value="literpris" <%= sorting === 'literpris' ? 'selected' : '' %>>Literpris</option>
+                <!-- Add more sorting options as needed -->
+            </select>
+        </form>
+
+        <form action="/" method="get" style="display:inline;">
+            <input type="hidden" name="page" value="<%= currentPage %>">
+            <input type="hidden" name="sorting" value="<%= sorting %>">
+            <input type="hidden" name="ascending" value="<%= !ascending %>">
+            <button type="submit">
+                <%= ascending ? 'Stigende' : 'Synkende' %>
+            </button>
+        </form>
+    </header>
+
+    <ul>
+        <% data.forEach(item => { %>
+            <section>
+              <header style="background-color: <%= item.prisendring > 0 ? 'var(--negative)' : item.prisendring < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+                <span>
+                  <p><%= item.navn %></p>
+                </span>
+                <span>
+                  <p class="prisendring">PRISENDRING <strong><%= Math.floor(item.prisendring) %> %</strong></p>
+                </span>
+              </header>
+
+              <div class="produkt">
+                <div class="bilde">
+                  <img src="<%= item.bilde.product %>" alt="flaske"/>
+                  <div class="informasjon">
+                    <p><strong><%= item.volum %></strong> cL</p>
+                    <p><strong><%= item.alkohol%></strong> % alk.</p>
+                  </div>
+                </div>
+
+                <div class="informasjon">
+                  <nav class="informasjonsnavigasjon">
+                    <a href="#generelt-<%= item.index %>" class="fokus active" tab="generelt-<%= item.index %>">GENERELT</a>
+                    <a href="#detaljer-<%= item.index %>" class="fokus" tab="detaljer-<%= item.index %>">DETALJER</a>
+                  </nav>
+
+                  <div id="generelt-<%= item.index %>" class="fokus active">
+                    <div class="overskrift">
+                      <div class="kategori">
+                        <p class="hovedkategori"><%= item.kategori %></p>
+                        <p class="underkategori"><%= item.underkategori %></p>
+                      </div>
+
+                      <div class="lokasjon">
+                        <p class="land"><%= item.land %></p>
+                        <p class="distrikt"><%= item.distrikt %></p>
+                        <p class="underdistrikt"><%= item.underdistrikt %></p>
+                      </div>
+                    </div>
+
+                    <table class="priser">
+                      <tr>
+                        <td class="pris">kr &nbsp;<strong><%= item.pris %></strong></td>
+                        <td class="lenke"><a href="<%= item.url %>" target="_blank">BESTILL</a></td>
+                      </tr>
+                      <tr>
+                        <td class="forrige">før <strong><%= item.førpris || '-' %></strong></td>
+                        <td class="literpris"><%= Math.floor(item.literpris) %> kr / L</td>
+                      </tr>
+                    </table>
+
+                    <div class="beskrivelser">
+
+                      <div class="beskrivelse">
+                        <p class="beskrivelsestittel">KARAKTERISTIKK</p>
+                        <% if (Array.isArray(item.karakteristikk)) { %>
+                          <% item.karakteristikk.forEach(function(karakteristikk) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="beskrivelseselement">
+                                <p><%= karakteristikk %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+
+                      <div class="beskrivelse">
+                        <p class="beskrivelsestittel">INGREDIENSER</p>
+                        <% if (Array.isArray(item.ingredienser)) { %>
+                          <% item.ingredienser.forEach(function(ingredienser) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="beskrivelseselement">
+                                <p><%= ingredienser %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+
+                      <div class="beskrivelse">
+                        <p class="beskrivelsestittel">PASSER TIL</p>
+                        <% if (Array.isArray(item['passer til'])) { %>
+                          <% item['passer til'].forEach(function(passerTil) { %>
+                            <div style="display: flex; align-items: center">
+                              <div class="beskrivelseselement">
+                                <p><%= passerTil %></p>
+                              </div>
+                            </div>
+                          <% }); %>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="detaljer-<%= item.index %>" class="fokus">
+                    <p>Prishistorikk</p>
+                    <div id="plott-<%= item.index %>" class="graf"></div>
+                    <script>
+                      window.priserData = window.priserData || {};
+                      window.priserData[<%= item.index %>] = <%= JSON.stringify(item.priser) %>;
+                    </script>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+        <% }) %>
+    </ul>
+
+    <!-- Pagination Controls -->
+    <footer>
+        <% if (currentPage > 1) { %>
+            <a href="/?page=<%= currentPage - 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">FORRIGE</a>
+        <% } %>
+
+        <span><%= currentPage %> av <%= totalPages %></span>
+
+        <% if (currentPage < totalPages) { %>
+            <a href="/?page=<%= currentPage + 1 %>&sorting=<%= sorting %>&ascending=<%= ascending %>">NESTE</a>
+        <% } %>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
