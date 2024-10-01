@@ -1,5 +1,3 @@
-//testing git cause i am a noob
-
 import express from "express";
 import { MongoClient } from "mongodb";
 import path from "path";
