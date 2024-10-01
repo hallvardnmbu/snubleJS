@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Snublejuice</title>
+</head>
+<body>
+  <header>
+    <form action="/" method="get" style="display:inline;" id="categoryForm">
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
+      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+      <input type="hidden" name="sortBy" value="<%= sortBy %>">
+      <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= news %>">
+
+      <select name="category" id="category" onchange="document.getElementById('categoryForm').submit();">
+        <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
+        <!-- <option value="alkoholfritt" <%= category === 'alkoholfritt' ? 'selected' : '' %>>Alkoholfritt</option> -->
+        <option value="aromatisert" <%= category === 'aromatisert' ? 'selected' : '' %>>Aromatisert vin</option>
+        <option value="brennevin" <%= category === 'brennevin' ? 'selected' : '' %>>Brennevin</option>
+        <option value="fruktvin" <%= category === 'fruktvin' ? 'selected' : '' %>>Fruktvin</option>
+        <option value="hvitvin" <%= category === 'hvitvin' ? 'selected' : '' %>>Hvitvin</option>
+        <option value="mjød" <%= category === 'mjød' ? 'selected' : '' %>>Mjød</option>
+        <option value="musserende" <%= category === 'musserende' ? 'selected' : '' %>>Musserende vin</option>
+        <option value="perlende" <%= category === 'perlende' ? 'selected' : '' %>>Perlende vin</option>
+        <option value="rosévin" <%= category === 'rosévin' ? 'selected' : '' %>>Rosévin</option>
+        <option value="rødvin" <%= category === 'rødvin' ? 'selected' : '' %>>Rødvin</option>
+        <option value="sake" <%= category === 'sake' ? 'selected' : '' %>>Sake</option>
+        <option value="sider" <%= category === 'sider' ? 'selected' : '' %>>Sider</option>
+        <option value="sterkvin" <%= category === 'sterkvin' ? 'selected' : '' %>>Sterkvin</option>
+        <option value="øl" <%= category === 'øl' ? 'selected' : '' %>>Øl</option>
+      </select>
+    </form>
+
+    <form action="/" method="get" style="display:inline;" id="sortingForm">
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
+      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+      <input type="hidden" name="category" value="<%= category %>">
+      <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= news %>">
+
+      <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
+        <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
+        <option value="price" <%= sortBy === 'price' ? 'selected' : '' %>>Pris</option>
+        <option value="literprice" <%= sortBy === 'literprice' ? 'selected' : '' %>>Literpris</option>
+        <option value="alcoholprice" <%= sortBy === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
+        <option value="alcohol" <%= sortBy === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
+      </select>
+    </form>
+
+    <div id="advanced">
+      <button style="visibility: hidden;" id="invisible">Avansert</button>
+
+      <form action="/" method="get" style="display:inline;">
+        <input type="hidden" name="currentPage" value="<%= currentPage %>">
+        <input type="hidden" name="sortBy" value="<%= sortBy %>">
+        <input type="hidden" name="sortAsc" value="<%= !sortAsc %>">
+        <input type="hidden" name="category" value="<%= category %>">
+        <input type="hidden" name="minVolume" value="<%= minVolume %>">
+        <input type="hidden" name="news" value="<%= news %>">
+
+        <button type="submit">
+            <%= sortAsc ? 'Stigende' : 'Synkende' %>
+        </button>
+      </form>
+
+      <button onclick="toggleVisibility(['volumeForm', 'newsForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>
+    </div>
+
+    <form id="volumeForm" action="/" method="get" style="display: none; padding-top: 10px; border-top: 5px solid var(--gray); width: 100%; text-align: center;">
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
+      <input type="hidden" name="sortBy" value="<%= sortBy %>">
+      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+      <input type="hidden" name="category" value="<%= category %>">
+      <input type="hidden" name="news" value="<%= news %>">
+
+      <label for="minVolume">Volum over</label>
+      <input type="number" id="minVolume" name="minVolume" min="0" step="1" value="<%= minVolume || '' %>">
+      <label for="minVolume">cL</label>
+    </form>
+
+    <form id="newsForm" action="/" method="get" style="display: none;">
+      <input type="hidden" name="currentPage" value="<%= currentPage %>">
+      <input type="hidden" name="sortBy" value="<%= sortBy %>">
+      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
+      <input type="hidden" name="category" value="<%= category %>">
+      <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="news" value="<%= !news %>">
+
+      <button type="submit">
+          <%= news ? 'Kun nyheter' : 'Alle produkter' %>
+      </button>
+    </form>
+
+    <label id="disclaimer-1" style="display: none;">Under utvikling.</label>
+    <label id="disclaimer-2" style="display: none;">Mere kommer.</label>
+  </header>
+
+  <div class="pagination" id="top">
+    <div>SNUBLEJUICE.no</div>
+    <div>
+      <% if (currentPage > 1) { %>
+          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">FORRIGE</a>
+      <% } %>
+
+      <span><%= currentPage %> av <%= totalPages %></span>
+
+      <% if (currentPage < totalPages) { %>
+          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">NESTE</a>
+      <% } %>
+    </div>
+  </div>
+
+  <% data.forEach(item => { %>
+    <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
+      <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+        <div class="image">
+          <img src="<%= item.images.product %>" alt="flaske">
+          <p><b><%= item.volume %></b> cL</p>
+        </div>
+        <div class="information">
+          <div class="name">
+            <p><%= item.name %></p>
+            <div class="category">
+              <p>
+                <span><b><%= item.category %></b></span>
+                <span style="font-size: 14px;"> <%= item.subcategory %></span>
+              </p>
+
+              <p><%= item.alcohol %> % alk.</p>
+            </div>
+            <div class="country">
+              <p style="font-size: 18px;"><%= item.country %></p>
+              <% if (item.district) { %>
+                <p id="dot" style="font-size: 10px;">●</p>
+                <p style="font-size: 16px;"><%= item.district %></p>
+              <% } %>
+              <% if (item.subdistrict) { %>
+                <p id="dot" style="font-size: 10px;">●</p>
+                <p style="font-size: 12px;"><%= item.subdistrict %></p>
+              <% } %>
+            </div>
+          </div>
+          <div class="description">
+            <% if (item.description) { %>
+              <p><%= item.description.lang %></p>
+            <% } %>
+          </div>
+          <div class="price">
+            <p>KR <b><%= Math.ceil(item.price) %></b>
+              <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
+            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+          </div>
+        </div>
+      </section>
+    </a>
+  <% }) %>
+
+  <div class="pagination" id="bottom">
+    <div>SNUBLEJUICE.no</div>
+    <div>
+      <% if (currentPage > 1) { %>
+          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">FORRIGE</a>
+      <% } %>
+
+      <span><%= currentPage %> av <%= totalPages %></span>
+
+      <% if (currentPage < totalPages) { %>
+          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>">NESTE</a>
+      <% } %>
+    </div>
+  </div>
+
+  <footer>
+    <div>© Hallvard H. Lavik</div>
+    <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
