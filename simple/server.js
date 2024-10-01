@@ -174,7 +174,7 @@ MongoClient.connect(
       try {
         const currentPage = parseInt(req.query.currentPage) || 1;
         const sortBy = req.query.sortBy || "discount";
-        const sortAsc = req.query.sortAsc === "false";
+        const sortAsc = !(req.query.sortAsc === "false");
         const category = req.query.category || null;
         const minVolume = parseInt(req.query.minVolume) || null;
         const news = req.query.news === "true";
