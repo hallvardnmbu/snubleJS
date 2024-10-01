@@ -48,6 +48,9 @@ async function load({
   // Include non-alcoholic products;
   nonalcoholic = false,
 
+  // Only show new products;
+  news = false,
+
   // Array parameters;
   description = null,
   store = null,
@@ -118,6 +121,10 @@ async function load({
     matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
   }
 
+  if (news) {
+    matchStage["$or"] = [{ oldprice: { $exists: false } }, { oldprice: null }];
+  }
+
   matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
 
   pipeline.push({ $match: matchStage });
@@ -167,9 +174,10 @@ MongoClient.connect(
       try {
         const currentPage = parseInt(req.query.currentPage) || 1;
         const sortBy = req.query.sortBy || "discount";
-        const sortAsc = !(req.query.sortAsc === "false");
+        const sortAsc = req.query.sortAsc === "false";
         const category = req.query.category || null;
         const minVolume = parseInt(req.query.minVolume) || null;
+        const news = req.query.news === "true";
 
         let { data, total } = await load({
           collection,
@@ -186,6 +194,9 @@ MongoClient.connect(
 
           // Include non-alcoholic products;
           nonalcoholic: false,
+
+          // Only show new products;
+          news: news,
 
           // Array parameters;
           description: null,
@@ -220,6 +231,7 @@ MongoClient.connect(
           sortAsc: sortAsc,
           category: category,
           minVolume: minVolume,
+          news: news,
         });
       } catch (err) {
         console.error(err);
