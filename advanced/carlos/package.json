@@ -11,7 +11,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "mongodb": "^6.8.0",
     "path": "^0.12.7",
     "plotly.js-dist": "^2.35.1"

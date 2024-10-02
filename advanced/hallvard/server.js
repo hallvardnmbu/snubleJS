@@ -14,8 +14,8 @@ const port = 3000;
 
 let collection;
 
-let usr = process.env.MONGO_USR;
-let pwd = process.env.MONGO_PWD;
+let usr = 'web';
+let pwd = 'ByiT9WakPCj8izEO';
 
 const uri = `mongodb+srv://${usr}:${pwd}@vinskraper.wykjrgz.mongodb.net/`;
 
