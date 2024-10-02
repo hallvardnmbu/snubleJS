@@ -156,7 +156,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 MongoClient.connect(
-  `mongodb+srv://web:ByiT9WakPCj8izEO@snublejuice.faktu.mongodb.net/?retryWrites=true&w=majority&appName=snublejuice`,
+  `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@snublejuice.faktu.mongodb.net/?retryWrites=true&w=majority&appName=snublejuice`,
   {
     serverApi: {
       version: ServerApiVersion.v1,
