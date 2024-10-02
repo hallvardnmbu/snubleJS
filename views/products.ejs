@@ -37,6 +37,7 @@
       </select>
     </form>
 
+
     <form action="/" method="get" style="display:inline;" id="sortingForm">
       <input type="hidden" name="currentPage" value="<%= currentPage %>">
       <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
@@ -68,7 +69,14 @@
     </form>
 
     <div id="advanced">
-      <button style="visibility: hidden;" id="invisible">Avansert</button>
+      <button id="info">Info</button>
+      <div id="infoModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Info</h2>
+          <p style="line-height: 1.5;">Vinmonopolet justerer prisene hver måned. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer. Buttikkinfo hentes regelmessig</p>
+        </div>
+      </div>
 
       <form action="/" method="get" style="display:inline;">
         <input type="hidden" name="currentPage" value="<%= currentPage %>">
@@ -84,7 +92,7 @@
         </button>
       </form>
 
-      <button onclick="toggleVisibility(['volumeForm', 'newsForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>
+      <button onclick="toggleVisibility(['volumeForm', 'newsForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>   
     </div>
 
     <form id="volumeForm" action="/" method="get" style="display: none; padding-top: 10px; border-top: 5px solid var(--gray); width: 100%; text-align: center;">
@@ -200,7 +208,7 @@
   </div>
 
   <footer>
-    <div>© Hallvard H. Lavik</div>
+    <div>© Hallvard H. Lavik og Carlos Hebbinghaus</div>
     <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
   </footer>
 
