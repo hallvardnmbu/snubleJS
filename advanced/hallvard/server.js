@@ -14,10 +14,7 @@ const port = 3000;
 
 let collection;
 
-let usr = 'web';
-let pwd = 'ByiT9WakPCj8izEO';
-
-const uri = `mongodb+srv://${usr}:${pwd}@vinskraper.wykjrgz.mongodb.net/`;
+const uri = `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@vinskraper.wykjrgz.mongodb.net/`;
 
 async function load({
   collection,
