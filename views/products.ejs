@@ -135,6 +135,10 @@
 
   <div id="message" style="display: none;">N.b.: Faktisk lagerbeholdning kan avvike fra denne oversikten. Oppdateres med jevne mellomrom.</div>
 
+  <% if (data.length === 0) { %>
+    <p style="text-align: center;">Ingen resultater finnes for valgt kominasjon.</p>
+  <% } %>
+
   <% data.forEach(item => { %>
     <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
       <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">

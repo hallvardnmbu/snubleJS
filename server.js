@@ -133,9 +133,10 @@ async function load({
   if (fresh) {
     const tot = await collection.aggregate([...pipeline, { $count: "amount" }]).toArray();
     if (tot.length === 0) {
-      throw new Error("No records found.");
+      total = 1;
+    } else {
+      total = Math.floor(tot[0].amount / limit) + 1;
     }
-    total = Math.floor(tot[0].amount / limit) + 1;
   } else {
     total = null;
   }
@@ -146,9 +147,12 @@ async function load({
     { $limit: limit },
   );
 
-  const data = await collection.aggregate(pipeline).toArray();
-
-  return { data, total };
+  try {
+    const data = await collection.aggregate(pipeline).toArray();
+    return { data, total };
+  } catch (err) {
+    return { data: null, total: 1 };
+  }
 }
 
 app.set("view engine", "ejs");
