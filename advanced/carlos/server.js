@@ -13,7 +13,7 @@ const port = 3000;
 
 let collection;
 
-const uri = `mongodb+srv://web:ByiT9WakPCj8izEO@vinskraper.wykjrgz.mongodb.net/`;
+const uri = `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@snublejuice.faktu.mongodb.net/?retryWrites=true&w=majority&appName=snublejuice`;
 
 async function load({  
   collection,
