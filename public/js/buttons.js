@@ -31,14 +31,14 @@ document.getElementById("toggleAdvanced").onclick = function (event) {
   document.getElementById("toggleAdvanced").innerHTML =
     section.style.display === "flex" ? "&divide;" : "+";
 
-  // Save the visibility state to local storage.
-  localStorage.setItem("advancedSelection", section.style.display === "flex");
+  // Save the visibility state to session storage.
+  sessionStorage.setItem("advancedSelection", section.style.display === "flex");
 };
 
 // Update the button text based on visibility (from storage).
 document.addEventListener("DOMContentLoaded", function () {
   const element = document.getElementById("advancedSelection");
-  const isVisible = localStorage.getItem("advancedSelection") === "true";
+  const isVisible = sessionStorage.getItem("advancedSelection") === "true";
   element.style.display = isVisible ? "flex" : "none";
   document.getElementById("toggleAdvanced").innerHTML = isVisible ? "&divide;" : "+";
 });
