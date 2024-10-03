@@ -91,7 +91,7 @@ async function load({
 
   let matchStage = {
     // Only include updated products (i.e., non-expired ones).
-    updated: true,
+    // updated: true,
     status: "aktiv",
 
     // Match the specified parameters if they are not null.
@@ -185,11 +185,11 @@ MongoClient.connect(
     // Route to display products with pagination
     app.get("/", async (req, res) => {
       try {
-        const currentPage = parseInt(req.query.currentPage) || 1;
-        const sortBy = req.query.sortBy || "discount";
-        const sortAsc = !(req.query.sortAsc === "false");
-        const category = req.query.category || null;
-        const minVolume = parseInt(req.query.minVolume) || null;
+        const page = parseInt(req.query.page) || 1;
+        const sort = req.query.sort || "discount";
+        const ascending = !(req.query.ascending === "false");
+        const category = req.query.category || "null";
+        const volume = parseInt(req.query.volume) || null;
         const news = req.query.news === "true";
         const store = req.query.store || "null";
 
@@ -218,16 +218,16 @@ MongoClient.connect(
           pair: null,
 
           // If specified, only include values >=;
-          volume: minVolume,
+          volume: volume,
           alcohol: null,
 
           // Sorting;
-          sort: sortBy,
-          ascending: sortAsc,
+          sort: sort,
+          ascending: ascending,
 
           // Pagination;
           limit: 10,
-          page: currentPage,
+          page: page,
 
           // Search, and whether to include filters (typically `false` for `search != null`);
           search: null,
@@ -239,12 +239,12 @@ MongoClient.connect(
 
         res.render("products", {
           data: data,
-          currentPage: currentPage,
+          page: page,
           totalPages: total,
-          sortBy: sortBy,
-          sortAsc: sortAsc,
+          sort: sort,
+          ascending: ascending,
           category: category,
-          minVolume: minVolume,
+          volume: volume,
           news: news,
           store: store,
         });

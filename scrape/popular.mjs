@@ -61,6 +61,7 @@ async function processId(index, _proxy) {
       if (!responseData.products || responseData.products.length === 0) {
         return {
           index: index,
+          updated: false,
           status: "utgått",
           buyable: false,
           orderable: false,
@@ -75,6 +76,8 @@ async function processId(index, _proxy) {
 
       return {
         index: index,
+
+        updated: true,
 
         stores: store.flat().map((element) => element.name),
 
