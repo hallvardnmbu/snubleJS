@@ -15,6 +15,12 @@
 }
 
 :root {
+    --font-body: 22px;
+    --font-normal: 20px;
+    --font-pagination: 26px;
+    --font-title: 24px;
+    --font-description: 18px;
+
     --padding: 10px;
     --image: 100px;
     --margin: 50px;
@@ -29,7 +35,7 @@
 
 body {
     line-height: 1rem;
-    font-size: 22px;
+    font-size: var(--font-body);
     font-family: "Fixedsys", monospace;
 }
 
@@ -52,7 +58,7 @@ footer {
 }
 
 .pagination {
-    font-size: 26px;
+    font-size: var(--font-pagination);
     display: flex;
     flex-direction: row;
     gap: var(--padding);
@@ -61,49 +67,11 @@ footer {
     margin-left: var(--padding);
 }
 
-form {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-
-    gap: var(--padding);
-
-    padding: var(--padding);
-    margin-bottom: calc(2 * var(--padding));
-    padding-bottom: calc(2 * var(--padding));
-    border-bottom: 5px solid var(--gray);
-}
-.filterSelection,
-.mainSelection {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: var(--padding);
-}
-.filterSelection {
-    align-items: flex-end;
-}
-.advancedSelection {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--padding);
-
-    font-size: 20px;
-    color: var(--blackish);
-
-    margin-top: var(--padding);
-    padding-top: calc(2 * var(--padding));
-    border-top: 5px solid var(--gray);
-}
-header form select,
-header form input,
-header form button,
-header form button:visited {
+select,
+input,
+button {
     font-family: "Fixedsys", monospace;
-    font-size: 24px;
+    font-size: var(--font-normal);
     color: var(--blackish);
     background-color: transparent;
     appearance: none;
@@ -114,18 +82,17 @@ header form button:visited {
     border-bottom: 2px solid var(--blackish);
     padding: 0;
 }
-header form input {
-    font-size: 20px;
-    max-width: 100px;
+input {
+    max-width: 70px;
     text-align: center;
 }
-header form button,
-header form button:visited {
+button {
     padding-left: var(--padding);
     padding-right: var(--padding);
 }
-header form select {
-    width: auto;
+
+select {
+    width: 100%;
     padding-right: calc(var(--padding) * 2);
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
     background-repeat: no-repeat;
@@ -137,9 +104,57 @@ header form input:hover {
     background-color: var(--gray);
 }
 
-#newsButton {
-    font-size: 20px;
+.filterSelection,
+.advancedSelection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--padding);
+    margin-left: var(--padding);
+    margin-right: var(--padding);
+    margin-bottom: calc(2 * var(--padding));
+    padding-bottom: calc(2 * var(--padding));
+    border-bottom: 5px solid var(--gray);
 }
+.filterSelection {
+    gap: var(--margin);
+    align-items: flex-end;
+}
+.advancedSelection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding);
+
+    font-size: var(--font-normal);
+    color: var(--blackish);
+}
+.mainSelection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    width: 100%;
+    max-width: 350px;
+}
+.mainSelection > * {
+    width: 100%;
+}
+.mainSelection div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mainSelection div > * {
+    width: 100%;
+}
+.mainSelection div button {
+    display: flex;
+    justify-content: center;
+    width: 10px;
+    margin-left: var(--padding);
+}
+
 #message {
     margin-top: var(--margin);
     margin-right: var(--padding);
@@ -161,7 +176,7 @@ p {
     color: var(--blackish);
 }
 .name b {
-    font-size: 24px;
+    font-size: var(--font-title);
     color: var(--black);
 }
 .price b,
@@ -194,7 +209,7 @@ p {
 }
 .description p {
     text-align: justify;
-    font-size: 18px;
+    font-size: var(--font-description);
 }
 .category {
     display: flex;
@@ -218,13 +233,6 @@ p {
     margin-right: var(--padding);
 }
 
-#buttons {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
 .modal {
     display: none;
     position: fixed;
@@ -237,7 +245,6 @@ p {
     background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
 }
-
 .infobox {
     background-color: var(--gray);
     margin: calc(2 * var(--margin)) auto;
@@ -248,7 +255,7 @@ p {
 .close {
     color: var(--blackish);
     float: right;
-    font-size: 28px;
+    font-size: var(--font-pagination);
     font-weight: bold;
 }
 .close:hover,
@@ -269,18 +276,24 @@ p {
     flex-direction: column;
 }
 
-@media (max-width: 950px) {
+@media (max-width: 690px) {
+    :root {
+        --font-body: 20px;
+        --font-normal: 16px;
+        --font-pagination: 20px;
+        --font-title: 22px;
+        --font-description: 16px;
+    }
+
+    .filterSelection,
+    .advancedSelection,
     .mainSelection {
         flex-direction: column;
+        align-items: center;
+        gap: var(--padding);
     }
-}
 
-@media (max-width: 690px) {
-    body {
-        font-size: 20px;
-    }
     .pagination {
-        font-size: 20px;
         flex-direction: column;
         align-items: center;
     }
@@ -288,21 +301,6 @@ p {
         width: 90%;
     }
 
-    header form select,
-    header form input,
-    header form button,
-    header form button:visited {
-        font-size: 18px;
-    }
-    header select {
-        min-width: 200px;
-    }
-    .name b {
-        font-size: 24px;
-    }
-    .description p {
-        font-size: 16px;
-    }
     .price {
         flex-wrap: wrap-reverse;
     }
@@ -318,36 +316,8 @@ p {
     #bottom {
         flex-direction: column-reverse;
     }
-
     #dot {
         overflow: hidden;
         display: none;
-    }
-
-    #buttons {
-        width: auto;
-        display: flex;
-        flex-direction: column;
-        justify-content: inherit;
-        gap: var(--padding);
-    }
-    #invisible {
-        display: none;
-    }
-}
-
-@media (max-width: 400px) {
-    .infobox {
-        width: 100%;
-    }
-    .filterSelection {
-        flex-direction: column;
-        align-items: center;
-        gap: var(--padding);
-    }
-    .mainSelection {
-        display: flex;
-        flex-direction: column;
-        gap: var(--padding);
     }
 }
