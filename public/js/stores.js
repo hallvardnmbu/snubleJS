@@ -23,14 +23,14 @@ async function fetchStores() {
     }
 
     // Retrieve the selected store from local storage
-    const selectedStore = localStorage.getItem("selectedStore");
+    const selectedStore = sessionStorage.getItem("selectedStore");
     if (selectedStore) {
       storeSelect.value = selectedStore;
     }
 
     // Add event listener to save the selected store to local storage
     storeSelect.addEventListener("change", () => {
-      localStorage.setItem("selectedStore", storeSelect.value);
+      sessionStorage.setItem("selectedStore", storeSelect.value);
       displayMessage(storeSelect.value);
     });
 
