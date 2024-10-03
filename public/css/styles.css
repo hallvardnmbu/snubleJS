@@ -42,28 +42,12 @@ a:hover {
     background-color: var(--darkgray);
 }
 
-header {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    gap: var(--padding);
-    justify-content: center;
-    align-items: center;
-    margin-top: var(--padding);
-    margin-bottom: calc(3 * var(--padding));
-    padding-bottom: var(--padding);
-    border-bottom: 5px solid var(--gray);
-}
-
 footer {
     display: flex;
     flex-direction: row;
-    gap: var(--padding);
     justify-content: left;
-    margin-right: var(--padding);
-    margin-left: var(--padding);
-    margin-bottom: var(--padding);
-    margin-top: var(--padding);
+    gap: var(--padding);
+    margin: var(--padding);
 }
 
 .pagination {
@@ -76,11 +60,49 @@ footer {
     margin-left: var(--padding);
 }
 
-header select,
-header button,
-header button:visited {
+form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    gap: var(--padding);
+
+    padding: var(--padding);
+    margin-bottom: calc(2 * var(--padding));
+    padding-bottom: calc(2 * var(--padding));
+    border-bottom: 5px solid var(--gray);
+}
+.filterSelection,
+.mainSelection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--padding);
+}
+.filterSelection {
+    align-items: flex-end;
+}
+.advancedSelection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding);
+
+    font-size: 20px;
+    color: var(--blackish);
+
+    margin-top: var(--padding);
+    padding-top: calc(2 * var(--padding));
+    border-top: 5px solid var(--gray);
+}
+header form select,
+header form input,
+header form button,
+header form button:visited {
     font-family: "Fixedsys", monospace;
-    font-size: 26px;
+    font-size: 24px;
     color: var(--blackish);
     background-color: transparent;
     appearance: none;
@@ -89,42 +111,34 @@ header button:visited {
     cursor: pointer;
     text-align: left;
     border-bottom: 2px solid var(--blackish);
+    padding: 0;
 }
-header select {
-    min-width: 250px;
+header form input {
+    font-size: 20px;
+    max-width: 100px;
+    text-align: center;
+}
+header form button,
+header form button:visited {
+    padding-left: var(--padding);
+    padding-right: var(--padding);
+}
+header form select {
+    width: auto;
     padding-right: calc(var(--padding) * 2);
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
     background-repeat: no-repeat;
     background-position: right calc(var(--padding) / 2) bottom;
 }
-header select:hover,
-header button:hover {
+header form select:hover,
+header form button:hover,
+header form input:hover {
     background-color: var(--gray);
 }
 
-#newsForm button {
+#newsButton {
     font-size: 20px;
 }
-header label,
-header input {
-    font-family: "Fixedsys", monospace;
-    font-size: 20px;
-    color: var(--blackish);
-    background-color: transparent;
-    appearance: none;
-    border-radius: 0;
-    border: none;
-    text-align: left;
-}
-header input {
-    cursor: pointer;
-    max-width: 80px;
-    min-width: 40px;
-    width: auto;
-    border-bottom: 2px solid var(--blackish);
-    text-align: center;
-}
-
 #message {
     margin-top: var(--margin);
     margin-right: var(--padding);
@@ -203,50 +217,51 @@ p {
     margin-right: var(--padding);
 }
 
-#advanced {
+#buttons {
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
 }
 
-/* Modal container (hidden by default) */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 999;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black background with opacity */
-  }
-  
-  /* Modal content */
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1px);
+}
+
+.infobox {
+    background-color: var(--gray);
+    margin: calc(2 * var(--margin)) auto;
+    padding: var(--padding);
+    border: 5px solid var(--blackish);
+    width: 60%;
+}
+.close {
+    color: var(--blackish);
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
+
+@media (max-width: 950px) {
+    .mainSelection {
+        flex-direction: column;
+    }
+}
 
 @media (max-width: 690px) {
     body {
@@ -257,10 +272,15 @@ p {
         flex-direction: column;
         align-items: center;
     }
-    header select,
-    header button,
-    header button:visited {
-        font-size: 20px;
+    .infobox {
+        width: 90%;
+    }
+
+    header form select,
+    header form input,
+    header form button,
+    header form button:visited {
+        font-size: 18px;
     }
     header select {
         min-width: 200px;
@@ -292,7 +312,7 @@ p {
         display: none;
     }
 
-    #advanced {
+    #buttons {
         width: auto;
         display: flex;
         flex-direction: column;
@@ -301,5 +321,21 @@ p {
     }
     #invisible {
         display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .infobox {
+        width: 100%;
+    }
+    .filterSelection {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--padding);
+    }
+    .mainSelection {
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding);
     }
 }
