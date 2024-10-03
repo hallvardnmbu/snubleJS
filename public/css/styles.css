@@ -246,9 +246,11 @@ p {
     backdrop-filter: blur(1px);
 }
 .infobox {
-    background-color: var(--gray);
+    font-size: var(--font-normal);
+    background-color: white;
     margin: calc(2 * var(--margin)) auto;
     padding: var(--padding);
+    padding-bottom: 0;
     border: 5px solid var(--blackish);
     width: 60%;
 }
