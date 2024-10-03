@@ -46,7 +46,8 @@ footer {
     display: flex;
     flex-direction: row;
     justify-content: left;
-    gap: var(--padding);
+    align-items: center;
+    gap: calc(2 * var(--padding));
     margin: var(--padding);
 }
 
@@ -255,6 +256,17 @@ p {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.copyright {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--padding);
+}
+.names {
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 950px) {
