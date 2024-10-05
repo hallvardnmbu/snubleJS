@@ -164,6 +164,11 @@ header form input:hover {
     border: 2px solid var(--blackish);
     background-color: var(--negative);
 }
+#disclaimer-1,
+#disclaimer-2 {
+    font-size: var(--font-description);
+    color: var(--darkgray);
+}
 
 section {
     display: flex;
