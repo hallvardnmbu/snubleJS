@@ -152,7 +152,9 @@
           <div class="price">
             <p>KR <b><%= Math.ceil(item.price) %></b>
               <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
-            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <% if (item.oldprice) { %>
+              <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <% } %>
           </div>
         </div>
       </section>

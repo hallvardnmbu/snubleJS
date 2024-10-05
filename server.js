@@ -91,8 +91,16 @@ async function load({
 
   let matchStage = {
     // Only include updated products (i.e., non-expired ones).
-    // updated: true,
     status: "aktiv",
+    buyable: true,
+
+    // Filter by products that either orderable or instores is true (or both).
+    // Wrapped in `$and` in case `news = true` (see below).
+    $and: [
+      {
+        $or: [{ orderable: true }, { instores: true }],
+      },
+    ],
 
     // Match the specified parameters if they are not null.
     ...(category && filters ? { category: category } : {}),
@@ -122,7 +130,9 @@ async function load({
   }
 
   if (news) {
-    matchStage["$or"] = [{ oldprice: { $exists: false } }, { oldprice: null }];
+    matchStage.$and.push({
+      $or: [{ oldprice: { $exists: false } }, { oldprice: null }],
+    });
   }
 
   matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
