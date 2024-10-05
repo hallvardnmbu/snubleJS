@@ -156,13 +156,18 @@ async function updateStores(_proxy, itemIds) {
 const session = axios.create();
 
 async function main() {
+  // Reset stores prior to fetching new data.
+  itemCollection.updateMany({ stores: { $exists: true } }, { $set: { stores: [] } });
+
   // Fetch products with discount.
   const itemIds = await itemCollection
     .find({ discount: { $lt: 0.0 } })
     .project({ index: 1, _id: 0 })
     .toArray();
+
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
+
   await updateStores(_proxy, itemIds);
 }
 
