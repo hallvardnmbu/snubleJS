@@ -68,9 +68,8 @@ async function load({
   limit = 10,
   page = 1,
 
-  // Search, and whether to include filters (typically `false` for `search != null`);
+  // Search for name;
   search = null,
-  filters = true,
 
   // Calculate total pages;
   fresh = true,
@@ -103,39 +102,41 @@ async function load({
     ],
 
     // Match the specified parameters if they are not null.
-    ...(category && filters ? { category: category } : {}),
-    ...(subcategory && filters ? { subcategory: subcategory } : {}),
-    ...(country && filters ? { country: country } : {}),
-    ...(district && filters ? { district: district } : {}),
-    ...(subdistrict && filters ? { subdistrict: subdistrict } : {}),
-    ...(year && filters ? { year: year } : {}),
-    ...(cork && filters ? { cork: cork } : {}),
-    ...(storage && filters ? { storage: storage } : {}),
+    ...(category && !search ? { category: category } : {}),
+    ...(subcategory && !search ? { subcategory: subcategory } : {}),
+    ...(country && !search ? { country: country } : {}),
+    ...(district && !search ? { district: district } : {}),
+    ...(subdistrict && !search ? { subdistrict: subdistrict } : {}),
+    ...(year && !search ? { year: year } : {}),
+    ...(cork && !search ? { cork: cork } : {}),
+    ...(storage && !search ? { storage: storage } : {}),
 
     // Parameters that are arrays are matched using the $in operator.
-    // ...(description.length && filters ? { "description.short": { $in: description } } : {}),
-    ...(store && filters ? { stores: { $in: [store] } } : {}),
-    // ...(pair.length && filters ? { pair: { $in: pair } } : {}),
+    // ...(description.length && !search ? { "description.short": { $in: description } } : {}),
+    ...(store && !search ? { stores: { $in: [store] } } : {}),
+    // ...(pair.length && !search ? { pair: { $in: pair } } : {}),
   };
 
-  if (volume) {
-    matchStage["volume"] = { ...matchStage["volume"], $gte: volume };
-  }
+  if (!search) {
+    if (volume) {
+      matchStage["volume"] = { ...matchStage["volume"], $gte: volume };
+    }
 
-  if (alcohol) {
-    matchStage["alcohol"] = { ...matchStage["alcohol"], $gte: alcohol };
-  }
-  if (!nonalcoholic) {
-    matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
-  }
+    if (alcohol) {
+      matchStage["alcohol"] = { ...matchStage["alcohol"], $gte: alcohol };
+    }
+    if (!nonalcoholic) {
+      matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
+    }
 
-  if (news) {
-    matchStage.$and.push({
-      $or: [{ oldprice: { $exists: false } }, { oldprice: null }],
-    });
-  }
+    if (news) {
+      matchStage.$and.push({
+        $or: [{ oldprice: { $exists: false } }, { oldprice: null }],
+      });
+    }
 
-  matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
+    matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
+  }
 
   pipeline.push({ $match: matchStage });
 
@@ -151,11 +152,10 @@ async function load({
     total = null;
   }
 
-  pipeline.push(
-    { $sort: { [sort]: ascending ? 1 : -1 } },
-    { $skip: (page - 1) * limit },
-    { $limit: limit },
-  );
+  if (!search) {
+    pipeline.push({ $sort: { [sort]: ascending ? 1 : -1 } });
+  }
+  pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
 
   try {
     const data = await collection.aggregate(pipeline).toArray();
@@ -201,6 +201,7 @@ MongoClient.connect(
         const category = req.query.category || "null";
         const volume = parseFloat(req.query.volume) || null;
         const alcohol = parseFloat(req.query.alcohol) || null;
+        const search = req.query.search || null;
         const news = req.query.news === "true";
         const store = req.query.store || "null";
 
@@ -240,9 +241,8 @@ MongoClient.connect(
           limit: 10,
           page: page,
 
-          // Search, and whether to include filters (typically `false` for `search != null`);
-          search: null,
-          filters: true,
+          // Search for name;
+          search: search,
 
           // Calculate total pages;
           fresh: true,
@@ -257,6 +257,7 @@ MongoClient.connect(
           category: category,
           volume: volume,
           alcohol: alcohol,
+          search: search,
           news: news,
           store: store,
         });
