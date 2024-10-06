@@ -23,6 +23,7 @@
 
     --padding: 10px;
     --image: 100px;
+    --logo: 70px;
     --margin: 50px;
 
     --black: black;
@@ -63,8 +64,12 @@ footer {
     flex-direction: row;
     gap: var(--padding);
     justify-content: space-between;
+    align-items: center;
     margin-right: var(--padding);
     margin-left: var(--padding);
+}
+.pagination img {
+    max-width: var(--logo);
 }
 
 select,
@@ -81,10 +86,6 @@ button {
     text-align: left;
     border-bottom: 2px solid var(--blackish);
     padding: 0;
-}
-input {
-    max-width: 70px;
-    text-align: center;
 }
 button {
     padding-left: var(--padding);
@@ -104,32 +105,54 @@ header form input:hover {
     background-color: var(--gray);
 }
 
-.filterSelection,
-.advancedSelection {
+.filterSelection {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: var(--padding);
+    align-items: flex-end;
+
+    gap: var(--margin);
     margin-left: var(--padding);
     margin-right: var(--padding);
     margin-bottom: calc(2 * var(--padding));
     padding-bottom: calc(2 * var(--padding));
     border-bottom: 5px solid var(--gray);
 }
-.filterSelection {
-    gap: var(--margin);
-    align-items: flex-end;
-}
 .advancedSelection {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     gap: var(--padding);
+    margin-left: var(--padding);
+    margin-right: var(--padding);
+    margin-bottom: calc(2 * var(--padding));
+    padding-bottom: calc(2 * var(--padding));
+    border-bottom: 5px solid var(--gray);
 
     font-size: var(--font-normal);
     color: var(--blackish);
 }
+.advancedSelection div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--padding);
+    align-items: center;
+    width: 100%;
+    max-width: 350px;
+}
+.advancedSelection div label {
+    flex-shrink: 0;
+}
+.advancedSelection div input {
+    flex-grow: 1;
+    min-width: 0;
+    text-align: center;
+    height: 20px;
+}
+
 .mainSelection {
     display: flex;
     flex-direction: column;
