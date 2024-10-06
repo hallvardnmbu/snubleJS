@@ -43,8 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("toggleAdvanced").innerHTML = isVisible ? "&divide;" : "+";
 });
 
-// Volume change.
+// Volume and alcohol change.
 document.getElementById("volume").addEventListener("change", function () {
+  applyFilters();
+});
+document.getElementById("alcohol").addEventListener("change", function () {
   applyFilters();
 });
 
