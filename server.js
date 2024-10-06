@@ -199,7 +199,8 @@ MongoClient.connect(
         const sort = req.query.sort || "discount";
         const ascending = !(req.query.ascending === "false");
         const category = req.query.category || "null";
-        const volume = parseInt(req.query.volume) || null;
+        const volume = parseFloat(req.query.volume) || null;
+        const alcohol = parseFloat(req.query.alcohol) || null;
         const news = req.query.news === "true";
         const store = req.query.store || "null";
 
@@ -229,7 +230,7 @@ MongoClient.connect(
 
           // If specified, only include values >=;
           volume: volume,
-          alcohol: null,
+          alcohol: alcohol,
 
           // Sorting;
           sort: sort,
@@ -255,6 +256,7 @@ MongoClient.connect(
           ascending: ascending,
           category: category,
           volume: volume,
+          alcohol: alcohol,
           news: news,
           store: store,
         });

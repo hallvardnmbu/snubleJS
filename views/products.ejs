@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYBEXVQ5Q6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -79,8 +78,14 @@
       <div id="advancedSelection" class="advancedSelection" style="display: none;">
         <div>
           <label for="volume">Volum over</label>
-          <input type="number" id="volume" name="volume" min="0" step="1" value="<%= volume || '' %>">
+          <input type="float" id="volume" name="volume" min="0" step="1" value="<%= volume || '' %>">
           <label for="volume">cL</label>
+        </div>
+
+        <div>
+          <label for="alcohol">Alkohol over</label>
+          <input type="float" id="alcohol" name="alcohol" min="0" step="0.5" value="<%= alcohol || '' %>">
+          <label for="alcohol">%</label>
         </div>
 
         <button id="newsButton">
