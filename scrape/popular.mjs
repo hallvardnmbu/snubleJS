@@ -61,6 +61,7 @@ async function processId(index, _proxy) {
       if (!responseData.products || responseData.products.length === 0) {
         return {
           index: index,
+          updated: false,
           status: "utgått",
           buyable: false,
           orderable: false,
@@ -75,6 +76,8 @@ async function processId(index, _proxy) {
 
       return {
         index: index,
+
+        updated: true,
 
         stores: store.flat().map((element) => element.name),
 
@@ -153,13 +156,18 @@ async function updateStores(_proxy, itemIds) {
 const session = axios.create();
 
 async function main() {
+  // Reset stores prior to fetching new data.
+  itemCollection.updateMany({ stores: { $exists: true } }, { $set: { stores: [] } });
+
   // Fetch products with discount.
   const itemIds = await itemCollection
     .find({ discount: { $lt: 0.0 } })
     .project({ index: 1, _id: 0 })
     .toArray();
+
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
+
   await updateStores(_proxy, itemIds);
 }
 

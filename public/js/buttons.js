@@ -1,59 +1,78 @@
-document.getElementById("minVolume").addEventListener("change", function () {
-  document.getElementById("volumeForm").submit();
-});
-
-// Function to toggle visibility and store status in local storage
-function toggleVisibility(ids) {
-  ids.forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const isVisible = element.style.display !== "none";
-      element.style.display = isVisible ? "none" : "block";
-      localStorage.setItem(id, !isVisible);
-    }
-  });
+// Submit the form.
+function applyFilters() {
+  document.getElementById("filter").submit();
 }
 
-// Function to set visibility based on local storage
-function setVisibilityFromLocalStorage(ids) {
-  ids.forEach((id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const isVisible = localStorage.getItem(id) === "true";
-      element.style.display = isVisible ? "block" : "none";
-    }
-  });
+function changePage(newPage) {
+  document.querySelector('input[name="page"]').value = newPage;
+  applyFilters();
 }
 
-// Set visibility on page load
+// Toggle sort order.
+document.getElementById("sortButton").onclick = function (event) {
+  event.preventDefault();
+
+  const ascendingInput = document.querySelector('input[name="ascending"]');
+  ascending = ascendingInput.value === "true" ? "false" : "true";
+
+  ascendingInput.value = ascending;
+
+  applyFilters();
+};
+
+// Toggle advanced visibility.
+document.getElementById("toggleAdvanced").onclick = function (event) {
+  event.preventDefault();
+
+  const section = document.getElementById("advancedSelection");
+  section.style.display = section.style.display === "flex" ? "none" : "flex";
+
+  // Set the button text based on visibility.
+  document.getElementById("toggleAdvanced").innerHTML =
+    section.style.display === "flex" ? "&divide;" : "+";
+
+  // Save the visibility state to session storage.
+  sessionStorage.setItem("advancedSelection", section.style.display === "flex");
+};
+
+// Update the button text based on visibility (from storage).
 document.addEventListener("DOMContentLoaded", function () {
-  setVisibilityFromLocalStorage(["volumeForm", "newsForm", "disclaimer-1", "disclaimer-2"]);
+  const element = document.getElementById("advancedSelection");
+  const isVisible = sessionStorage.getItem("advancedSelection") === "true";
+  element.style.display = isVisible ? "flex" : "none";
+  document.getElementById("toggleAdvanced").innerHTML = isVisible ? "&divide;" : "+";
 });
 
+// Volume, alcohol and search change.
+document.getElementById("volume").addEventListener("change", function () {
+  applyFilters();
+});
+document.getElementById("alcohol").addEventListener("change", function () {
+  applyFilters();
+});
+document.getElementById("search").addEventListener("change", function () {
+  applyFilters();
+});
 
-// Get modal element
-var modal = document.getElementById("infoModal");
+// New products toggle.
+document.getElementById("newsButton").onclick = function (event) {
+  event.preventDefault();
+  const newsInput = document.querySelector('input[name="news"]');
+  newsInput.value = newsInput.value === "true" ? "false" : "true";
+  applyFilters();
+};
 
-// Get button that opens the modal
-var btn = document.getElementById("info");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+// Information popup modal.
+document.getElementById("info").onclick = function (event) {
+  event.preventDefault();
+  document.getElementById("infobox").style.display = "block";
+};
+document.querySelector(".close").onclick = function (event) {
+  event.preventDefault();
+  document.getElementById("infobox").style.display = "none";
+};
+window.onclick = function (event) {
+  if (event.target === document.getElementById("infobox")) {
+    document.getElementById("infobox").style.display = "none";
   }
-}
-
+};

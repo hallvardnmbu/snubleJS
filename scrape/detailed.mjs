@@ -175,8 +175,10 @@ async function main() {
     .find({ description: null })
     .project({ index: 1, _id: 0 })
     .toArray();
+
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
+
   await updateInformation(_proxy, itemIds);
 }
 

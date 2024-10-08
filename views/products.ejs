@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYBEXVQ5Q6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -15,137 +14,107 @@
     <link rel="stylesheet" href="./css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="js/stores.js"></script>
-    <title>Snublejuice</title>
+    <title>SNUBLEJUICE</title>
+    <link rel="icon" type="image/jpeg" href="./css/images/snublejuice.jpeg">
 </head>
 <body>
   <header>
-    <form action="/" method="get" style="display:inline;" id="categoryForm">
-      <input type="hidden" name="currentPage" value="<%= currentPage %>">
-      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-      <input type="hidden" name="sortBy" value="<%= sortBy %>">
-      <input type="hidden" name="minVolume" value="<%= minVolume %>">
-      <input type="hidden" name="news" value="<%= news %>">
-      <input type="hidden" name="store" value="<%= store %>">
+    <form action="/" method="get" id="filter">
 
-      <select name="category" id="category" onchange="document.getElementById('categoryForm').submit();">
-        <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
-        <!-- <option value="alkoholfritt" <%= category === 'alkoholfritt' ? 'selected' : '' %>>Alkoholfritt</option> -->
-        <option value="aromatisert" <%= category === 'aromatisert' ? 'selected' : '' %>>Aromatisert vin</option>
-        <option value="brennevin" <%= category === 'brennevin' ? 'selected' : '' %>>Brennevin</option>
-        <option value="fruktvin" <%= category === 'fruktvin' ? 'selected' : '' %>>Fruktvin</option>
-        <option value="hvitvin" <%= category === 'hvitvin' ? 'selected' : '' %>>Hvitvin</option>
-        <option value="mjød" <%= category === 'mjød' ? 'selected' : '' %>>Mjød</option>
-        <option value="musserende" <%= category === 'musserende' ? 'selected' : '' %>>Musserende vin</option>
-        <option value="perlende" <%= category === 'perlende' ? 'selected' : '' %>>Perlende vin</option>
-        <option value="rosévin" <%= category === 'rosévin' ? 'selected' : '' %>>Rosévin</option>
-        <option value="rødvin" <%= category === 'rødvin' ? 'selected' : '' %>>Rødvin</option>
-        <option value="sake" <%= category === 'sake' ? 'selected' : '' %>>Sake</option>
-        <option value="sider" <%= category === 'sider' ? 'selected' : '' %>>Sider</option>
-        <option value="sterkvin" <%= category === 'sterkvin' ? 'selected' : '' %>>Sterkvin</option>
-        <option value="øl" <%= category === 'øl' ? 'selected' : '' %>>Øl</option>
-      </select>
-    </form>
-
-
-    <form action="/" method="get" style="display:inline;" id="sortingForm">
-      <input type="hidden" name="currentPage" value="<%= currentPage %>">
-      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-      <input type="hidden" name="category" value="<%= category %>">
-      <input type="hidden" name="minVolume" value="<%= minVolume %>">
-      <input type="hidden" name="news" value="<%= news %>">
-      <input type="hidden" name="store" value="<%= store %>">
-
-      <select name="sortBy" id="sortBy" onchange="document.getElementById('sortingForm').submit();">
-        <option value="discount" <%= sortBy === 'discount' ? 'selected' : '' %>>Prisendring</option>
-        <option value="price" <%= sortBy === 'price' ? 'selected' : '' %>>Pris</option>
-        <option value="literprice" <%= sortBy === 'literprice' ? 'selected' : '' %>>Literpris</option>
-        <option value="alcoholprice" <%= sortBy === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
-        <option value="alcohol" <%= sortBy === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
-      </select>
-    </form>
-
-    <form action="/" method="get" style="display:inline;" id="storeForm">
-      <input type="hidden" name="currentPage" value="<%= currentPage %>">
-      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-      <input type="hidden" name="sortBy" value="<%= sortBy %>">
-      <input type="hidden" name="category" value="<%= category %>">
-      <input type="hidden" name="minVolume" value="<%= minVolume %>">
+      <input type="hidden" name="page" value="<%= page %>">
+      <input type="hidden" name="ascending" value="<%= ascending %>">
       <input type="hidden" name="news" value="<%= news %>">
 
-      <select name="store" id="store" onchange="document.getElementById('storeForm').submit();">
-        <!-- Options will be dynamically populated by JavaScript -->
-      </select>
-    </form>
-
-    <div id="advanced">
-      <button id="info">Info</button>
-      <div id="infoModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Info</h2>
-          <p style="line-height: 1.5;">Vinmonopolet justerer prisene hver måned. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer. Butikkinfo hentes regelmessig.</p>
+      <div class="filterSelection">
+        <button id="info">?</button>
+        <div id="infobox" class="modal">
+          <div class="infobox">
+            <span class="close">&times;</span>
+            <b>Hva er SNUBLEJUICE?</b>
+            <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
+          </div>
         </div>
+
+        <div class="mainSelection">
+          <select name="category" id="category" onchange="applyFilters()">
+            <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
+            <option value="aromatisert" <%= category === 'aromatisert' ? 'selected' : '' %>>Aromatisert vin</option>
+            <option value="brennevin" <%= category === 'brennevin' ? 'selected' : '' %>>Brennevin</option>
+            <option value="fruktvin" <%= category === 'fruktvin' ? 'selected' : '' %>>Fruktvin</option>
+            <option value="hvitvin" <%= category === 'hvitvin' ? 'selected' : '' %>>Hvitvin</option>
+            <option value="mjød" <%= category === 'mjød' ? 'selected' : '' %>>Mjød</option>
+            <option value="musserende" <%= category === 'musserende' ? 'selected' : '' %>>Musserende vin</option>
+            <option value="perlende" <%= category === 'perlende' ? 'selected' : '' %>>Perlende vin</option>
+            <option value="rosévin" <%= category === 'rosévin' ? 'selected' : '' %>>Rosévin</option>
+            <option value="rødvin" <%= category === 'rødvin' ? 'selected' : '' %>>Rødvin</option>
+            <option value="sake" <%= category === 'sake' ? 'selected' : '' %>>Sake</option>
+            <option value="sider" <%= category === 'sider' ? 'selected' : '' %>>Sider</option>
+            <option value="sterkvin" <%= category === 'sterkvin' ? 'selected' : '' %>>Sterkvin</option>
+            <option value="øl" <%= category === 'øl' ? 'selected' : '' %>>Øl</option>
+          </select>
+
+          <div>
+            <select name="sort" id="sort" onchange="applyFilters()">
+              <option value="discount" <%= sort === 'discount' ? 'selected' : '' %>>Prisendring</option>
+              <option value="price" <%= sort === 'price' ? 'selected' : '' %>>Pris</option>
+              <option value="literprice" <%= sort === 'literprice' ? 'selected' : '' %>>Literpris</option>
+              <option value="alcoholprice" <%= sort === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
+              <option value="alcohol" <%= sort === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
+            </select>
+
+            <button id="sortButton">
+              <%= ascending === true ? '↑' : '↓' %>
+            </button>
+          </div>
+
+          <select name="store" id="store" onchange="applyFilters()">
+            <!-- Options will be dynamically populated by `public/js/stores.js`. -->
+          </select>
+        </div>
+
+        <button id="toggleAdvanced">+</button>
       </div>
 
-      <form action="/" method="get" style="display:inline;">
-        <input type="hidden" name="currentPage" value="<%= currentPage %>">
-        <input type="hidden" name="sortBy" value="<%= sortBy %>">
-        <input type="hidden" name="sortAsc" value="<%= !sortAsc %>">
-        <input type="hidden" name="category" value="<%= category %>">
-        <input type="hidden" name="minVolume" value="<%= minVolume %>">
-        <input type="hidden" name="news" value="<%= news %>">
-        <input type="hidden" name="store" value="<%= store %>">
+      <div id="advancedSelection" class="advancedSelection" style="display: none;">
+        <div>
+          <label for="volume">Volum over</label>
+          <input type="float" id="volume" name="volume" min="0" step="1" value="<%= volume || '' %>">
+          <label for="volume">cL</label>
+        </div>
 
-        <button type="submit">
-            <%= sortAsc ? 'Stigende' : 'Synkende' %>
-        </button>
-      </form>
+        <div>
+          <label for="alcohol">Alkohol over</label>
+          <input type="float" id="alcohol" name="alcohol" min="0" step="0.5" value="<%= alcohol || '' %>">
+          <label for="alcohol">%</label>
+        </div>
 
-      <button onclick="toggleVisibility(['volumeForm', 'newsForm', 'disclaimer-1', 'disclaimer-2'])">Avansert</button>
-    </div>
+        <div>
+          <label for="search">Søk etter</label>
+          <input type="search" id="search" name="search" value="<%= search || null %>">
+        </div>
 
-    <form id="volumeForm" action="/" method="get" style="display: none; padding-top: 10px; border-top: 5px solid var(--gray); width: 100%; text-align: center;">
-      <input type="hidden" name="currentPage" value="<%= currentPage %>">
-      <input type="hidden" name="sortBy" value="<%= sortBy %>">
-      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-      <input type="hidden" name="category" value="<%= category %>">
-      <input type="hidden" name="news" value="<%= news %>">
-      <input type="hidden" name="store" value="<%= store %>">
-
-      <label for="minVolume">Volum over</label>
-      <input type="number" id="minVolume" name="minVolume" min="0" step="1" value="<%= minVolume || '' %>">
-      <label for="minVolume">cL</label>
-    </form>
-
-    <form id="newsForm" action="/" method="get" style="display: none;">
-      <input type="hidden" name="currentPage" value="<%= currentPage %>">
-      <input type="hidden" name="sortBy" value="<%= sortBy %>">
-      <input type="hidden" name="sortAsc" value="<%= sortAsc %>">
-      <input type="hidden" name="category" value="<%= category %>">
-      <input type="hidden" name="minVolume" value="<%= minVolume %>">
-      <input type="hidden" name="news" value="<%= !news %>">
-      <input type="hidden" name="store" value="<%= store %>">
-
-      <button type="submit">
+        <button id="newsButton">
           <%= news ? 'Kun nyheter' : 'Alle produkter' %>
-      </button>
-    </form>
+        </button>
 
-    <label id="disclaimer-1" style="display: none;">Under utvikling.</label>
-    <label id="disclaimer-2" style="display: none;">Mere kommer.</label>
+        <label id="disclaimer-1">Under utvikling.</label>
+        <label id="disclaimer-2">Mere kommer.</label>
+      </div>
+    </form>
   </header>
 
   <div class="pagination" id="top">
     <div>SNUBLEJUICE.no</div>
+    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
     <div>
-      <% if (currentPage > 1) { %>
-          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>&store=<%= store %>">FORRIGE</a>
+      <% if (page > 1) { %>
+          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
       <% } %>
 
-      <span><%= currentPage %> av <%= totalPages %></span>
+      <span><%= page %> av <%= totalPages %></span>
 
-      <% if (currentPage < totalPages) { %>
-          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>&store=<%= store %>">NESTE</a>
+      <% if (page < totalPages) { %>
+          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
       <% } %>
     </div>
   </div>
@@ -194,7 +163,9 @@
           <div class="price">
             <p>KR <b><%= Math.ceil(item.price) %></b>
               <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
-            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <% if (item.oldprice) { %>
+              <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <% } %>
           </div>
         </div>
       </section>
@@ -203,22 +174,26 @@
 
   <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
+    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
     <div>
-      <% if (currentPage > 1) { %>
-          <a href="/?currentPage=<%= currentPage - 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>&store=<%= store %>">FORRIGE</a>
+      <% if (page > 1) { %>
+          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
       <% } %>
 
-      <span><%= currentPage %> av <%= totalPages %></span>
+      <span><%= page %> av <%= totalPages %></span>
 
-      <% if (currentPage < totalPages) { %>
-          <a href="/?currentPage=<%= currentPage + 1 %>&sortBy=<%= sortBy %>&sortAsc=<%= sortAsc %>&category=<%= category %>&minVolume=<%= minVolume %>&news=<%= news %>&store=<%= store %>">NESTE</a>
+      <% if (page < totalPages) { %>
+          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
       <% } %>
     </div>
   </div>
 
   <footer>
-    <div>© Hallvard H. Lavik og Carlos Hebbinghaus</div>
-    <div><a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a></div>
+    <div class="copyright">
+        ©
+        <div class="names"><div style="letter-spacing: 0.03em;">Hallvard H. Lavik</div><div>Carlos Hebbinghaus</div></div>
+    </div>
+    <a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a>
   </footer>
 
   <script src="js/buttons.js"></script>
