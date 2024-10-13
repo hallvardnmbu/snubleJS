@@ -11,12 +11,14 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="js/stores.js"></script>
-    <title>SNUBLEJUICE</title>
-    <link rel="icon" type="image/jpeg" href="./css/images/snublejuice.jpeg">
+    <title>Snublejuice</title>
+    <link rel="icon" type="image/png" href="./images/snublejuice.png">
+    <link rel="apple-touch-icon" href="./images/snublejuice.png">
 </head>
+
 <body>
   <header>
     <form action="/" method="get" id="filter">
@@ -105,7 +107,7 @@
 
   <div class="pagination" id="top">
     <div>SNUBLEJUICE.no</div>
-    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
+    <img src="images/snublejuice-small.png" alt="SNUBLEJUICE.no">
     <div>
       <% if (page > 1) { %>
           <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
@@ -126,52 +128,56 @@
   <% } %>
 
   <% data.forEach(item => { %>
-    <section class="product-section" data-item-id="<%= item._id %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+    <section class="product-section" data-item-id="<%= item.index %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
-        <p><b><%= item.volume %></b> cL</p>
+        <div class="text"><b><%= item.volume %></b> cL</div>
       </div>
       <div class="information">
         <div class="name">
-          <p><%= item.name %></p>
+          <div id="name"><%= item.name %></div>
+
           <div class="category">
-            <p>
+            <div>
               <span><b><%= item.category %></b></span>
               <span style="font-size: 14px;"> <%= item.subcategory %></span>
-            </p>
-            <p><%= item.alcohol %> % alk.</p>
+            </div>
+
+            <div class="text" id="alcohol"><b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
           </div>
+
           <div class="country">
-            <p style="font-size: 18px;"><%= item.country %></p>
+            <div style="font-size: 18px;"><%= item.country %></div>
             <% if (item.district) { %>
-              <p id="dot" style="font-size: 10px;">●</p>
-              <p style="font-size: 16px;"><%= item.district %></p>
+              <div id="dot" style="font-size: 10px;">●</div>
+              <div style="font-size: 16px;"><%= item.district %></div>
             <% } %>
             <% if (item.subdistrict) { %>
-              <p id="dot" style="font-size: 10px;">●</p>
-              <p style="font-size: 12px;"><%= item.subdistrict %></p>
+              <div id="dot" style="font-size: 10px;">●</div>
+              <div style="font-size: 12px;"><%= item.subdistrict %></div>
             <% } %>
           </div>
         </div>
+
         <div class="description">
           <% if (item.description) { %>
             <p><%= item.description.lang %></p>
           <% } %>
         </div>
+
         <div class="price">
-          <p>KR <b><%= Math.ceil(item.price) %></b>
-            <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %>
-          </p>
+          <div class="text">KR <b><%= Math.ceil(item.price) %></b>
+            <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></div>
           <% if (item.oldprice) { %>
-            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b><b id="percent">%</b></div>
           <% } %>
         </div>
       </div>
-  
+
       <!-- Modal structure -->
-      <div id="modal-<%= item._id %>" class="modal">
+      <div id="modal-<%= item.index %>" class="modal">
         <div class="modal-content">
-          <span class="close" data-item-id="<%= item._id %>">&times;</span>
+          <span class="close" data-item-id="<%= item.index %>">&times;</span>
           <h2><%= item.name %></h2>
           <p><%= item.description.lang %></p>
           <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>
@@ -188,13 +194,10 @@
       </div>
     </section>
   <% }) %>
-  
-  
-  
 
   <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
-    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
+    <img src="images/snublejuice-small.png" alt="SNUBLEJUICE.no">
     <div>
       <% if (page > 1) { %>
           <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>

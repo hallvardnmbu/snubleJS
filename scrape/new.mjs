@@ -9,7 +9,7 @@ const client = new MongoClient(
   {
     serverApi: {
       version: ServerApiVersion.v1,
-      strict: true,
+      strict: false,
       deprecationErrors: true,
     },
   },
