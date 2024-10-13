@@ -64,8 +64,8 @@ a:hover {
 footer {
     display: flex;
     flex-direction: row;
-    justify-content: left;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-end;
     gap: calc(2 * var(--padding));
     margin: var(--padding);
 }
@@ -103,11 +103,17 @@ button {
     padding-left: var(--padding);
     padding-right: var(--padding);
 }
+#info,
+#sortButton,
+#toggleAdvanced,
+#clearFilters {
+    color: var(--black);
+}
 
 select {
     width: 100%;
     padding-right: calc(var(--padding) * 2);
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(102,102,102)"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="rgb(0, 0, 0)"/></svg>');
     background-repeat: no-repeat;
     background-position: right calc(var(--padding) / 2) bottom;
 }
@@ -188,6 +194,14 @@ header form input:hover {
     justify-content: center;
     width: 10px;
     margin-left: var(--padding);
+}
+#clearAll {
+    display: flex;
+    justify-content: center;
+}
+#clearFilters {
+    width: 28px;
+    margin-right: var(--padding);
 }
 
 #message {
@@ -344,13 +358,12 @@ p {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-  }
+}
 
 .product-section {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
 
 @media (max-width: 690px) {
     :root {
