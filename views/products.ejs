@@ -126,51 +126,71 @@
   <% } %>
 
   <% data.forEach(item => { %>
-    <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
-      <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
-        <div class="image">
-          <img src="<%= item.images.product %>" alt="flaske">
-          <p><b><%= item.volume %></b> cL</p>
-        </div>
-        <div class="information">
-          <div class="name">
-            <p><%= item.name %></p>
-            <div class="category">
-              <p>
-                <span><b><%= item.category %></b></span>
-                <span style="font-size: 14px;"> <%= item.subcategory %></span>
-              </p>
-
-              <p><%= item.alcohol %> % alk.</p>
-            </div>
-            <div class="country">
-              <p style="font-size: 18px;"><%= item.country %></p>
-              <% if (item.district) { %>
-                <p id="dot" style="font-size: 10px;">●</p>
-                <p style="font-size: 16px;"><%= item.district %></p>
-              <% } %>
-              <% if (item.subdistrict) { %>
-                <p id="dot" style="font-size: 10px;">●</p>
-                <p style="font-size: 12px;"><%= item.subdistrict %></p>
-              <% } %>
-            </div>
+    <section class="product-section" data-item-id="<%= item._id %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+      <div class="image">
+        <img src="<%= item.images.product %>" alt="flaske">
+        <p><b><%= item.volume %></b> cL</p>
+      </div>
+      <div class="information">
+        <div class="name">
+          <p><%= item.name %></p>
+          <div class="category">
+            <p>
+              <span><b><%= item.category %></b></span>
+              <span style="font-size: 14px;"> <%= item.subcategory %></span>
+            </p>
+            <p><%= item.alcohol %> % alk.</p>
           </div>
-          <div class="description">
-            <% if (item.description) { %>
-              <p><%= item.description.lang %></p>
+          <div class="country">
+            <p style="font-size: 18px;"><%= item.country %></p>
+            <% if (item.district) { %>
+              <p id="dot" style="font-size: 10px;">●</p>
+              <p style="font-size: 16px;"><%= item.district %></p>
             <% } %>
-          </div>
-          <div class="price">
-            <p>KR <b><%= Math.ceil(item.price) %></b>
-              <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
-            <% if (item.oldprice) { %>
-              <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <% if (item.subdistrict) { %>
+              <p id="dot" style="font-size: 10px;">●</p>
+              <p style="font-size: 12px;"><%= item.subdistrict %></p>
             <% } %>
           </div>
         </div>
-      </section>
-    </a>
+        <div class="description">
+          <% if (item.description) { %>
+            <p><%= item.description.lang %></p>
+          <% } %>
+        </div>
+        <div class="price">
+          <p>KR <b><%= Math.ceil(item.price) %></b>
+            <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %>
+          </p>
+          <% if (item.oldprice) { %>
+            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+          <% } %>
+        </div>
+      </div>
+  
+      <!-- Modal structure -->
+      <div id="modal-<%= item._id %>" class="modal">
+        <div class="modal-content">
+          <span class="close" data-item-id="<%= item._id %>">&times;</span>
+          <h2><%= item.name %></h2>
+          <p><%= item.description.lang %></p>
+          <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>
+          <a href="<%= item.url %>" target="_blank">Produktsiden</a>
+          <h3>Mer Informasjon</h3>
+          <p>Alkoholprosent: <%= item.alcohol %> %</p>
+          <p><%= JSON.stringify(item.karakteristikk, null, 2) %></p>
+          <% if (item.karakteristikk && Array.isArray(item.karakteristikk) && item.karakteristikk.length > 0) { %>
+            <p>Karakteristikk: <%= item.karakteristikk.join(', ') %></p>
+          <% } else { %>
+            <p>Karakteristikk: No characteristics available.</p>
+          <% } %>
+        </div>
+      </div>
+    </section>
   <% }) %>
+  
+  
+  
 
   <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
