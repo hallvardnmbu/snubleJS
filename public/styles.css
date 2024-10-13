@@ -328,12 +328,15 @@ p {
     border: 5px solid var(--blackish);
     width: 60%;
 }
+.exit,
 .close {
     color: var(--blackish);
     float: right;
     font-size: var(--font-pagination);
     font-weight: bold;
 }
+.exit:hover,
+.exit:focus,
 .close:hover,
 .close:focus {
     color: black;
@@ -352,43 +355,55 @@ p {
     flex-direction: column;
 }
 
-.modal-content {
+.product {
+    cursor: pointer;
+}
+.detailed {
     position: relative;
-    background-color: #fefefe;
+    background-color: white;
     margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    padding: var(--padding);
+    border: 5px solid var(--blackish);
     width: 80%;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: calc(2 * var(--padding));
+}
+.characteristics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+}
+.ingredients {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
 }
 
-.more-information {
-    width: 48%;
-}
-
-#price-chart {
-    width: 48%;
-}
-
-.close {
-    position: absolute; 
-    top: 10px;
-    right: 10px; 
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-.info-container {
+.fraction {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    width: 100%;
+    gap: var(--padding);
 }
-
-
-.product-section {
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.fraction .label {
+    font-size: var(--font-normal);
+    color: var(--blackish);
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 100px;
+}
+.fraction .value {
+    position: relative;
+    flex-grow: 1;
+    height: calc(2 * var(--padding));
+    background: linear-gradient(
+        to right,
+        var(--positive) calc(var(--percentage) * 1%),
+        var(--gray) calc(var(--percentage) * 1%)
+    );
+    margin-left: 10px;
 }
 
 @media (max-width: 690px) {
@@ -423,6 +438,11 @@ p {
     .image {
         line-height: 1.4rem;
     }
+
+    .fraction .label {
+        min-width: 70px;
+    }
+
     footer {
         flex-direction: column;
         align-items: center;
