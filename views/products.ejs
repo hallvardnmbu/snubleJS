@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="js/stores.js"></script>
-    <title>Snublejuice</title>
+    <title>snublejuice</title>
     <link rel="icon" type="image/png" href="./images/snublejuice.png">
     <link rel="apple-touch-icon" href="./images/snublejuice.png">
 </head>
@@ -31,7 +31,7 @@
         <button id="info">?</button>
         <div id="infobox" class="modal">
           <div class="infobox">
-            <span class="close">&times;</span>
+            <span class="close">x</span>
             <b>Hva er SNUBLEJUICE?</b>
             <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
           </div>
@@ -72,6 +72,10 @@
           <select name="store" id="store" onchange="applyFilters()">
             <!-- Options will be dynamically populated by `public/js/stores.js`. -->
           </select>
+
+          <div style="justify-content: center;">
+            <button id="clearFilters">x</button>
+          </div>
         </div>
 
         <button id="toggleAdvanced">+</button>
@@ -80,19 +84,19 @@
       <div id="advancedSelection" class="advancedSelection" style="display: none;">
         <div>
           <label for="volume">Volum over</label>
-          <input type="float" id="volume" name="volume" min="0" step="1" value="<%= volume || '' %>">
+          <input type="float" id="fvolume" name="volume" min="0" step="1" value="<%= volume || '' %>">
           <label for="volume">cL</label>
         </div>
 
         <div>
           <label for="alcohol">Alkohol over</label>
-          <input type="float" id="alcohol" name="alcohol" min="0" step="0.5" value="<%= alcohol || '' %>">
-          <label for="alcohol">%</label>
+          <input type="float" id="falcohol" name="alcohol" min="0" step="0.5" value="<%= alcohol || '' %>">
+          <label for="alcohol" id="percent">%</label>
         </div>
 
         <div>
           <label for="search">Søk etter</label>
-          <input type="search" id="search" name="search" value="<%= search || null %>">
+          <input type="search" id="fsearch" name="search" value="<%= search || null %>">
         </div>
 
         <button id="newsButton">
@@ -177,7 +181,7 @@
       <!-- Modal structure -->
       <div id="modal-<%= item.index %>" class="modal">
         <div class="modal-content">
-          <span class="close" data-item-id="<%= item.index %>">&times;</span>
+          <span class="close" data-item-id="<%= item.index %>">x</span>
           <h2><%= item.name %></h2>
           <p><%= item.description.lang %></p>
           <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>

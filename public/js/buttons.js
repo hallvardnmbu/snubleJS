@@ -20,6 +20,26 @@ document.getElementById("sortButton").onclick = function (event) {
   applyFilters();
 };
 
+// Reset the form.
+document.getElementById("clearFilters").onclick = function (event) {
+  event.preventDefault();
+
+  // Clear all inputs.
+  document.querySelectorAll("input").forEach((input) => {
+    input.value = null;
+  });
+
+  // Clear all selections.
+  document.querySelectorAll("select").forEach((select) => {
+    select.selectedIndex = 0;
+  });
+
+  // Reset session storage store selection.
+  sessionStorage.setItem("selectedStore", null);
+
+  applyFilters();
+};
+
 // Toggle advanced visibility.
 document.getElementById("toggleAdvanced").onclick = function (event) {
   event.preventDefault();
@@ -44,13 +64,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Volume, alcohol and search change.
-document.getElementById("volume").addEventListener("change", function () {
+document.getElementById("fvolume").addEventListener("change", function () {
   applyFilters();
 });
-document.getElementById("alcohol").addEventListener("change", function () {
+document.getElementById("falcohol").addEventListener("change", function () {
   applyFilters();
 });
-document.getElementById("search").addEventListener("change", function () {
+document.getElementById("fsearch").addEventListener("change", function () {
   applyFilters();
 });
 
@@ -77,11 +97,10 @@ window.onclick = function (event) {
   }
 };
 
-
 document.addEventListener("DOMContentLoaded", function () {
   // Open modal when section is clicked
   const productSections = document.querySelectorAll(".product-section");
-  productSections.forEach(section => {
+  productSections.forEach((section) => {
     section.addEventListener("click", function () {
       const itemId = this.getAttribute("data-item-id");
       const modal = document.getElementById(`modal-${itemId}`);
@@ -91,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Close modal when the 'x' is clicked
   const closeModalButtons = document.querySelectorAll(".close");
-  closeModalButtons.forEach(button => {
+  closeModalButtons.forEach((button) => {
     button.addEventListener("click", function (event) {
       event.stopPropagation(); // Prevent bubbling to avoid modal reopening
       const itemId = this.getAttribute("data-item-id");
@@ -103,13 +122,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Close modal when clicking outside of the modal content
   window.onclick = function (event) {
     const modals = document.querySelectorAll(".modal");
-    modals.forEach(modal => {
+    modals.forEach((modal) => {
       if (event.target === modal) {
         modal.style.display = "none";
       }
     });
   };
 });
-
-
-
