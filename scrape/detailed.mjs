@@ -59,6 +59,10 @@ function processInformation(product) {
     storage: product.content?.storagePotential?.formattedValue || null,
     cork: product.cork || null,
 
+    alcohol: product.traits?.find((trait) => trait.name === "Alkohol")?.readableValue || null,
+    sugar: product.traits?.find((trait) => trait.name === "Sukker")?.readableValue || null,
+    acid: product.traits?.find((trait) => trait.name === "Syre")?.readableValue || null,
+
     description: {
       lang: product.content?.style?.description || null,
       short: product.content?.style?.name || null,
@@ -73,16 +77,20 @@ function processInformation(product) {
     processed.literprice = null;
   }
 
-  // Check if "alkohol" is present in the processed object.
-  if (processed.alkohol) {
+  // Check if "alkohol" or "alcohol" is present in the processed object.
+  if (processed.alkohol || processed.alcohol) {
     // Split the string at the first space character, and convert to float.
-    processed.alcohol = parseFloat(processed.alkohol.split(" ")[0].replace(",", "."));
+    if (processed.alkohol) {
+      processed.alcohol = parseFloat(processed.alkohol.split(" ")[0].replace(",", "."));
+
+      // Remove the "alkohol" key from the object.
+      delete processed.alkohol;
+    } else {
+      processed.alcohol = parseFloat(processed.alcohol.split(" ")[0].replace(",", "."));
+    }
 
     // Calculate the alcohol price.
     processed.alcoholprice = processed.literprice / processed.alcohol;
-
-    // Remove the "alkohol" key from the object.
-    delete processed.alkohol;
   } else {
     processed.alcohol = 0.0;
     processed.alcoholprice = null;
