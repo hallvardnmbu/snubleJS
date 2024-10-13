@@ -76,3 +76,40 @@ window.onclick = function (event) {
     document.getElementById("infobox").style.display = "none";
   }
 };
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Open modal when section is clicked
+  const productSections = document.querySelectorAll(".product-section");
+  productSections.forEach(section => {
+    section.addEventListener("click", function () {
+      const itemId = this.getAttribute("data-item-id");
+      const modal = document.getElementById(`modal-${itemId}`);
+      modal.style.display = "block";
+    });
+  });
+
+  // Close modal when the 'x' is clicked
+  const closeModalButtons = document.querySelectorAll(".close");
+  closeModalButtons.forEach(button => {
+    button.addEventListener("click", function (event) {
+      event.stopPropagation(); // Prevent bubbling to avoid modal reopening
+      const itemId = this.getAttribute("data-item-id");
+      const modal = document.getElementById(`modal-${itemId}`);
+      modal.style.display = "none";
+    });
+  });
+
+  // Close modal when clicking outside of the modal content
+  window.onclick = function (event) {
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach(modal => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  };
+});
+
+
+
