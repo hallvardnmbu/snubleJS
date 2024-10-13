@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="js/stores.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>snublejuice</title>
     <link rel="icon" type="image/png" href="./images/snublejuice-transparent.png">
     <meta property="og:image" content="./images/snublejuice.jpeg">
@@ -183,18 +184,89 @@
       <div id="modal-<%= item.index %>" class="modal">
         <div class="modal-content">
           <span class="close" data-item-id="<%= item.index %>">x</span>
-          <h2><%= item.name %></h2>
-          <p><%= item.description.lang %></p>
-          <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>
-          <a href="<%= item.url %>" target="_blank">Produktsiden</a>
-          <h3>Mer Informasjon</h3>
-          <p>Alkoholprosent: <%= item.alcohol %> %</p>
-          <p><%= JSON.stringify(item.karakteristikk, null, 2) %></p>
-          <% if (item.karakteristikk && Array.isArray(item.karakteristikk) && item.karakteristikk.length > 0) { %>
-            <p>Karakteristikk: <%= item.karakteristikk.join(', ') %></p>
-          <% } else { %>
-            <p>Karakteristikk: No characteristics available.</p>
-          <% } %>
+          <div class="more-information">
+            <h2><%= item.name %></h2>
+            <p><%= item.description.lang %></p>
+            <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>
+            <a href="<%= item.url %>" target="_blank">Produktsiden</a>
+            <h3>Mer Informasjon</h3>
+            <p>Alkoholprosent: <%= item.alcohol %> %</p>
+
+            <!--Characteristics-->
+            <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %> 
+              <div class="info-container">
+              <p>Karakteristikk:</p>
+              <p style="padding-left: 15px;">
+                <%- item.characteristics.map(function(karakter) { 
+                  var parts = karakter.split(', ');
+                  return parts[1] + ' ' + parts[0] + '\n'; 
+                }).join('<br>') %>
+              </p>
+            </div>
+            <% } else { %>
+              <p>Karakteristikk: No characteristics available.</p>
+            <% } %>
+
+            <!--Ingredients-->
+            <% if (item.indgredients && Array.isArray(item.indgredients) && item.indgredients.length > 0) { %>
+              <div class="info-container">
+                <p>Ingredienser:</p>
+                <p style="padding-left: 15px;">
+                  <%- item.indgredients.map(function(karakter) { 
+                    return  karakter + '\n'; 
+                  }).join('<br>') %>
+                </p>
+            </div>
+            <% } else { %>
+              <p>Karakteristikk: No indgredienser available.</p>
+            <% } %>
+        </div>
+          <!-- Plotly Chart for Price Change Over Time -->
+          <div id="priceChart-<%= item.index %>" style="width:100%;max-width:600px;height:400px;"></div>
+
+          <script>
+            function formatDateAsLocalString(date) {
+              const year = date.getFullYear();
+              const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Pad with leading zero if necessary
+              const day = date.getDate().toString().padStart(2, '0'); // Pad with leading zero if necessary
+              return `${year}-${month}-${day}`;
+            }
+
+            // Function to generate dates on the 1st of each month in local time
+            function generateDates(numPrices) {
+              var dates = [];
+              var currentDate = new Date();
+              for (var i = 0; i < numPrices; i++) {
+                var newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                dates.unshift(formatDateAsLocalString(newDate)); // Use local date formatting
+              }
+              return dates;
+            }
+
+            var prices = <%= JSON.stringify(item.prices) %>;
+            var dates = generateDates(prices.length);
+
+            var trace = {
+              x: dates,
+              y: prices,
+              type: 'scatter',
+              mode: 'lines+markers',
+              name: 'Price over Time',
+              line: { color: 'green' }
+            };
+
+            var layout = {
+              title: 'Price Change Over Time',
+              xaxis: { title: 'Date' },
+              yaxis: { title: 'Price (KR)' }
+            };
+
+            var config = {
+              displayModeBar: false
+            };
+
+            Plotly.newPlot('priceChart-<%= item.index %>', [trace], layout, config);
+          </script>
         </div>
       </div>
     </section>
