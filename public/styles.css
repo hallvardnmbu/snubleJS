@@ -195,6 +195,14 @@ header form input:hover {
     width: 10px;
     margin-left: var(--padding);
 }
+#clearAll {
+    display: flex;
+    justify-content: center;
+}
+#clearFilters {
+    width: 28px;
+    margin-right: var(--padding);
+}
 
 #message {
     margin-top: var(--margin);
