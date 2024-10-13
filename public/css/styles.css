@@ -6,12 +6,23 @@
         local("Fixedsys Excelsior 3.01"),
         url("fonts/fixedsys/FSEX300.woff") format("woff");
 }
-
 @font-face {
-    font-family: "Kongtext";
+    font-family: "m04";
     font-style: normal;
     font-weight: normal;
-    src: url("fonts/kongtext/kongtext.ttf") format("truetype");
+    src: url("fonts/m04fatal_fury/m04.TTF") format("truetype");
+}
+@font-face {
+    font-family: "m04";
+    font-style: normal;
+    font-weight: 700;
+    src: url("fonts/m04fatal_fury/m04b.TTF") format("truetype");
+}
+@font-face {
+    font-family: "alpha-beta";
+    font-style: normal;
+    font-weight: normal;
+    src: url("fonts/alpha-beta/alphbeta.ttf") format("truetype");
 }
 
 :root {
@@ -20,6 +31,7 @@
     --font-pagination: 26px;
     --font-title: 24px;
     --font-description: 18px;
+    --font-alcohol: 14px;
 
     --padding: 10px;
     --image: 100px;
@@ -197,30 +209,53 @@ section {
     display: flex;
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
+    padding-bottom: var(--padding);
     border-bottom: 5px solid var(--gray);
 }
 
 p {
     color: var(--blackish);
 }
+.name #name {
+    color: var(--blackish);
+}
 .name b {
     font-size: var(--font-title);
     color: var(--black);
 }
-.price b,
-.image b {
-    font-family: "Kongtext", monospace;
+
+.text {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+    color: var(--blackish);
+}
+.text b {
+    font-family: "m04", monospace;
+    font-weight: bold;
     color: var(--black);
+}
+#alcohol {
+    font-size: var(--font-alcohol);
+}
+#percent {
+    font-family: "alpha-beta", monospace;
+}
+#alcohol #percent {
+    font-size: var(--font-alcohol);
 }
 
 .image {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    text-align: center;
 }
 .image img {
     width: var(--image);
+}
+.image .text {
+    justify-content: center;
+    margin-bottom: calc(0.5 * var(--padding));
 }
 
 .information {
@@ -229,14 +264,9 @@ p {
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: space-between;
-}
-.name p,
-.description p {
     margin-left: var(--padding);
-    margin-right: var(--padding);
 }
 .description p {
-    text-align: justify;
     font-size: var(--font-description);
 }
 .category {
@@ -245,20 +275,22 @@ p {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding-top: calc(var(--padding) * 2);
 }
 .country {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
+    column-gap: var(--padding);
+    padding-top: var(--padding);
 }
 .price {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-left: var(--padding);
-    margin-right: var(--padding);
+    margin-bottom: calc(0.5 * var(--padding));
 }
 
 .modal {
