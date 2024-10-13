@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <script src="js/grapes.js"></script>
     <script src="js/stores.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>snublejuice</title>
@@ -32,8 +33,10 @@
         <button id="info">?</button>
         <div id="infobox" class="modal">
           <div class="infobox">
-            <span class="close">x</span>
-            <b>Hva er SNUBLEJUICE?</b>
+            <div class="header">
+              <b>Hva er SNUBLEJUICE?</b>
+              <span class="exit">x</span>
+            </div>
             <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
           </div>
         </div>
@@ -134,7 +137,7 @@
   <% } %>
 
   <% data.forEach(item => { %>
-    <section class="product-section" data-item-id="<%= item._id %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+    <section class="product" index="<%= item.index %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
         <p><b><%= item.volume %></b> cL</p>
@@ -177,46 +180,57 @@
       </div>
 
       <!-- Modal structure -->
-      <div id="modal-<%= item._id %>" class="modal">
-        <div class="modal-content">
-          <span class="close" data-item-id="<%= item.index %>">x</span>
-          <div class="more-information">
-            <h2><%= item.name %></h2>
-            <p><%= item.description.lang %></p>
-            <p>Price: KR <b><%= Math.ceil(item.price) %></b></p>
-            <a href="<%= item.url %>" target="_blank">Produktsiden</a>
-            <h3>Mer Informasjon</h3>
-            <p>Alkoholprosent: <%= item.alcohol %> %</p>
+      <div id="detailed-<%= item.index %>" class="modal">
+        <div class="detailed">
+          <div>
+            <a href="<%= item.url %>" target="_blank">Kjøp</a>
+            <span class="close" index="<%= item.index %>">x</span>
+          </div>
 
-            <!--Characteristics-->
-            <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %> 
-              <div class="info-container">
-              <p>Karakteristikk:</p>
-              <p style="padding-left: 15px;">
-                <%- item.characteristics.map(function(karakter) { 
-                  var parts = karakter.split(', ');
-                  return parts[1] + ' ' + parts[0] + '\n'; 
-                }).join('<br>') %>
-              </p>
-            </div>
-            <% } else { %>
-              <p>Karakteristikk: No characteristics available.</p>
-            <% } %>
+          <b><%= item.name %></b>
 
-            <!--Ingredients-->
-            <% if (item.indgredients && Array.isArray(item.indgredients) && item.indgredients.length > 0) { %>
-              <div class="info-container">
-                <p>Ingredienser:</p>
-                <p style="padding-left: 15px;">
-                  <%- item.indgredients.map(function(karakter) { 
-                    return  karakter + '\n'; 
-                  }).join('<br>') %>
-                </p>
+          <%= item.smell %>
+          <%= item.taste %>
+          <%= item.storage %>
+          <%= item.colour %>
+          <%= item.selection %>
+          <%= item.literprice %>
+          <%= item.alcoholprice %>
+          <%= item.pair %>
+          <%= item.method %>
+          <%= item.year %>
+
+          <!--Characteristics-->
+          <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %>
+            <div class="characteristics">
+              <% item.characteristics.forEach(function(character) {
+                var parts = character.split(', ');
+                var values = parts[1].split(' av ');
+                var percentage = (parseInt(values[0]) / parseInt(values[1])) * 100;
+              %>
+                <div class="fraction">
+                  <span class="label"><%= parts[0] %></span>
+                  <div class="value" style="--percentage: <%= percentage %>;"></div>
+                </div>
+              <% }); %>
             </div>
-            <% } else { %>
-              <p>Karakteristikk: No indgredienser available.</p>
-            <% } %>
-        </div>
+          <% } %>
+
+          <!--Ingredients-->
+          <% if (item.ingredients && Array.isArray(item.ingredients) && item.ingredients.length > 0) { %>
+            <div class="ingredients">
+              <% item.ingredients.forEach(function(ingredient) {
+                console.log(ingredient);
+                let match = window.grapePercentage(ingredient);
+              %>
+                <div class="fraction">
+                  <span class="label"><%= match.grape %></span>
+                  <div class="value" style="--percentage: <%= match.percentage %>;"></div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+
           <!-- Plotly Chart for Price Change Over Time -->
           <div id="priceChart-<%= item.index %>" style="width:100%;max-width:600px;height:400px;"></div>
 

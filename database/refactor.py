@@ -20,7 +20,6 @@ _NEW = MongoClient(
 # _DATABASE = _CLIENT['vinskraper']['varer']
 # _EXPIRED = _CLIENT['vinskraper']['utgått']
 
-
 def update_prices(records) -> BulkWriteResult:
     operations = [
         pymongo.UpdateOne(
@@ -108,3 +107,5 @@ def move(records) -> BulkWriteResult:
 # "status": "utgått"
 # "volum": {"$exists": false}
 # "bilde": {"$exists": false}
+
+# _NEW.update_many({}, { "$rename": { "indgredients": "ingredients" } })

@@ -87,7 +87,7 @@ document.getElementById("info").onclick = function (event) {
   event.preventDefault();
   document.getElementById("infobox").style.display = "block";
 };
-document.querySelector(".close").onclick = function (event) {
+document.querySelector(".exit").onclick = function (event) {
   event.preventDefault();
   document.getElementById("infobox").style.display = "none";
 };
@@ -99,11 +99,11 @@ window.onclick = function (event) {
 
 document.addEventListener("DOMContentLoaded", function () {
   // Open modal when section is clicked
-  const productSections = document.querySelectorAll(".product-section");
+  const productSections = document.querySelectorAll(".product");
   productSections.forEach((section) => {
     section.addEventListener("click", function () {
-      const itemId = this.getAttribute("data-item-id");
-      const modal = document.getElementById(`modal-${itemId}`);
+      const itemId = this.getAttribute("index");
+      const modal = document.getElementById(`detailed-${itemId}`);
       modal.style.display = "block";
     });
   });
@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
   closeModalButtons.forEach((button) => {
     button.addEventListener("click", function (event) {
       event.stopPropagation(); // Prevent bubbling to avoid modal reopening
-      const itemId = this.getAttribute("data-item-id");
-      const modal = document.getElementById(`modal-${itemId}`);
+      const itemId = this.getAttribute("index");
+      const modal = document.getElementById(`detailed-${itemId}`);
       modal.style.display = "none";
     });
   });
