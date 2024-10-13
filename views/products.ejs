@@ -106,7 +106,7 @@
 
   <div class="pagination" id="top">
     <div>SNUBLEJUICE.no</div>
-    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
+    <img src="css/images/snublejuice-small.png" alt="SNUBLEJUICE.no">
     <div>
       <% if (page > 1) { %>
           <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
@@ -128,31 +128,32 @@
 
   <% data.forEach(item => { %>
     <a href="<%= item.url %>" style="text-decoration: none; color: inherit;" target="_blank">
-      <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>; color: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+      <section style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
         <div class="image">
           <img src="<%= item.images.product %>" alt="flaske">
-          <p><b><%= item.volume %></b> cL</p>
+          <div class="text"><b><%= item.volume %></b> cL</div>
         </div>
         <div class="information">
           <div class="name">
-            <p><%= item.name %></p>
+            <div id="name"><%= item.name %></div>
+
             <div class="category">
-              <p>
+              <div>
                 <span><b><%= item.category %></b></span>
                 <span style="font-size: 14px;"> <%= item.subcategory %></span>
-              </p>
+              </div>
 
-              <p><%= item.alcohol %> % alk.</p>
+              <div class="text" id="alcohol"><b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
             </div>
             <div class="country">
-              <p style="font-size: 18px;"><%= item.country %></p>
+              <div style="font-size: 18px;"><%= item.country %></div>
               <% if (item.district) { %>
-                <p id="dot" style="font-size: 10px;">●</p>
-                <p style="font-size: 16px;"><%= item.district %></p>
+                <div id="dot" style="font-size: 10px;">●</div>
+                <div style="font-size: 16px;"><%= item.district %></div>
               <% } %>
               <% if (item.subdistrict) { %>
-                <p id="dot" style="font-size: 10px;">●</p>
-                <p style="font-size: 12px;"><%= item.subdistrict %></p>
+                <div id="dot" style="font-size: 10px;">●</div>
+                <div style="font-size: 12px;"><%= item.subdistrict %></div>
               <% } %>
             </div>
           </div>
@@ -162,10 +163,10 @@
             <% } %>
           </div>
           <div class="price">
-            <p>KR <b><%= Math.ceil(item.price) %></b>
-              <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></p>
+            <div class="text">KR <b><%= Math.ceil(item.price) %></b>
+              <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></div>
             <% if (item.oldprice) { %>
-              <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+              <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b><b id="percent">%</b></div>
             <% } %>
           </div>
         </div>
@@ -175,7 +176,7 @@
 
   <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
-    <img src="css/images/snublejuice.jpeg" alt="SNUBLEJUICE.no">
+    <img src="css/images/snublejuice-small.png" alt="SNUBLEJUICE.no">
     <div>
       <% if (page > 1) { %>
           <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
