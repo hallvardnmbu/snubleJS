@@ -137,7 +137,7 @@
   <% } %>
 
   <% data.forEach((item, index) => { %>
-    <section class="product" index="<%= index %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+    <section class="product" index="<%= index %>" style="--highlight: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--darkgray)' %>; --marker: <%= item.discount > 0 ? 'var(--red)' : item.discount < 0 ? 'var(--green)' : 'var(--blackish)' %>;">
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
         <p><b><%= item.volume %></b> cL</p>
@@ -254,7 +254,7 @@
                 %>
                   <tr>
                     <td class="label">
-                      <% if (result.grape.length > 10) { %>
+                      <% if (result.grape && result.grape.length > 10) { %>
                         <%= result.grape %>&nbsp;
                       <% } else { %>
                         <%= result.grape %>
@@ -303,7 +303,7 @@
                   <td class="val"><%= item.selection %></td>
                 </tr>
               <% } %>
-              <% if (item.pair) { %>
+              <% if (item.pair && item.pair.length > 0) { %>
                 <tr>
                   <td class="key">PASSER TIL &nbsp;</td>
                   <td class="val"><%=
@@ -338,6 +338,9 @@
 
           <script>
             var prices = <%= JSON.stringify(item.prices) %>;
+            if (!prices || prices.length === 0) {
+              prices = [0, 0];
+            }
             var dates = generateDates(prices.length);
 
             // Duplicate the last price and add today's date to the end of the list
