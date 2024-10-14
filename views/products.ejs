@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="js/stores.js"></script>
+    <script src="js/graph.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>snublejuice</title>
     <link rel="icon" type="image/png" href="./images/snublejuice-transparent.png">
@@ -135,8 +136,8 @@
     <p style="text-align: center;">Ingen resultater finnes for valgt kominasjon.</p>
   <% } %>
 
-  <% data.forEach(item => { %>
-    <section class="product" index="<%= item.index %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
+  <% data.forEach((item, index) => { %>
+    <section class="product" index="<%= index %>" style="border-bottom: 10px solid <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--gray)' %>;">
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
         <div class="text"><b><%= item.volume %></b> cL</div>
@@ -183,11 +184,14 @@
       </div>
 
       <!-- Modal structure -->
-      <div id="detailed-<%= item.index %>" class="modal">
+      <div id="detailed-<%= index %>" class="modal">
         <div class="detailed">
           <div class="heading">
-            <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
-            <span class="close" index="<%= item.index %>">x</span>
+            <div class="link">
+              <img src="images/www.png" class="www">
+              <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
+            </div>
+            <span class="close" index="<%= index %>">x</span>
           </div>
 
           <div class="price">
@@ -211,11 +215,10 @@
                 <% item.characteristics.forEach(function(character) {
                   var parts = character.split(', ');
                   var values = parts[1].split(' av ');
-                  var percentage = (parseInt(values[0]) / parseInt(values[1])) * 100;
                 %>
                   <tr>
                     <td class="label"><%= parts[0] %></td>
-                    <td class="value" style="--percentage: <%= percentage %>;"></td>
+                    <td class="value" style="--value: <%= parseInt(values[0]) %>; --total: <%= parseInt(values[1]) %>;"></td>
                   </tr>
                 <% }); %>
               <% } %>
@@ -232,9 +235,9 @@
                 </tr>
                 <% item.ingredients.forEach(function(ingredient) {
                   const patterns = [
-                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅ, ]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
-                    /([a-zA-ZæøåÆØÅ, ]+)\s*(\d+)\s*prosent/i, // Matches "Pinot Bianco 80 prosent".
-                    /([a-zA-ZæøåÆØÅ, ]+)/i, // Matches single word types like "Riesling"
+                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅ, ()]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
+                    /([a-zA-ZæøåÆØÅ, ()]+)\s*(\d+)\s*prosent/i, // Matches "Sumoll (Vijariego Negro) 10 prosent" or "Pinot Bianco 80 prosent"
+                    /([a-zA-ZæøåÆØÅ, ()]+)/i, // Matches single word types like "Riesling"
                   ];
                   let result = null;
                   for (const pattern of patterns) {
@@ -254,8 +257,14 @@
                   if (result) {
                 %>
                   <tr>
-                    <td class="label"><%= result.grape %></td>
-                    <td class="value" style="--percentage: <%= result.percentage %>;"></td>
+                    <td class="label">
+                      <% if (result.grape.length > 10) { %>
+                        <%= result.grape %>&nbsp;
+                      <% } else { %>
+                        <%= result.grape %>
+                      <% } %>
+                    </td>
+                    <td class="percentage" style="--percentage: <%= result.percentage %>;"></td>
                   </tr>
                 <% } }); %>
               <% } %>
@@ -328,28 +337,10 @@
           <!-- Price chart. -->
           <div style="height:200px;">
             <b>PRISHISTORIKK</b>
-            <canvas id="priceChart-<%= item.index %>"></canvas>
+            <canvas id="graph-<%= index %>"></canvas>
           </div>
 
           <script>
-            function formatDateAsLocalString(date) {
-              const year = date.getFullYear();
-              const month = (date.getMonth() + 1).toString().padStart(2, '0');
-              const day = date.getDate().toString().padStart(2, '0');
-              return `${year}-${month}`;
-            }
-
-            // Function to generate dates on the 1st of each month in local time
-            function generateDates(numPrices) {
-              var dates = [];
-              var currentDate = new Date();
-              for (var i = 0; i < numPrices; i++) {
-                var newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-                dates.unshift(formatDateAsLocalString(newDate)); // Use local date formatting
-              }
-              return dates;
-            }
-
             var prices = <%= JSON.stringify(item.prices) %>;
             var dates = generateDates(prices.length);
 
@@ -357,65 +348,11 @@
             prices.push(prices[prices.length - 1]);
             dates.push("nå");
 
-            function drawLineChart(canvasId, dates, prices) {
-              var canvas = document.getElementById(canvasId);
-              var ctx = canvas.getContext('2d');
-
-              // Resize canvas to fit container
-              canvas.width = canvas.parentElement.clientWidth;
-              canvas.height = canvas.parentElement.clientHeight;
-
-              // Calculate margins and plot area
-              var margin = { top: 20, right: 10, bottom: 40, left: 50 };
-              var plotWidth = canvas.width - margin.left - margin.right;
-              var plotHeight = canvas.height - margin.top - margin.bottom;
-
-              // Calculate scales
-              var xScale = plotWidth / (dates.length - 1);
-              var yMax = Math.max(...prices) * 1.05;
-              var yMin = Math.min(...prices) * 0.95;
-              var yScale = plotHeight / (yMax - yMin);
-
-              // Draw line
-              ctx.beginPath();
-              ctx.moveTo(margin.left, canvas.height - margin.bottom - (prices[0] - yMin) * yScale);
-              for (var i = 1; i < prices.length; i++) {
-                // Move horizontally to the new X position
-                ctx.lineTo(margin.left + i * xScale, canvas.height - margin.bottom - (prices[i - 1] - yMin) * yScale);
-                // Move vertically to the new Y position
-                ctx.lineTo(margin.left + i * xScale, canvas.height - margin.bottom - (prices[i] - yMin) * yScale);
-              }
-              ctx.strokeStyle = '#666666';
-              ctx.lineWidth = 5;
-              ctx.stroke();
-
-              // Draw markers
-              for (var i = 0; i < prices.length; i++) {
-                ctx.beginPath();
-                ctx.rect(margin.left + i * xScale - 5, canvas.height - margin.bottom - (prices[i] - yMin) * yScale - 5, 10, 10);
-                ctx.fillStyle = 'black';
-                ctx.fill();
-              }
-
-              // Draw labels
-              ctx.fillStyle = 'black';
-              ctx.textAlign = 'center';
-              ctx.font = '14px alpha-beta';
-              for (var i = 0; i < dates.length; i++) {
-                ctx.fillText(dates[i], margin.left + i * xScale, canvas.height - margin.bottom + 20);
-              }
-              ctx.fillStyle = '#666666';
-              ctx.textAlign = 'right';
-              ctx.textBaseline = 'middle';
-              for (var i = 0; i <= 5; i++) {
-                var yValue = yMin + (yMax - yMin) * i / 5;
-                ctx.fillText(yValue.toFixed(0), margin.left - 10, canvas.height - margin.bottom - yScale * (yValue - yMin));
-              }
-            }
-
-            window.addEventListener('resize', function() {
-              drawLineChart('priceChart-<%= item.index %>', dates, prices);
-            });
+            // Store the price history in session.
+            sessionStorage.setItem("<%= index %>", JSON.stringify({
+              price: prices,
+              date: dates
+            }));
           </script>
 
           <hr>
@@ -432,8 +369,11 @@
           </div>
 
           <div class="heading" style="flex-wrap: wrap;">
-            <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
-            <span class="close" index="<%= item.index %>">x</span>
+            <div class="link">
+              <img src="images/www.png" class="www">
+              <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
+            </div>
+            <span class="close" index="<%= index %>">x</span>
           </div>
         </div>
       </div>
