@@ -85,7 +85,7 @@ document.getElementById("newsButton").onclick = function (event) {
 // Information popup modal.
 document.getElementById("info").onclick = function (event) {
   event.preventDefault();
-  document.getElementById("infobox").style.display = "block";
+  document.getElementById("infobox").style.display = "flex";
 };
 document.querySelector(".exit").onclick = function (event) {
   event.preventDefault();
