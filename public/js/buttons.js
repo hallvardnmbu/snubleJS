@@ -105,6 +105,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const itemId = this.getAttribute("index");
       const modal = document.getElementById(`detailed-${itemId}`);
       modal.style.display = "block";
+
+      // Trigger the window resize event to draw the line-graph.
+      window.dispatchEvent(new Event("resize"));
     });
   });
 

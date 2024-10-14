@@ -13,7 +13,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
-    <script src="js/grapes.js"></script>
     <script src="js/stores.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>snublejuice</title>
@@ -186,64 +185,158 @@
       <!-- Modal structure -->
       <div id="detailed-<%= item.index %>" class="modal">
         <div class="detailed">
-          <div>
-            <a href="<%= item.url %>" target="_blank">Kjøp</a>
+          <div class="heading">
+            <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
             <span class="close" index="<%= item.index %>">x</span>
           </div>
 
-          <b><%= item.name %></b>
+          <div class="price">
+            <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
+            <% if (item.alcoholprice) { %>
+              <div class="text">ALKOHOLPRIS <b><%= Math.ceil(item.alcoholprice) %></b></div>
+            <% } %>
+          </div>
 
-          <%= item.smell %>
-          <%= item.taste %>
-          <%= item.storage %>
-          <%= item.colour %>
-          <%= item.selection %>
-          <%= item.literprice %>
-          <%= item.alcoholprice %>
-          <%= item.pair %>
-          <%= item.method %>
-          <%= item.year %>
+          <hr>
 
-          <!--Characteristics-->
-          <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %>
-            <div class="characteristics">
-              <% item.characteristics.forEach(function(character) {
-                var parts = character.split(', ');
-                var values = parts[1].split(' av ');
-                var percentage = (parseInt(values[0]) / parseInt(values[1])) * 100;
-              %>
-                <div class="fraction">
-                  <span class="label"><%= parts[0] %></span>
-                  <div class="value" style="--percentage: <%= percentage %>;"></div>
-                </div>
-              <% }); %>
-            </div>
-          <% } %>
+          <table class="fractions">
+            <tbody>
 
-          <!--Ingredients-->
-          <% if (item.ingredients && Array.isArray(item.ingredients) && item.ingredients.length > 0) { %>
-            <div class="ingredients">
-              <% item.ingredients.forEach(function(ingredient) {
-                console.log(ingredient);
-                let match = window.grapePercentage(ingredient);
-              %>
-                <div class="fraction">
-                  <span class="label"><%= match.grape %></span>
-                  <div class="value" style="--percentage: <%= match.percentage %>;"></div>
-                </div>
-              <% }); %>
-            </div>
-          <% } %>
+              <!-- Characteristics. -->
+              <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %>
+                <tr>
+                  <td>EGENSKAPER<td>
+                  <td><td>
+                </tr>
+                <% item.characteristics.forEach(function(character) {
+                  var parts = character.split(', ');
+                  var values = parts[1].split(' av ');
+                  var percentage = (parseInt(values[0]) / parseInt(values[1])) * 100;
+                %>
+                  <tr>
+                    <td class="label"><%= parts[0] %></td>
+                    <td class="value" style="--percentage: <%= percentage %>;"></td>
+                  </tr>
+                <% }); %>
+              <% } %>
 
-          <!-- Plotly Chart for Price Change Over Time -->
-          <div id="priceChart-<%= item.index %>" style="width:100%;max-width:600px;height:400px;"></div>
+              <!-- Ingredients. -->
+              <% if (item.ingredients && Array.isArray(item.ingredients) && item.ingredients.length > 0) { %>
+                <tr>
+                  <td>&nbsp;<td>
+                  <td><td>
+                </tr>
+                <tr>
+                  <td>INGREDIENSER<td>
+                  <td><td>
+                </tr>
+                <% item.ingredients.forEach(function(ingredient) {
+                  const patterns = [
+                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅ, ]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
+                    /([a-zA-ZæøåÆØÅ, ]+)\s*(\d+)\s*prosent/i, // Matches "Pinot Bianco 80 prosent".
+                    /([a-zA-ZæøåÆØÅ, ]+)/i, // Matches single word types like "Riesling"
+                  ];
+                  let result = null;
+                  for (const pattern of patterns) {
+                    const match = ingredient.match(pattern);
+                    if (match) {
+                      if (pattern === patterns[0]) {
+                        result = { grape: match[2].trim(), percentage: parseFloat(match[1].trim()) };
+                        result.grape = result.grape.charAt(0).toUpperCase() + result.grape.slice(1);
+                      } else if (pattern === patterns[1]) {
+                        result = { grape: match[1].trim(), percentage: parseFloat(match[2].trim()) };
+                      } else if (pattern === patterns[2]) {
+                        result = { grape: match[1].trim(), percentage: 100.0 };
+                      }
+                      break;
+                    }
+                  }
+                  if (result) {
+                %>
+                  <tr>
+                    <td class="label"><%= result.grape %></td>
+                    <td class="value" style="--percentage: <%= result.percentage %>;"></td>
+                  </tr>
+                <% } }); %>
+              <% } %>
+
+              </tbody>
+            </table>
+
+          <hr>
+
+          <!-- Various fields of the product. -->
+          <table class="key-val">
+            <tbody>
+              <% if (item.smell) { %>
+                <tr>
+                  <td class="key">LUKT</td>
+                  <td class="val"><%= item.smell %></td>
+                </tr>
+              <% } %>
+              <% if (item.taste) { %>
+                <tr>
+                  <td class="key">SMAK</td>
+                  <td class="val"><%= item.taste %></td>
+                </tr>
+              <% } %>
+              <% if (item.storage) { %>
+                <tr>
+                  <td class="key">LAGRING</td>
+                  <td class="val"><%= item.storage %></td>
+                </tr>
+              <% } %>
+              <% if (item.colour) { %>
+                <tr>
+                  <td class="key">FARGE</td>
+                  <td class="val"><%= item.colour %></td>
+                </tr>
+              <% } %>
+              <% if (item.selection) { %>
+                <tr>
+                  <td class="key">VAREUTVALG &nbsp;</td>
+                  <td class="val"><%= item.selection %></td>
+                </tr>
+              <% } %>
+              <% if (item.pair) { %>
+                <tr>
+                  <td class="key">PASSER TIL &nbsp;</td>
+                  <td class="val"><%=
+                    item.pair.map(function(pair) {
+                      return pair.trim();
+                    }).join(' & ')
+                    %></td>
+                </tr>
+              <% } %>
+              <% if (item.method) { %>
+                <tr>
+                  <td class="key">METODE</td>
+                  <td class="val"><%= item.method %></td>
+                </tr>
+              <% } %>
+              <% if (item.year) { %>
+                <tr>
+                  <td class="key">ÅRGANG</td>
+                  <td class="val"><%= item.year %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+
+          <hr>
+
+          <!-- Price chart. -->
+          <div style="height:200px;">
+            <b>PRISHISTORIKK</b>
+            <canvas id="priceChart-<%= item.index %>"></canvas>
+          </div>
 
           <script>
             function formatDateAsLocalString(date) {
               const year = date.getFullYear();
-              const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Pad with leading zero if necessary
-              const day = date.getDate().toString().padStart(2, '0'); // Pad with leading zero if necessary
-              return `${year}-${month}-${day}`;
+              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+              const day = date.getDate().toString().padStart(2, '0');
+              return `${year}-${month}`;
             }
 
             // Function to generate dates on the 1st of each month in local time
@@ -260,27 +353,88 @@
             var prices = <%= JSON.stringify(item.prices) %>;
             var dates = generateDates(prices.length);
 
-            var trace = {
-              x: dates,
-              y: prices,
-              type: 'scatter',
-              mode: 'lines+markers',
-              name: 'Price over Time',
-              line: { color: 'green' }
-            };
+            // Duplicate the last price and add today's date to the end of the list
+            prices.push(prices[prices.length - 1]);
+            dates.push("nå");
 
-            var layout = {
-              title: 'Price Change Over Time',
-              xaxis: { title: 'Date' },
-              yaxis: { title: 'Price (KR)' }
-            };
+            function drawLineChart(canvasId, dates, prices) {
+              var canvas = document.getElementById(canvasId);
+              var ctx = canvas.getContext('2d');
 
-            var config = {
-              displayModeBar: false
-            };
+              // Resize canvas to fit container
+              canvas.width = canvas.parentElement.clientWidth;
+              canvas.height = canvas.parentElement.clientHeight;
 
-            Plotly.newPlot('priceChart-<%= item.index %>', [trace], layout, config);
+              // Calculate margins and plot area
+              var margin = { top: 20, right: 10, bottom: 40, left: 50 };
+              var plotWidth = canvas.width - margin.left - margin.right;
+              var plotHeight = canvas.height - margin.top - margin.bottom;
+
+              // Calculate scales
+              var xScale = plotWidth / (dates.length - 1);
+              var yMax = Math.max(...prices) * 1.05;
+              var yMin = Math.min(...prices) * 0.95;
+              var yScale = plotHeight / (yMax - yMin);
+
+              // Draw line
+              ctx.beginPath();
+              ctx.moveTo(margin.left, canvas.height - margin.bottom - (prices[0] - yMin) * yScale);
+              for (var i = 1; i < prices.length; i++) {
+                // Move horizontally to the new X position
+                ctx.lineTo(margin.left + i * xScale, canvas.height - margin.bottom - (prices[i - 1] - yMin) * yScale);
+                // Move vertically to the new Y position
+                ctx.lineTo(margin.left + i * xScale, canvas.height - margin.bottom - (prices[i] - yMin) * yScale);
+              }
+              ctx.strokeStyle = '#666666';
+              ctx.lineWidth = 5;
+              ctx.stroke();
+
+              // Draw markers
+              for (var i = 0; i < prices.length; i++) {
+                ctx.beginPath();
+                ctx.rect(margin.left + i * xScale - 5, canvas.height - margin.bottom - (prices[i] - yMin) * yScale - 5, 10, 10);
+                ctx.fillStyle = 'black';
+                ctx.fill();
+              }
+
+              // Draw labels
+              ctx.fillStyle = 'black';
+              ctx.textAlign = 'center';
+              ctx.font = '14px alpha-beta';
+              for (var i = 0; i < dates.length; i++) {
+                ctx.fillText(dates[i], margin.left + i * xScale, canvas.height - margin.bottom + 20);
+              }
+              ctx.fillStyle = '#666666';
+              ctx.textAlign = 'right';
+              ctx.textBaseline = 'middle';
+              for (var i = 0; i <= 5; i++) {
+                var yValue = yMin + (yMax - yMin) * i / 5;
+                ctx.fillText(yValue.toFixed(0), margin.left - 10, canvas.height - margin.bottom - yScale * (yValue - yMin));
+              }
+            }
+
+            window.addEventListener('resize', function() {
+              drawLineChart('priceChart-<%= item.index %>', dates, prices);
+            });
           </script>
+
+          <hr>
+
+          <div class="price">
+            <div class="text">KR <b><%= Math.ceil(item.price) %></b>
+            <% if (item.oldprice) { %>
+              FØR <b><%= Math.ceil(item.oldprice) %></b>
+            <% } %>
+            </div>
+            <% if (item.discount) { %>
+              <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b></div>
+            <% } %>
+          </div>
+
+          <div class="heading" style="flex-wrap: wrap;">
+            <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
+            <span class="close" index="<%= item.index %>">x</span>
+          </div>
         </div>
       </div>
     </section>

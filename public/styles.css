@@ -308,6 +308,7 @@ p {
 }
 
 .modal {
+    cursor: default;
     display: none;
     position: fixed;
     z-index: 999;
@@ -369,41 +370,67 @@ p {
     flex-direction: column;
     gap: calc(2 * var(--padding));
 }
-.characteristics {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-}
-.ingredients {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-}
-
-.fraction {
+.detailed .heading {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap-reverse;
     gap: var(--padding);
 }
-.fraction .label {
+.detailed .heading a {
+    font-size: var(--font-title);
+    color: var(--black);
+}
+.detailed .heading a:hover {
+    background-color: var(--darkgray);
+}
+.detailed .heading .close {
+    cursor: pointer;
+    align-self: stretch;
+    margin-left: auto;
+}
+
+hr {
+    border: 0;
+    height: 5px;
+    background-color: var(--blackish);
+    margin: 0 -10px;
+}
+
+.key-val {
+    border-collapse: separate;
+    border-spacing: 0 var(--padding);
+}
+.key-val tr {
+}
+.key {
+    font-size: var(--font-normal);
+    color: var(--black);
+    text-wrap: nowrap;
+}
+.val {
+    font-size: var(--font-description);
+    color: var(--blackish);
+    background-color: var(--gray);
+}
+
+.fractions {
+    border-collapse: separate;
+    border-spacing: 0 calc(0.5 * var(--padding));
+}
+.fractions tr .label {
     font-size: var(--font-normal);
     color: var(--blackish);
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: 100px;
+    text-wrap: nowrap;
 }
-.fraction .value {
-    position: relative;
-    flex-grow: 1;
+.fractions tr .value {
+    width: 100%;
     height: calc(2 * var(--padding));
     background: linear-gradient(
         to right,
-        var(--positive) calc(var(--percentage) * 1%),
+        var(--darkgray) calc(var(--percentage) * 1%),
         var(--gray) calc(var(--percentage) * 1%)
     );
-    margin-left: 10px;
 }
 
 @media (max-width: 690px) {
