@@ -31,15 +31,6 @@
 
       <div class="filterSelection">
         <button id="info">?</button>
-        <div id="infobox" class="modal">
-          <div class="infobox">
-            <div class="header">
-              <b>Hva er SNUBLEJUICE?</b>
-              <span class="exit">x</span>
-            </div>
-            <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
-          </div>
-        </div>
 
         <div class="mainSelection">
           <select name="category" id="category" onchange="applyFilters()">
@@ -113,6 +104,16 @@
       </div>
     </form>
   </header>
+
+  <div id="infobox" class="modal">
+    <div class="infobox">
+      <div class="header">
+        <b>Hva er SNUBLEJUICE?</b>
+        <span class="exit">x</span>
+      </div>
+      <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
+    </div>
+  </div>
 
   <div class="pagination" id="top">
     <div>SNUBLEJUICE.no</div>
@@ -188,6 +189,19 @@
               <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
             </div>
             <span class="close" index="<%= index %>">x</span>
+          </div>
+
+          <hr>
+
+          <div class="price">
+            <div class="text">KR <b><%= Math.ceil(item.price) %></b>
+            <% if (item.oldprice) { %>
+              FØR <b><%= Math.ceil(item.oldprice) %></b>
+            <% } %>
+            </div>
+            <% if (item.discount) { %>
+              <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b></div>
+            <% } %>
           </div>
 
           <div class="price">
@@ -366,6 +380,15 @@
               <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b></div>
             <% } %>
           </div>
+
+          <div class="price">
+            <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
+            <% if (item.alcoholprice) { %>
+              <div class="text">ALKOHOLPRIS <b><%= Math.ceil(item.alcoholprice) %></b></div>
+            <% } %>
+          </div>
+
+          <hr>
 
           <div class="heading" style="flex-wrap: wrap;">
             <div class="link">

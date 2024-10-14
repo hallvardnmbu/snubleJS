@@ -139,7 +139,7 @@ header form input:hover {
     margin-right: var(--padding);
     margin-bottom: calc(2 * var(--padding));
     padding-bottom: calc(2 * var(--padding));
-    border-bottom: 5px solid var(--gray);
+    border-bottom: var(--padding) solid var(--gray);
 }
 .advancedSelection {
     display: flex;
@@ -152,7 +152,7 @@ header form input:hover {
     margin-right: var(--padding);
     margin-bottom: calc(2 * var(--padding));
     padding-bottom: calc(2 * var(--padding));
-    border-bottom: 5px solid var(--gray);
+    border-bottom: var(--padding) solid var(--gray);
 
     font-size: var(--font-normal);
     color: var(--blackish);
@@ -197,7 +197,7 @@ header form input:hover {
 .mainSelection div button {
     display: flex;
     justify-content: center;
-    width: 10px;
+    width: var(--padding);
     margin-left: var(--padding);
 }
 #clearAll {
@@ -229,7 +229,7 @@ section {
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
     padding-bottom: var(--padding);
-    border-bottom: 10px solid var(--highlight);
+    border-bottom: var(--padding) solid var(--highlight);
 }
 
 p {
@@ -323,16 +323,19 @@ p {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(5px);
 }
 .infobox {
     font-size: var(--font-normal);
+    position: relative;
     background-color: white;
-    margin: calc(2 * var(--margin)) auto;
+    margin: var(--image) 0 auto 0;
     padding: var(--padding);
-    padding-bottom: 0;
-    border: 5px solid var(--blackish);
-    width: 60%;
+    border-top: var(--padding) solid var(--darkgray);
+    border-bottom: var(--padding) solid var(--darkgray);
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
 }
 .exit,
 .close {
@@ -367,13 +370,13 @@ p {
 .detailed {
     position: relative;
     background-color: white;
-    margin: 15% auto;
+    margin: var(--image) 0 var(--image) 0;
     padding: var(--padding);
-    border: 5px solid var(--blackish);
-    width: 80%;
+    border-top: var(--padding) solid var(--darkgray);
+    border-bottom: var(--padding) solid var(--darkgray);
     display: flex;
     flex-direction: column;
-    gap: calc(2 * var(--padding));
+    gap: var(--padding);
 }
 .detailed .heading {
     display: flex;
@@ -396,6 +399,7 @@ p {
 .detailed .heading .link a {
     font-size: var(--font-title);
     color: var(--blackish);
+    font-weight: bold;
 }
 .detailed .heading .link a:hover {
     background-color: var(--darkgray);
@@ -408,9 +412,9 @@ p {
 
 hr {
     border: 0;
-    height: 5px;
-    background-color: var(--blackish);
-    margin: 0 -10px;
+    height: var(--padding);
+    background-color: var(--gray);
+    margin: 0 calc(-1 * var(--padding));
 }
 
 .key-val {
@@ -436,10 +440,14 @@ hr {
     content: "";
     position: absolute;
     top: 0;
-    left: -10px;
-    width: 10px;
+    left: calc(-1 * var(--padding));
+    width: var(--padding);
     height: 100%;
-    background: linear-gradient(to bottom, var(--marker) 10px, var(--highlight) 10px);
+    background: linear-gradient(
+        to bottom,
+        var(--marker) var(--padding),
+        var(--highlight) var(--padding)
+    );
 }
 
 .fractions {
@@ -455,8 +463,8 @@ hr {
     width: 100%;
     background: linear-gradient(
         to right,
-        var(--highlight) 0 calc(var(--value) * 100% / var(--total) - 10px),
-        var(--marker) 0 calc(var(--value) * 100% / var(--total) - 10px),
+        var(--highlight) 0 calc(var(--value) * 100% / var(--total) - var(--padding)),
+        var(--marker) 0 calc(var(--value) * 100% / var(--total) - var(--padding)),
         var(--marker) 0 calc(var(--value) * 100% / var(--total)),
         var(--gray) calc(var(--value) * 100% / var(--total)) 100%
     );
@@ -468,8 +476,8 @@ hr {
     width: 100%;
     background: linear-gradient(
         to right,
-        var(--highlight) calc(var(--percentage) * 1% - 10px),
-        var(--marker) calc(var(--percentage) * 1% - 10px),
+        var(--highlight) calc(var(--percentage) * 1% - var(--padding)),
+        var(--marker) calc(var(--percentage) * 1% - var(--padding)),
         var(--marker) calc(var(--percentage) * 1%),
         var(--gray) calc(var(--percentage) * 1%)
     );
@@ -498,9 +506,6 @@ hr {
     .pagination {
         flex-direction: column;
         align-items: center;
-    }
-    .infobox {
-        width: 90%;
     }
 
     .price {
