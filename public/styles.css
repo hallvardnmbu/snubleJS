@@ -45,11 +45,15 @@
     --negative: rgba(100, 0, 0, 0.2);
     --positive: rgba(0, 100, 0, 0.2);
     --green: rgba(0, 100, 0, 0.6);
+    --red: rgba(100, 0, 0, 0.6);
+
+    --highlight: var(--positive);
+    --marker: var(--green);
 }
 
 body {
     line-height: 1rem;
-    font-size: var(--font-body);
+    /* font-size: var(--font-body); */
     font-family: "Fixedsys", monospace;
 }
 
@@ -225,7 +229,7 @@ section {
     flex-direction: row;
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
     padding-bottom: var(--padding);
-    border-bottom: 5px solid var(--gray);
+    border-bottom: 10px solid var(--highlight);
 }
 
 p {
@@ -414,16 +418,28 @@ hr {
     border-spacing: 0 var(--padding);
 }
 .key-val tr {
+    position: relative;
 }
 .key {
     font-size: var(--font-normal);
     color: var(--black);
-    text-wrap: nowrap;
+    white-space: nowrap;
 }
 .val {
     font-size: var(--font-description);
     color: var(--blackish);
+    position: relative;
     background-color: var(--gray);
+    padding-left: 5px;
+}
+.val::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 10px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--marker) 10px, var(--highlight) 10px);
 }
 
 .fractions {
@@ -439,9 +455,9 @@ hr {
     width: 100%;
     background: linear-gradient(
         to right,
-        var(--positive) 0 calc(var(--value) * 100% / var(--total) - 10px),
-        var(--green) 0 calc(var(--value) * 100% / var(--total) - 10px),
-        var(--green) 0 calc(var(--value) * 100% / var(--total)),
+        var(--highlight) 0 calc(var(--value) * 100% / var(--total) - 10px),
+        var(--marker) 0 calc(var(--value) * 100% / var(--total) - 10px),
+        var(--marker) 0 calc(var(--value) * 100% / var(--total)),
         var(--gray) calc(var(--value) * 100% / var(--total)) 100%
     );
     background-size: 100% var(--padding);
@@ -452,9 +468,9 @@ hr {
     width: 100%;
     background: linear-gradient(
         to right,
-        var(--positive) calc(var(--percentage) * 1% - 10px),
-        var(--green) calc(var(--percentage) * 1% - 10px),
-        var(--green) calc(var(--percentage) * 1%),
+        var(--highlight) calc(var(--percentage) * 1% - 10px),
+        var(--marker) calc(var(--percentage) * 1% - 10px),
+        var(--marker) calc(var(--percentage) * 1%),
         var(--gray) calc(var(--percentage) * 1%)
     );
     background-size: 100% var(--padding);

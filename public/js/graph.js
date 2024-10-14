@@ -44,14 +44,14 @@ function graphPrices() {
         };
       } else {
         color = {
-          marker: "black",
-          line: "#666666",
+          marker: "#666666",
+          line: "#cccccc",
         };
       }
     } else {
       color = {
-        marker: "black",
-        line: "#666666",
+        marker: "#666666",
+        line: "#cccccc",
       };
     }
 
