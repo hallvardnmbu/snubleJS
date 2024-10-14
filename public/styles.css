@@ -44,6 +44,7 @@
     --gray: #eeeeee;
     --negative: rgba(100, 0, 0, 0.2);
     --positive: rgba(0, 100, 0, 0.2);
+    --green: rgba(0, 100, 0, 0.6);
 }
 
 body {
@@ -377,11 +378,22 @@ p {
     flex-wrap: wrap-reverse;
     gap: var(--padding);
 }
-.detailed .heading a {
-    font-size: var(--font-title);
-    color: var(--black);
+.detailed .heading .link {
+    display: flex;
+    flex-direction: row;
+    gap: var(--padding);
+    align-items: center;
+    justify-content: center;
+    align-content: center;
 }
-.detailed .heading a:hover {
+.www {
+    height: calc(var(--font-title) - 4px);
+}
+.detailed .heading .link a {
+    font-size: var(--font-title);
+    color: var(--blackish);
+}
+.detailed .heading .link a:hover {
     background-color: var(--darkgray);
 }
 .detailed .heading .close {
@@ -425,12 +437,29 @@ hr {
 }
 .fractions tr .value {
     width: 100%;
-    height: calc(2 * var(--padding));
     background: linear-gradient(
         to right,
-        var(--darkgray) calc(var(--percentage) * 1%),
+        var(--positive) 0 calc(var(--value) * 100% / var(--total) - 10px),
+        var(--green) 0 calc(var(--value) * 100% / var(--total) - 10px),
+        var(--green) 0 calc(var(--value) * 100% / var(--total)),
+        var(--gray) calc(var(--value) * 100% / var(--total)) 100%
+    );
+    background-size: 100% var(--padding);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.fractions tr .percentage {
+    width: 100%;
+    background: linear-gradient(
+        to right,
+        var(--positive) calc(var(--percentage) * 1% - 10px),
+        var(--green) calc(var(--percentage) * 1% - 10px),
+        var(--green) calc(var(--percentage) * 1%),
         var(--gray) calc(var(--percentage) * 1%)
     );
+    background-size: 100% var(--padding);
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 @media (max-width: 690px) {

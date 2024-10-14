@@ -102,11 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const productSections = document.querySelectorAll(".product");
   productSections.forEach((section) => {
     section.addEventListener("click", function () {
-      const itemId = this.getAttribute("index");
-      const modal = document.getElementById(`detailed-${itemId}`);
+      const itemIndex = this.getAttribute("index");
+      const modal = document.getElementById(`detailed-${itemIndex}`);
       modal.style.display = "block";
 
-      // Trigger the window resize event to draw the line-graph.
+      // Trigger resize event
       window.dispatchEvent(new Event("resize"));
     });
   });
@@ -116,8 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
   closeModalButtons.forEach((button) => {
     button.addEventListener("click", function (event) {
       event.stopPropagation(); // Prevent bubbling to avoid modal reopening
-      const itemId = this.getAttribute("index");
-      const modal = document.getElementById(`detailed-${itemId}`);
+      const itemIndex = this.getAttribute("index");
+      const modal = document.getElementById(`detailed-${itemIndex}`);
       modal.style.display = "none";
     });
   });
