@@ -1,0 +1,39 @@
+{
+  "short_name": "snublejuice",
+  "name": "snublejuice",
+  "icons": [
+    {
+      "src": "images/44x44.png",
+      "sizes": "44x44",
+      "type": "image/png"
+    },
+    {
+      "src": "images/64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "images/150x150.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    },
+    {
+      "src": "images/320x320.png",
+      "sizes": "320x320",
+      "type": "image/png"
+    },
+    {
+      "src": "images/512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "images/1024x1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone"
+}
