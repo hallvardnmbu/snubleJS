@@ -382,7 +382,7 @@ p {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex-wrap: wrap-reverse;
+    flex-wrap: nowrap;
     gap: var(--padding);
 }
 .detailed .heading .link {
@@ -400,13 +400,14 @@ p {
     font-size: var(--font-title);
     color: var(--blackish);
     font-weight: bold;
+    line-height: 1.05;
 }
 .detailed .heading .link a:hover {
     background-color: var(--darkgray);
 }
 .detailed .heading .close {
     cursor: pointer;
-    align-self: stretch;
+    align-self: center;
     margin-left: auto;
 }
 
@@ -428,6 +429,7 @@ hr {
     font-size: var(--font-normal);
     color: var(--black);
     white-space: nowrap;
+    vertical-align: top;
 }
 .val {
     font-size: var(--font-description);
@@ -454,10 +456,13 @@ hr {
     border-collapse: separate;
     border-spacing: 0 calc(0.5 * var(--padding));
 }
+.fractions tr td {
+    font-size: var(--font-normal);
+}
 .fractions tr .label {
     font-size: var(--font-normal);
     color: var(--blackish);
-    text-wrap: nowrap;
+    min-width: calc(1.5 * var(--image));
 }
 .fractions tr .value {
     width: 100%;
@@ -508,6 +513,10 @@ hr {
         align-items: center;
     }
 
+    .detailed {
+        margin: calc(2 * var(--padding)) 0 var(--margin) 0;
+    }
+
     .price {
         flex-wrap: wrap-reverse;
     }
@@ -516,8 +525,8 @@ hr {
         line-height: 1.4rem;
     }
 
-    .fraction .label {
-        min-width: 70px;
+    .fractions tr .label {
+        min-width: var(--image);
     }
 
     footer {
