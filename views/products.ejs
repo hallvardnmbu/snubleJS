@@ -188,7 +188,7 @@
               <img src="images/www.png" class="www">
               <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
             </div>
-            <span class="close" index="<%= index %>">x</span>
+            <div class="close" index="<%= index %>">x</div>
           </div>
 
           <hr>
@@ -207,7 +207,7 @@
           <div class="price">
             <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
             <% if (item.alcoholprice) { %>
-              <div class="text">ALKOHOLPRIS <b><%= Math.ceil(item.alcoholprice) %></b></div>
+              <div class="text">ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b> :<b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
             <% } %>
           </div>
 
@@ -227,7 +227,7 @@
                   var values = parts[1].split(' av ');
                 %>
                   <tr>
-                    <td class="label"><%= parts[0] %></td>
+                    <td class="label"><%= parts[0] %>&nbsp;</td>
                     <td class="value" style="--value: <%= parseInt(values[0]) %>; --total: <%= parseInt(values[1]) %>;"></td>
                   </tr>
                 <% }); %>
@@ -245,9 +245,9 @@
                 </tr>
                 <% item.ingredients.forEach(function(ingredient) {
                   const patterns = [
-                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅ, ()]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
-                    /([a-zA-ZæøåÆØÅ, ()]+)\s*(\d+)\s*prosent/i, // Matches "Sumoll (Vijariego Negro) 10 prosent" or "Pinot Bianco 80 prosent"
-                    /([a-zA-ZæøåÆØÅ, ()]+)/i, // Matches single word types like "Riesling"
+                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
+                    /([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)\s*(\d+)\s*prosent/i, // Matches "Sumoll (Vijariego Negro) 10 prosent" or "Pinot Bianco 80 prosent"
+                    /([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)/i, // Matches single word types like "Riesling"
                   ];
                   let result = null;
                   for (const pattern of patterns) {
@@ -268,11 +268,7 @@
                 %>
                   <tr>
                     <td class="label">
-                      <% if (result.grape && result.grape.length > 10) { %>
-                        <%= result.grape %>&nbsp;
-                      <% } else { %>
-                        <%= result.grape %>
-                      <% } %>
+                      <%= result.grape %>&nbsp;
                     </td>
                     <td class="percentage" style="--percentage: <%= result.percentage %>;"></td>
                   </tr>
@@ -287,6 +283,12 @@
           <!-- Various fields of the product. -->
           <table class="key-val">
             <tbody>
+              <% if (item.description.lang) { %>
+                <tr>
+                  <td class="key">BESKRIVELSE &nbsp;</td>
+                  <td class="val"><%= item.description.lang %></td>
+                </tr>
+              <% } %>
               <% if (item.smell) { %>
                 <tr>
                   <td class="key">LUKT</td>
@@ -384,18 +386,18 @@
           <div class="price">
             <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
             <% if (item.alcoholprice) { %>
-              <div class="text">ALKOHOLPRIS <b><%= Math.ceil(item.alcoholprice) %></b></div>
+              <div class="text">ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b> :<b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
             <% } %>
           </div>
 
           <hr>
 
-          <div class="heading" style="flex-wrap: wrap;">
+          <div class="heading">
             <div class="link">
               <img src="images/www.png" class="www">
               <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
             </div>
-            <span class="close" index="<%= index %>">x</span>
+            <div class="close" index="<%= index %>">x</div>
           </div>
         </div>
       </div>

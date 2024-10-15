@@ -71,6 +71,8 @@ document.getElementById("falcohol").addEventListener("change", function () {
   applyFilters();
 });
 document.getElementById("fsearch").addEventListener("change", function () {
+  // Set the page to 1 when searching.
+  document.querySelector('input[name="page"]').value = 1;
   applyFilters();
 });
 
