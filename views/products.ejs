@@ -150,7 +150,7 @@
     <section class="product" index="<%= index %>" style="--highlight: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--darkgray)' %>; --marker: <%= item.discount > 0 ? 'var(--red)' : item.discount < 0 ? 'var(--green)' : 'var(--blackish)' %>;">
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
-        <div class="text"><b><%= item.volume %></b> cL</div>
+        <div class="text"><b><%= (item.volume % 1 === 0) ? item.volume.toFixed(0) : item.volume.toFixed(1) %></b> cL</div>
       </div>
       <div class="information">
         <div class="name">
@@ -218,9 +218,23 @@
           </div>
 
           <div class="price">
-            <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
+            <div class="text">
+              <div class="text">
+                LITERPRIS <b><%= Math.ceil(item.literprice) %></b>
+              </div>
             <% if (item.alcoholprice) { %>
-              <div class="text">ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b> :<b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
+              <div class="text">
+                <div class="text">
+                  ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b>
+                </div>
+              </div></div>
+              <div class="text">
+                <div class="text">
+                  ALKOHOL <b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>
+                </div>
+              </div>
+            <% } else { %>
+              </div>
             <% } %>
           </div>
 
@@ -397,9 +411,23 @@
           </div>
 
           <div class="price">
-            <div class="text">LITERPRIS <b><%= Math.ceil(item.literprice) %></b></div>
+            <div class="text">
+              <div class="text">
+                LITERPRIS <b><%= Math.ceil(item.literprice) %></b>
+              </div>
             <% if (item.alcoholprice) { %>
-              <div class="text">ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b> :<b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
+              <div class="text">
+                <div class="text">
+                  ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b>
+                </div>
+              </div></div>
+              <div class="text">
+                <div class="text">
+                  ALKOHOL <b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>
+                </div>
+              </div>
+            <% } else { %>
+              </div>
             <% } %>
           </div>
 

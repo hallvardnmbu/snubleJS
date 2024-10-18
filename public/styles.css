@@ -248,6 +248,7 @@ p {
     align-items: center;
     gap: var(--padding);
     color: var(--blackish);
+    flex-wrap: wrap;
 }
 .text b {
     font-family: "m04", monospace;
@@ -322,8 +323,7 @@ p {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
+    backdrop-filter: saturate(0) blur(3px);
 }
 .infobox {
     font-size: var(--font-normal);
@@ -370,7 +370,7 @@ p {
 .detailed {
     position: relative;
     background-color: white;
-    margin: var(--image) 0 var(--image) 0;
+    margin: var(--margin) 0 var(--image) 0;
     padding: var(--padding);
     border-top: var(--padding) solid var(--darkgray);
     border-bottom: var(--padding) solid var(--darkgray);

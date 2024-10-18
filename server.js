@@ -89,9 +89,27 @@ async function load({
     pipeline.push({
       $search: {
         index: "name",
-        text: {
-          query: search,
-          path: "name",
+        compound: {
+          should: [
+            {
+              text: {
+                query: search,
+                path: "name",
+                score: { boost: { value: 10 } },
+              },
+            },
+            {
+              text: {
+                query: search,
+                path: "name",
+                fuzzy: {
+                  maxEdits: 2, // Max single-character edits
+                  prefixLength: 1, // Exact beginning of word matches
+                  maxExpansions: 1, // Max variations
+                },
+              },
+            },
+          ],
         },
       },
     });
