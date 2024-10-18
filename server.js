@@ -277,17 +277,12 @@ snublejuice.get("/", async (req, res) => {
   }
 });
 
-// IND320 APPLICATION (Static files for ind320.no)
+// IND320 API APPLICATION (api.ind320.no)
 // ------------------------------------------------------------------------------------------------
 
-const indStatic = express();
-indStatic.use(express.static(path.join(__dirname, "other")));
-
-// IND320 API APPLICATION (API endpoints for api.ind320.no)
-// ------------------------------------------------------------------------------------------------
-
-const indApi = express();
-indApi.use(express.json());
+const ind = express();
+ind.use(express.json());
+ind.use(express.static(path.join(__dirname, "other")));
 
 const dataFile = path.join(__dirname, "other/data.json");
 
@@ -300,8 +295,12 @@ const dataFile = path.join(__dirname, "other/data.json");
   }
 })();
 
+ind.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "other", "index.html"));
+});
+
 // API endpoint to get data by dates.
-indApi.get("/dates", async (req, res) => {
+ind.get("/dates", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
     let jsonData = JSON.parse(data);
@@ -348,7 +347,7 @@ indApi.get("/dates", async (req, res) => {
 });
 
 // API endpoint to get data by id.
-indApi.get("/id", async (req, res) => {
+ind.get("/id", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
     let jsonData = JSON.parse(data);
@@ -377,8 +376,7 @@ indApi.get("/id", async (req, res) => {
 // ------------------------------------------------------------------------------------------------
 
 app.use(vhost("snublejuice.no", snublejuice));
-app.use(vhost("ind320.no", indStatic));
-app.use(vhost("api.ind320.no", indApi));
+app.use(vhost("api.ind320.no", ind));
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
