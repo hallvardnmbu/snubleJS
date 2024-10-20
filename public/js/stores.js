@@ -40,7 +40,7 @@ function populateStores(stores) {
     storeSelect.value = selectedStore;
   } else {
     // Reset to default option if no selected store is found in sessionStorage
-    storeSelect.selectedIndex = 0;
+    storeSelect.value = _DEFAULT[0];
   }
 
   // Add event listener to save the selected store to local storage
