@@ -23,24 +23,11 @@ document.getElementById("sortButton").onclick = function (event) {
   applyFilters();
 };
 
-// Reset the form.
+// Reset the page.
 document.getElementById("clearFilters").onclick = function (event) {
   event.preventDefault();
-
-  // Clear all inputs.
-  document.querySelectorAll("input").forEach((input) => {
-    input.value = null;
-  });
-
-  // Clear all selections.
-  document.querySelectorAll("select").forEach((select) => {
-    select.selectedIndex = 0;
-  });
-
-  // Reset session storage store selection.
-  sessionStorage.setItem("selectedStore", null);
-
-  applyFilters();
+  sessionStorage.clear();
+  window.location.href = "/";
 };
 
 // Toggle advanced visibility.
