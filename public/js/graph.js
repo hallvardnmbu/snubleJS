@@ -1,3 +1,5 @@
+const _PER_PAGE = 25;
+
 // Format the date to custom string.
 function formatDateAsLocalString(date) {
   const year = date.getFullYear();
@@ -17,7 +19,7 @@ function generateDates(numPrices) {
 }
 
 function graphPrices() {
-  for (let index = 0; index < 10; index++) {
+  for (let index = 0; index < _PER_PAGE; index++) {
     // Extract prices and dates from session storage
     const data = JSON.parse(sessionStorage.getItem(`${index}`));
     if (!data) {
