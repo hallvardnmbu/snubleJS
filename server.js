@@ -426,6 +426,6 @@ ind.get("/id", async (req, res) => {
 app.use(vhost("snublejuice.no", snublejuice));
 app.use(vhost("api.ind320.no", ind));
 
-snublejuice.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
