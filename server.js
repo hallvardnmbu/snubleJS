@@ -6,14 +6,14 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { Sign } from "crypto";
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const _PERPAGE = 10;
-const _PRELOAD = 5;
+const _PER_PAGE = 25;
 
 const port = 8080;
 const app = express();
@@ -85,7 +85,7 @@ async function load({
   ascending = true,
 
   // Pagination;
-  pageIndex = 1,
+  page = 1,
 
   // Search for name;
   search = null,
@@ -183,7 +183,7 @@ async function load({
     if (tot.length === 0) {
       total = 1;
     } else {
-      total = Math.floor(tot[0].amount / _PERPAGE) + 1;
+      total = Math.floor(tot[0].amount / _PER_PAGE) + 1;
     }
   } else {
     total = null;
@@ -192,10 +192,7 @@ async function load({
   if (!search) {
     pipeline.push({ $sort: { [sort]: ascending ? 1 : -1 } });
   }
-  pipeline.push(
-    { $skip: (pageIndex - 1) * (_PRELOAD * _PERPAGE) },
-    { $limit: _PRELOAD * _PERPAGE },
-  );
+  pipeline.push({ $skip: (page - 1) * _PER_PAGE }, { $limit: _PER_PAGE });
 
   try {
     const data = await collection.aggregate(pipeline).toArray();
@@ -234,7 +231,6 @@ snublejuice.get("/api/stores", async (req, res) => {
 });
 
 // Route to display products with pagination
-const cache = {};
 snublejuice.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -247,69 +243,52 @@ snublejuice.get("/", async (req, res) => {
     const news = req.query.news === "true";
     const store = req.query.store || "null";
 
-    const cacheKey = `${sort}-${ascending}-${category}-${volume}-${alcohol}-${search}-${news}-${store}`;
-    if (!cache[cacheKey]) {
-      cache[cacheKey] = {};
-    }
+    let { data, total } = await load({
+      collection,
 
-    const startPage = Math.floor((page - 1) / _PRELOAD) + 1;
-    if (!cache[cacheKey][startPage]) {
-      let { data, total } = await load({
-        collection,
+      // Single parameters;
+      category: categories[category],
+      subcategory: null,
+      country: null,
+      district: null,
+      subdistrict: null,
+      year: null,
+      cork: null,
+      storage: null,
 
-        // Single parameters;
-        category: categories[category],
-        subcategory: null,
-        country: null,
-        district: null,
-        subdistrict: null,
-        year: null,
-        cork: null,
-        storage: null,
+      // Include non-alcoholic products;
+      nonalcoholic: false,
 
-        // Include non-alcoholic products;
-        nonalcoholic: false,
+      // Only show new products;
+      news: news,
 
-        // Only show new products;
-        news: news,
+      // Array parameters;
+      description: null,
+      store: store === "null" ? null : store,
+      pair: null,
 
-        // Array parameters;
-        description: null,
-        store: store === "null" ? null : store,
-        pair: null,
+      // If specified, only include values >=;
+      volume: volume,
+      alcohol: alcohol,
 
-        // If specified, only include values >=;
-        volume: volume,
-        alcohol: alcohol,
+      // Sorting;
+      sort: sort,
+      ascending: ascending,
 
-        // Sorting;
-        sort: sort,
-        ascending: ascending,
+      // Pagination;
+      page: page,
 
-        // Pagination;
-        pageIndex: startPage,
+      // Search for name;
+      search: search,
 
-        // Search for name;
-        search: search,
-
-        // Calculate total pages;
-        fresh: true,
-      });
-
-      cache[cacheKey][startPage] = data;
-      cache.total = total;
-    }
-
-    const cachedData = cache[cacheKey][startPage];
-    const dataToDisplay = cachedData.slice(
-      ((page - 1) % _PRELOAD) * _PERPAGE,
-      page % _PRELOAD === 0 ? _PRELOAD * _PERPAGE : (page % _PRELOAD) * _PERPAGE,
-    );
+      // Calculate total pages;
+      fresh: true,
+    });
 
     res.render("products", {
-      data: dataToDisplay,
+      data: data,
       page: page,
-      totalPages: cache.total,
+      totalPages: total,
       sort: sort,
       ascending: ascending,
       category: category,
