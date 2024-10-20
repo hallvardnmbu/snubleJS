@@ -42,7 +42,7 @@
         <button id="info">?</button>
 
         <div class="mainSelection">
-          <select name="category" id="category" onchange="applyFilters()">
+          <select name="category" id="category" onchange="applyFilters(true)">
             <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
             <option value="aromatisert" <%= category === 'aromatisert' ? 'selected' : '' %>>Aromatisert vin</option>
             <option value="brennevin" <%= category === 'brennevin' ? 'selected' : '' %>>Brennevin</option>
@@ -73,7 +73,7 @@
             </button>
           </div>
 
-          <select name="store" id="store" onchange="applyFilters()">
+          <select name="store" id="store" onchange="applyFilters(true)">
             <!-- Options will be dynamically populated by `public/js/stores.js`. -->
           </select>
 

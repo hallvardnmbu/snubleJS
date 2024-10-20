@@ -1,5 +1,8 @@
 // Submit the form.
-function applyFilters() {
+function applyFilters(resetPage = false) {
+  if (resetPage) {
+    document.querySelector('input[name="page"]').value = 1;
+  }
   document.getElementById("filter").submit();
 }
 
@@ -65,15 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Volume, alcohol and search change.
 document.getElementById("fvolume").addEventListener("change", function () {
-  applyFilters();
+  applyFilters(true);
 });
 document.getElementById("falcohol").addEventListener("change", function () {
-  applyFilters();
+  applyFilters(true);
 });
 document.getElementById("fsearch").addEventListener("change", function () {
-  // Set the page to 1 when searching.
-  document.querySelector('input[name="page"]').value = 1;
-  applyFilters();
+  applyFilters(true);
 });
 
 // New products toggle.

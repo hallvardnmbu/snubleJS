@@ -254,7 +254,6 @@ snublejuice.get("/", async (req, res) => {
 
     const startPage = Math.floor((page - 1) / _PRELOAD) + 1;
     if (!cache[cacheKey][startPage]) {
-      console.log("Loading!");
       let { data, total } = await load({
         collection,
 
