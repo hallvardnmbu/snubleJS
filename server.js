@@ -70,6 +70,10 @@ async function load({
   // Only show new products;
   news = false,
 
+  // Show orderable and instores products;
+  orderable = true,
+  instores = false,
+
   // Array parameters;
   description = null,
   store = null,
@@ -125,17 +129,8 @@ async function load({
   }
 
   let matchStage = {
-    // Only include updated products (i.e., non-expired ones).
-    status: "aktiv",
+    // Only include buyable products.
     buyable: true,
-
-    // Filter by products that either orderable or instores is true (or both).
-    // Wrapped in `$and` in case `news = true` (see below).
-    $and: [
-      {
-        $or: [{ orderable: true }, { instores: true }],
-      },
-    ],
 
     // Match the specified parameters if they are not null.
     ...(category && !search ? { category: category } : {}),
@@ -152,6 +147,15 @@ async function load({
     ...(store && !search ? { stores: { $in: [store] } } : {}),
     // ...(pair.length && !search ? { pair: { $in: pair } } : {}),
   };
+
+  if (!store) {
+    if (orderable) {
+      matchStage["orderable"] = true;
+    }
+    if (instores) {
+      matchStage["instores"] = true;
+    }
+  }
 
   if (!search) {
     if (volume) {
@@ -240,7 +244,13 @@ snublejuice.get("/", async (req, res) => {
     const alcohol = parseFloat(req.query.alcohol) || null;
     const search = req.query.search || null;
     const news = req.query.news === "true";
-    const store = req.query.store || "null";
+    let store = req.query.store || "Kan bestilles";
+
+    let orderable = store === "Kan bestilles";
+    let instores = store === "Tilgjengelig i butikk";
+    if (orderable || instores) {
+      store = null;
+    }
 
     let { data, total } = await load({
       collection,
@@ -260,6 +270,10 @@ snublejuice.get("/", async (req, res) => {
 
       // Only show new products;
       news: news,
+
+      // Only show products that are orderable or in stores;
+      orderable: orderable,
+      instores: instores,
 
       // Array parameters;
       description: null,

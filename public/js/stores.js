@@ -1,3 +1,5 @@
+const _DEFAULT = ["Kan bestilles", "Tilgjengelig i butikk"];
+
 async function fetchStores() {
   try {
     const response = await axios.get("/api/stores");
@@ -15,11 +17,13 @@ function populateStores(stores) {
   // Clear existing options
   storeSelect.innerHTML = "";
 
-  // Add default option
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "null";
-  defaultOption.text = "Alle butikker og nettlager";
-  storeSelect.appendChild(defaultOption);
+  // Add default options
+  for (const text of _DEFAULT) {
+    const defaultOption = document.createElement("option");
+    defaultOption.value = text;
+    defaultOption.text = text;
+    storeSelect.appendChild(defaultOption);
+  }
 
   // Add new options
   for (const store of stores) {
@@ -52,7 +56,7 @@ function populateStores(stores) {
 // Function to display a message if a store other than "null" is selected
 function displayMessage(selectedValue) {
   const messageElement = document.getElementById("message");
-  if (selectedValue !== "null") {
+  if (!_DEFAULT.includes(selectedValue)) {
     // Set the style to block to display the message
     messageElement.style.display = "block";
   } else {
