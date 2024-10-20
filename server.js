@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import vhost from "vhost";
 import fs from "fs/promises";
 import { MongoClient, ServerApiVersion } from "mongodb";
@@ -13,6 +14,13 @@ const __dirname = path.dirname(__filename);
 
 const port = 8080;
 const app = express();
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (10 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
 
 // SNUBLEJUICE APPLICATION
 // ------------------------------------------------------------------------------------------------
