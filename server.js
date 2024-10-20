@@ -12,6 +12,9 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const _PERPAGE = 10;
+const _PRELOAD = 5;
+
 const port = 8080;
 const app = express();
 const limiter = rateLimit({
@@ -82,8 +85,7 @@ async function load({
   ascending = true,
 
   // Pagination;
-  limit = 10,
-  page = 1,
+  pageIndex = 1,
 
   // Search for name;
   search = null,
@@ -181,7 +183,7 @@ async function load({
     if (tot.length === 0) {
       total = 1;
     } else {
-      total = Math.floor(tot[0].amount / limit) + 1;
+      total = Math.floor(tot[0].amount / _PERPAGE) + 1;
     }
   } else {
     total = null;
@@ -190,7 +192,10 @@ async function load({
   if (!search) {
     pipeline.push({ $sort: { [sort]: ascending ? 1 : -1 } });
   }
-  pipeline.push({ $skip: (page - 1) * limit }, { $limit: limit });
+  pipeline.push(
+    { $skip: (pageIndex - 1) * (_PRELOAD * _PERPAGE) },
+    { $limit: _PRELOAD * _PERPAGE },
+  );
 
   try {
     const data = await collection.aggregate(pipeline).toArray();
@@ -229,6 +234,7 @@ snublejuice.get("/api/stores", async (req, res) => {
 });
 
 // Route to display products with pagination
+const cache = {};
 snublejuice.get("/", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -241,53 +247,70 @@ snublejuice.get("/", async (req, res) => {
     const news = req.query.news === "true";
     const store = req.query.store || "null";
 
-    let { data, total } = await load({
-      collection,
+    const cacheKey = `${sort}-${ascending}-${category}-${volume}-${alcohol}-${search}-${news}-${store}`;
+    if (!cache[cacheKey]) {
+      cache[cacheKey] = {};
+    }
 
-      // Single parameters;
-      category: categories[category],
-      subcategory: null,
-      country: null,
-      district: null,
-      subdistrict: null,
-      year: null,
-      cork: null,
-      storage: null,
+    const startPage = Math.floor((page - 1) / _PRELOAD) + 1;
+    if (!cache[cacheKey][startPage]) {
+      console.log("Loading!");
+      let { data, total } = await load({
+        collection,
 
-      // Include non-alcoholic products;
-      nonalcoholic: false,
+        // Single parameters;
+        category: categories[category],
+        subcategory: null,
+        country: null,
+        district: null,
+        subdistrict: null,
+        year: null,
+        cork: null,
+        storage: null,
 
-      // Only show new products;
-      news: news,
+        // Include non-alcoholic products;
+        nonalcoholic: false,
 
-      // Array parameters;
-      description: null,
-      store: store === "null" ? null : store,
-      pair: null,
+        // Only show new products;
+        news: news,
 
-      // If specified, only include values >=;
-      volume: volume,
-      alcohol: alcohol,
+        // Array parameters;
+        description: null,
+        store: store === "null" ? null : store,
+        pair: null,
 
-      // Sorting;
-      sort: sort,
-      ascending: ascending,
+        // If specified, only include values >=;
+        volume: volume,
+        alcohol: alcohol,
 
-      // Pagination;
-      limit: 10,
-      page: page,
+        // Sorting;
+        sort: sort,
+        ascending: ascending,
 
-      // Search for name;
-      search: search,
+        // Pagination;
+        pageIndex: startPage,
 
-      // Calculate total pages;
-      fresh: true,
-    });
+        // Search for name;
+        search: search,
+
+        // Calculate total pages;
+        fresh: true,
+      });
+
+      cache[cacheKey][startPage] = data;
+      cache.total = total;
+    }
+
+    const cachedData = cache[cacheKey][startPage];
+    const dataToDisplay = cachedData.slice(
+      ((page - 1) % _PRELOAD) * _PERPAGE,
+      page % _PRELOAD === 0 ? _PRELOAD * _PERPAGE : (page % _PRELOAD) * _PERPAGE,
+    );
 
     res.render("products", {
-      data: data,
+      data: dataToDisplay,
       page: page,
-      totalPages: total,
+      totalPages: cache.total,
       sort: sort,
       ascending: ascending,
       category: category,
@@ -404,6 +427,6 @@ ind.get("/id", async (req, res) => {
 app.use(vhost("snublejuice.no", snublejuice));
 app.use(vhost("api.ind320.no", ind));
 
-app.listen(port, () => {
+snublejuice.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
