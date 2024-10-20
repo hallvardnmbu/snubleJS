@@ -6,7 +6,6 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import { Sign } from "crypto";
 
 dotenv.config();
 
