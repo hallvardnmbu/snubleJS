@@ -120,7 +120,7 @@
         <b>Hva er SNUBLEJUICE?</b>
         <span class="exit">x</span>
       </div>
-      <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side (hvilket åpnes ved å trykke på det).</p>
+      <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side.</p>
     </div>
   </div>
 
@@ -140,11 +140,7 @@
     </div>
   </div>
 
-  <% if (new Date().getDate() <= 5) { %>
-    <div class="message">[!] NY MÅNED; NYE TILBUD [!]</div>
-  <% } %>
-
-  <div class="message" id="message-stores" style="display: none;">N.b.: Faktisk lagerbeholdning kan avvike fra denne oversikten. Oppdateres med jevne mellomrom.</div>
+  <div id="message" style="display: none;">N.b.: Faktisk lagerbeholdning kan avvike. Oppdateres med jevne mellomrom.</div>
 
   <% if (data.length === 0) { %>
     <p style="text-align: center;">Ingen resultater finnes for valgt kominasjon.</p>
