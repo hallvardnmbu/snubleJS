@@ -127,7 +127,10 @@ def backup():
     df = pd.DataFrame(data)
     df = df.drop(columns=["_id"])
     df["year"] = df["year"].apply(lambda x: int(x) if x not in ("None", None) else None)
-    path = f"./backup/{pd.Timestamp.now().strftime('%d-%m-%Y')}.parquet"
+    if not os.path.exists("./backup"):
+        path = f"./database/backup/{pd.Timestamp.now().strftime('%d-%m-%Y')}.parquet"
+    else:
+        path = f"./backup/{pd.Timestamp.now().strftime('%d-%m-%Y')}.parquet"
     df.to_parquet(path)
     print("Saved backup to ", path)
 
