@@ -55,7 +55,7 @@ function populateStores(stores) {
 
 // Function to display a message if a store other than "null" is selected
 function displayMessage(selectedValue) {
-  const messageElement = document.getElementById("message");
+  const messageElement = document.getElementById("message-stores");
   if (!_DEFAULT.includes(selectedValue)) {
     // Set the style to block to display the message
     messageElement.style.display = "block";
