@@ -209,7 +209,7 @@ header form input:hover {
     margin-right: var(--padding);
 }
 
-#message {
+.message {
     margin-top: var(--margin);
     margin-right: var(--padding);
     margin-left: var(--padding);

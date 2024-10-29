@@ -96,8 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const modal = document.getElementById(`detailed-${itemIndex}`);
       modal.style.display = "block";
 
-      // Trigger resize event
-      window.dispatchEvent(new Event("resize"));
+      // Graph the price history
+      graphPrice(itemIndex);
     });
   });
 

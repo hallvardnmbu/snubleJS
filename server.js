@@ -12,7 +12,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const _PER_PAGE = 25;
+const _PER_PAGE = 15;
 
 const port = 8080;
 const app = express();
