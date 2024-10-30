@@ -9,22 +9,29 @@ function declineCookies() {
   document.getElementById("selectCookies").style.display = "none";
 }
 
+const GTAG = "G-PYBEXVQ5Q6";
+
 function loadAnalytics() {
   try {
-    const script1 = document.createElement("script");
-    script1.async = true;
-    script1.src = "https://www.googletagmanager.com/gtag/js?id=G-PYBEXVQ5Q6";
-    document.head.appendChild(script1);
+    const script = document.createElement("script");
+    script.async = true;
+    script.defer = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GTAG}`;
+    document.head.appendChild(script);
 
     window.dataLayer = window.dataLayer || [];
     function gtag() {
       dataLayer.push(arguments);
     }
     gtag("js", new Date());
-    gtag("config", "G-PYBEXVQ5Q6");
+    gtag("config", GTAG);
   } catch (error) {
     console.error("Error loading analytics:", error);
   }
+}
+
+if (localStorage.getItem("allowCookies") === "accepted") {
+  loadAnalytics();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -34,11 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("selectCookies element not found");
       return;
     }
-
     if (!localStorage.getItem("allowCookies")) {
       selectCookies.style.display = "flex";
-    } else if (localStorage.getItem("allowCookies") === "accepted") {
-      loadAnalytics();
     }
   } catch (error) {
     console.error("Error in cookie consent:", error);
