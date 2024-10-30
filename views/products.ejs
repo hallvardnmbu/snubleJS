@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="nb">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYBEXVQ5Q6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-PYBEXVQ5Q6');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles.css">
@@ -113,6 +104,18 @@
       </div>
     </form>
   </header>
+
+  <div id="selectCookies" class="modal">
+    <div class="selectCookies">
+      <p style="line-height: 1.5;">
+        <b>SNUBLEJUICE.no</b> ønsker å samle informasjonskapsler for å forbedre brukeropplevelsen. Ved å godta, samtykker du til bruk av informasjonskapsler.
+      </p>
+      <div class="cookieSelection">
+        <button id="decline" onclick="declineCookies()">ELLERS TAKK</button>
+        <button id="accept" onclick="acceptCookies()">DEN ER GREI</button>
+      </div>
+    </div>
+  </div>
 
   <div id="infobox" class="modal">
     <div class="infobox">
@@ -497,5 +500,6 @@
   </footer>
 
   <script src="js/buttons.js"></script>
+  <script src="js/cookie.js"></script>
 </body>
 </html>

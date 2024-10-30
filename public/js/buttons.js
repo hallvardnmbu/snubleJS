@@ -125,8 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.onclick = function (event) {
     const modals = document.querySelectorAll(".modal");
     modals.forEach((modal) => {
-      // Only close if clicking directly on the modal background
-      if (event.target === modal && !event.target.closest(".modal-content")) {
+      if (event.target === modal && modal.id !== "selectCookies") {
         modal.style.display = "none";
       }
     });

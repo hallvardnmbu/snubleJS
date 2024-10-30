@@ -324,7 +324,11 @@ p {
     overflow: auto;
     backdrop-filter: saturate(0) blur(3px);
 }
-.infobox {
+#selectCookies {
+    backdrop-filter: saturate(0) blur(10px);
+}
+.infobox,
+.selectCookies {
     font-size: var(--font-normal);
     position: relative;
     background-color: white;
@@ -335,6 +339,29 @@ p {
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+}
+.selectCookies p {
+    color: var(--black);
+    text-align: center;
+}
+.cookieSelection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--padding);
+}
+.cookieSelection button {
+    border: none;
+}
+.cookieSelection button:hover {
+    color: var(--black);
+}
+.cookieSelection #accept {
+    background-color: var(--positive);
+}
+.cookieSelection #decline {
+    background-color: var(--negative);
 }
 .exit,
 .close {
