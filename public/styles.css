@@ -331,6 +331,7 @@ p {
 .selectCookies {
     font-size: var(--font-normal);
     position: relative;
+    width: 100%;
     background-color: white;
     margin: var(--image) 0 auto 0;
     padding: var(--padding);
