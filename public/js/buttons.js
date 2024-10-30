@@ -87,6 +87,15 @@ window.onclick = function (event) {
   }
 };
 
+function changeModal(currentModal, newModal, event) {
+  // Stop event from bubbling up to window
+  event.stopPropagation();
+
+  document.getElementById(`detailed-${currentModal}`).style.display = "none";
+  document.getElementById(`detailed-${newModal}`).style.display = "block";
+  graphPrice(newModal);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Open modal when section is clicked
   const productSections = document.querySelectorAll(".product");
@@ -116,7 +125,8 @@ document.addEventListener("DOMContentLoaded", function () {
   window.onclick = function (event) {
     const modals = document.querySelectorAll(".modal");
     modals.forEach((modal) => {
-      if (event.target === modal) {
+      // Only close if clicking directly on the modal background
+      if (event.target === modal && !event.target.closest(".modal-content")) {
         modal.style.display = "none";
       }
     });

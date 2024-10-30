@@ -191,11 +191,26 @@
 
       <!-- Modal structure -->
       <div id="detailed-<%= index %>" class="modal">
+
+        <div class="navigation" id="above">
+          <% if (index > 0) { %>
+            <a onclick="changeModal(<%= index %>, <%= index - 1 %>, event)">FORRIGE</a>
+          <% } else { %>
+            <span></span>
+          <% } %>
+
+          <% if (index < 14) { %>
+            <a onclick="changeModal(<%= index %>, <%= index + 1 %>, event)">NESTE</a>
+          <% } else { %>
+            <span></span>
+          <% } %>
+        </div>
+
         <div class="detailed">
+
           <div class="heading">
             <div class="link">
-              <img src="images/www.png" class="www">
-              <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
+              <a href="<%= item.url %>" target="_blank"><img src="images/www.png" class="www"><%= item.name %></a>
             </div>
             <div class="close" index="<%= index %>">x</div>
           </div>
@@ -431,11 +446,24 @@
 
           <div class="heading">
             <div class="link">
-              <img src="images/www.png" class="www">
-              <a href="<%= item.url %>" target="_blank"><%= item.name %></a>
+              <a href="<%= item.url %>" target="_blank"><img src="images/www.png" class="www"><%= item.name %></a>
             </div>
             <div class="close" index="<%= index %>">x</div>
           </div>
+        </div>
+
+        <div class="navigation" id="below">
+          <% if (index > 0) { %>
+            <a onclick="changeModal(<%= index %>, <%= index - 1 %>, event)">FORRIGE</a>
+          <% } else { %>
+            <span></span>
+          <% } %>
+
+          <% if (index < 15) { %>
+            <a onclick="changeModal(<%= index %>, <%= index + 1 %>, event)">NESTE</a>
+          <% } else { %>
+            <span></span>
+          <% } %>
         </div>
       </div>
     </section>
