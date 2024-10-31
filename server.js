@@ -222,6 +222,7 @@ try {
   process.exit(1);
 }
 const db = client.db("snublejuice");
+let visits = db.collection("visits");
 let collection = db.collection("products");
 
 snublejuice.get("/api/stores", async (req, res) => {
@@ -235,6 +236,31 @@ snublejuice.get("/api/stores", async (req, res) => {
 
 // Route to display products with pagination
 snublejuice.get("/", async (req, res) => {
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  if (Object.keys(req.query).length === 0) {
+    await visits.updateOne(
+      { class: "fresh" },
+      {
+        $inc: {
+          total: 1,
+          [`month.${currentMonth}`]: 1,
+        },
+      },
+      { upsert: true },
+    );
+  } else {
+    await visits.updateOne(
+      { class: "newpage" },
+      {
+        $inc: {
+          total: 1,
+          [`month.${currentMonth}`]: 1,
+        },
+      },
+      { upsert: true },
+    );
+  }
+
   try {
     const page = parseInt(req.query.page) || 1;
     const sort = req.query.sort || "discount";

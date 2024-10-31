@@ -326,6 +326,7 @@ p {
 }
 #selectCookies {
     backdrop-filter: saturate(0) blur(10px);
+    /* position: relative; */
 }
 .infobox,
 .selectCookies {
@@ -352,17 +353,21 @@ p {
     justify-content: center;
     gap: var(--padding);
 }
+.cookieSelection img {
+    max-width: var(--logo);
+}
 .cookieSelection button {
     border: none;
 }
-.cookieSelection button:hover {
-    color: var(--black);
-}
 .cookieSelection #accept {
-    background-color: var(--positive);
+    color: var(--green);
 }
 .cookieSelection #decline {
-    background-color: var(--negative);
+    color: var(--red);
+}
+.cookieSelection #accept:hover,
+.cookieSelection #decline:hover {
+    color: var(--black);
 }
 .exit,
 .close {
@@ -552,6 +557,7 @@ hr {
         --font-description: 16px;
     }
 
+    .cookieSelection,
     .filterSelection,
     .advancedSelection,
     .mainSelection {
