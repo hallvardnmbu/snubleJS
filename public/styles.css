@@ -42,6 +42,8 @@
     --blackish: #666666;
     --darkgray: #cccccc;
     --gray: #eeeeee;
+    --lightgray: #fafafa;
+
     --negative: rgba(100, 0, 0, 0.2);
     --positive: rgba(0, 100, 0, 0.2);
     --green: rgba(0, 100, 0, 0.6);
@@ -54,6 +56,7 @@
 body {
     line-height: 1rem;
     font-family: "Fixedsys", monospace;
+    margin: 0;
 }
 
 a,
@@ -72,6 +75,8 @@ footer {
     align-items: flex-end;
     gap: calc(2 * var(--padding));
     margin: var(--padding);
+    font-size: var(--font-description);
+    line-height: 1.1rem;
 }
 
 .pagination {
@@ -81,8 +86,7 @@ footer {
     gap: var(--padding);
     justify-content: space-between;
     align-items: center;
-    margin-right: var(--padding);
-    margin-left: var(--padding);
+    margin: var(--padding);
 }
 .pagination img {
     max-width: var(--logo);
@@ -124,8 +128,11 @@ select {
 header form select:hover,
 header form button:hover,
 header form input:hover {
-    background-color: var(--gray);
+    background-color: var(--darkgray);
 }
+/* header {
+    background-color: var(--lightgray);
+} */
 
 .filterSelection {
     display: flex;
@@ -133,12 +140,11 @@ header form input:hover {
     justify-content: space-between;
     align-items: flex-end;
 
+    padding: var(--padding);
     gap: var(--margin);
-    margin-left: var(--padding);
-    margin-right: var(--padding);
-    margin-bottom: calc(2 * var(--padding));
-    padding-bottom: calc(2 * var(--padding));
     border-bottom: var(--padding) solid var(--gray);
+
+    background-color: var(--lightgray);
 }
 .advancedSelection {
     display: flex;
@@ -146,15 +152,14 @@ header form input:hover {
     justify-content: center;
     align-items: center;
 
+    padding: var(--padding);
     gap: var(--padding);
-    margin-left: var(--padding);
-    margin-right: var(--padding);
-    margin-bottom: calc(2 * var(--padding));
-    padding-bottom: calc(2 * var(--padding));
-    border-bottom: var(--padding) solid var(--gray);
+    border-bottom: var(--padding) solid var(--darkgray);
 
     font-size: var(--font-normal);
     color: var(--blackish);
+
+    background-color: var(--gray);
 }
 .advancedSelection div {
     display: flex;
@@ -209,12 +214,8 @@ header form input:hover {
 }
 
 .message {
-    margin-top: var(--margin);
-    margin-right: var(--padding);
-    margin-left: var(--padding);
     padding: var(--padding);
     text-align: center;
-    border: 2px solid var(--blackish);
     background-color: var(--negative);
 }
 #disclaimer-1,
@@ -325,22 +326,24 @@ p {
     backdrop-filter: saturate(0) blur(3px);
 }
 #selectCookies {
-    backdrop-filter: saturate(0) blur(10px);
-    /* position: relative; */
+    bottom: 0;
+    height: auto;
+    top: auto;
 }
 .infobox,
 .selectCookies {
     font-size: var(--font-normal);
     position: relative;
     width: 100%;
-    background-color: white;
-    margin: var(--image) 0 auto 0;
-    padding: var(--padding);
+    background-color: var(--gray);
     border-top: var(--padding) solid var(--darkgray);
     border-bottom: var(--padding) solid var(--darkgray);
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+}
+.selectCookies {
+    border-bottom: none;
 }
 .selectCookies p {
     color: var(--black);
