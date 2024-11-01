@@ -10,3 +10,4 @@ database/backup/
 **/package-lock.json
 
 bun.lockb
+jsconfig.json
