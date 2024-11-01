@@ -237,7 +237,6 @@ snublejuice.get("/api/stores", async (req, res) => {
   }
 });
 
-// Route to display products with pagination
 snublejuice.get("/", async (req, res) => {
   const currentMonth = new Date().toISOString().slice(0, 7);
   if (Object.keys(req.query).length === 0) {
@@ -346,16 +345,14 @@ snublejuice.get("/", async (req, res) => {
   }
 });
 
-// IND320 API APPLICATION (api.ind320.no)
+// API APPLICATION (api.ind320.no)
 // ------------------------------------------------------------------------------------------------
 
-const ind = express();
-ind.use(express.json());
-ind.use(express.static(path.join(__dirname, "other")));
+const api = express();
+api.use(express.json());
+api.use(express.static(path.join(__dirname, "other")));
 
 const dataFile = path.join(__dirname, "other/data.json");
-
-// Ensure the data file exists.
 (async () => {
   try {
     await fs.access(dataFile);
@@ -364,12 +361,11 @@ const dataFile = path.join(__dirname, "other/data.json");
   }
 })();
 
-ind.get("/", (req, res) => {
+api.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "other", "index.html"));
 });
 
-// API endpoint to get data by dates.
-ind.get("/dates", async (req, res) => {
+api.get("/dates", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
     let jsonData = JSON.parse(data);
@@ -415,8 +411,7 @@ ind.get("/dates", async (req, res) => {
   }
 });
 
-// API endpoint to get data by id.
-ind.get("/id", async (req, res) => {
+api.get("/id", async (req, res) => {
   try {
     const data = await fs.readFile(dataFile, "utf8");
     let jsonData = JSON.parse(data);
@@ -445,7 +440,7 @@ ind.get("/id", async (req, res) => {
 // ------------------------------------------------------------------------------------------------
 
 app.use(vhost("snublejuice.no", snublejuice));
-app.use(vhost("api.ind320.no", ind));
+app.use(vhost("api.ind320.no", api));
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

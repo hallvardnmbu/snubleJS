@@ -38,37 +38,41 @@
 
       <div class="information">
         <div class="name">
-          <p><%= item.name %></p>
+          <div id="name"><%= item.name %></div>
+
           <div class="category">
-            <p>
+            <div>
               <span><b><%= item.category %></b></span>
               <span style="font-size: 14px;"> <%= item.subcategory %></span>
-            </p>
-            <p><%= item.alcohol %> % alk.</p>
+            </div>
+
+            <div class="text" id="alcohol"><b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>alk.</div>
           </div>
+
           <div class="country">
-            <p style="font-size: 18px;"><%= item.country %></p>
+            <div style="font-size: 18px;"><%= item.country %></div>
             <% if (item.district) { %>
-              <p id="dot" style="font-size: 10px;">●</p>
-              <p style="font-size: 16px;"><%= item.district %></p>
+              <div id="dot" style="font-size: 10px;">●</div>
+              <div style="font-size: 16px;"><%= item.district %></div>
             <% } %>
             <% if (item.subdistrict) { %>
-              <p id="dot" style="font-size: 10px;">●</p>
-              <p style="font-size: 12px;"><%= item.subdistrict %></p>
+              <div id="dot" style="font-size: 10px;">●</div>
+              <div style="font-size: 12px;"><%= item.subdistrict %></div>
             <% } %>
           </div>
         </div>
+
         <div class="description">
           <% if (item.description) { %>
             <p><%= item.description.lang %></p>
           <% } %>
         </div>
+
         <div class="price">
-          <p>KR <b><%= Math.ceil(item.price) %></b>
-            <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %>
-          </p>
+          <div class="text">KR <b><%= Math.ceil(item.price) %></b>
+            <% if (item.oldprice) { %>FØR <b><%= Math.ceil(item.oldprice) %></b><% } %></div>
           <% if (item.oldprice) { %>
-            <p>ENDRING <b><%= Math.floor(item.discount) %></b> %</p>
+            <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b><b id="percent">%</b></div>
           <% } %>
         </div>
       </div>
