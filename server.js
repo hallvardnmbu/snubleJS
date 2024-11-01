@@ -129,8 +129,9 @@ async function load({
   }
 
   let matchStage = {
-    // Only include buyable products.
+    // Only include buyablem and updated products.
     buyable: true,
+    updated: true,
 
     // Match the specified parameters if they are not null.
     ...(category && !search ? { category: category } : {}),

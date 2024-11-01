@@ -253,11 +253,33 @@ async function getProducts(_proxy, startPage = 0, alreadyUpdated = []) {
   console.log(` Upserted ${result.upsertedCount} records`);
 }
 
+async function syncUnupdatedProducts(threshold = null) {
+  const unupdatedCount = await itemCollection.countDocuments({ updated: false });
+  console.log(`Unupdated products: ${unupdatedCount}`);
+  if (threshold && unupdatedCount >= threshold) {
+    console.log(`Above threshold, aborting.`);
+    return;
+  }
+
+  try {
+    const result = await itemCollection.updateMany({ updated: false }, [
+      { $set: { oldprice: "$price" } },
+      { $set: { price: 0.0, discount: 0, literprice: 0, alcoholprice: null } },
+      { $set: { prices: { $ifNull: ["$prices", []] } } },
+      { $set: { prices: { $concatArrays: ["$prices", ["$price"]] } } },
+    ]);
+
+    console.log(`Added ${result.modifiedCount} empty prices to unupdated products.`);
+  } catch (err) {
+    console.error("Error adding unupdated prices:", err);
+  }
+}
+
 const session = axios.create();
 
 async function main() {
   const startPage = 0;
-  itemCollection.updateMany({}, { $set: { updated: false } });
+  await itemCollection.updateMany({}, { $set: { updated: false } });
   const alreadyUpdated = await itemCollection
     .find({ updated: true })
     .map((item) => item.index)
@@ -266,9 +288,11 @@ async function main() {
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
   await getProducts(_proxy, startPage, alreadyUpdated);
+
+  // ONLY RUN THIS AFTER ALL PRICES HAVE BEEN UPDATED
+  await syncUnupdatedProducts(null);
 }
 
 await main();
 
 client.close();
-process.exit(1);

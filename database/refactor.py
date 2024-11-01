@@ -126,18 +126,13 @@ def backup():
     data = _DATABASE.find({})
     df = pd.DataFrame(data)
     df = df.drop(columns=["_id"])
-    df["year"] = df["year"].apply(lambda x: int(x) if x not in ("None", None) else None)
+    df["year"] = df["year"].apply(lambda x: int(float(x)) if x not in ("None", None, "") and pd.notna(x) else None)
     if not os.path.exists("./backup"):
-        path = f"./database/backup/{pd.Timestamp.now().strftime('%d-%m-%Y')}.parquet"
+        path = f"./database/backup/{pd.Timestamp.now().strftime('%Y-%m-%d')}.parquet"
     else:
-        path = f"./backup/{pd.Timestamp.now().strftime('%d-%m-%Y')}.parquet"
+        path = f"./backup/{pd.Timestamp.now().strftime('%Y-%m-%d')}.parquet"
     df.to_parquet(path)
     print("Saved backup to ", path)
 
 
-# HÅNDTER FØLGENDE PRODUKTER:
-# "status": "utgått"
-# "volum": {"$exists": false}
-# "bilde": {"$exists": false}
-
-# _DATABASE.update_many({}, { "$rename": { "indgredients": "ingredients" } })
+backup()

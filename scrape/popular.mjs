@@ -157,7 +157,7 @@ const session = axios.create();
 
 async function main() {
   // Reset stores prior to fetching new data.
-  itemCollection.updateMany({ stores: { $exists: true } }, { $set: { stores: [] } });
+  await itemCollection.updateMany({ stores: { $exists: true } }, { $set: { stores: [] } });
 
   // Fetch products with discount.
   const itemIds = await itemCollection
@@ -174,4 +174,3 @@ async function main() {
 await main();
 
 client.close();
-process.exit(1);
