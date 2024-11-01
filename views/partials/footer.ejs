@@ -1,0 +1,26 @@
+  <div class="pagination" id="bottom">
+    <div>SNUBLEJUICE.no</div>
+    <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
+    <div>
+      <% if (page > 1) { %>
+          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
+      <% } %>
+
+      <span><%= page %> av <%= totalPages %></span>
+
+      <% if (page < totalPages) { %>
+          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
+      <% } %>
+    </div>
+  </div>
+
+  <footer>
+    <div class="copyright">
+        ©
+        <div class="names"><div style="letter-spacing: 0.03em;"><a href="https://dilettant.no" target="_blank" style="color: var(--black)">Hallvard H. Lavik</a></div><div>Carlos Hebbinghaus</div></div>
+    </div>
+    <a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a>
+  </footer>
+
+  <script src="js/buttons.js"></script>
+  <script src="js/cookie.js"></script>

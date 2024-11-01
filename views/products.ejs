@@ -22,129 +22,7 @@
 </head>
 
 <body>
-  <header>
-    <form action="/" method="get" id="filter">
-
-      <input type="hidden" name="page" value="<%= page %>">
-      <input type="hidden" name="ascending" value="<%= ascending %>">
-      <input type="hidden" name="news" value="<%= news %>">
-
-      <div class="filterSelection">
-        <button id="info">?</button>
-
-        <div class="mainSelection">
-          <select name="category" id="category" onchange="applyFilters(true)">
-            <option value="null" <%= category === 'null' ? 'selected' : '' %>>Alle kategorier</option>
-            <option value="aromatisert" <%= category === 'aromatisert' ? 'selected' : '' %>>Aromatisert vin</option>
-            <option value="brennevin" <%= category === 'brennevin' ? 'selected' : '' %>>Brennevin</option>
-            <option value="fruktvin" <%= category === 'fruktvin' ? 'selected' : '' %>>Fruktvin</option>
-            <option value="hvitvin" <%= category === 'hvitvin' ? 'selected' : '' %>>Hvitvin</option>
-            <option value="mjød" <%= category === 'mjød' ? 'selected' : '' %>>Mjød</option>
-            <option value="musserende" <%= category === 'musserende' ? 'selected' : '' %>>Musserende vin</option>
-            <option value="perlende" <%= category === 'perlende' ? 'selected' : '' %>>Perlende vin</option>
-            <option value="rosévin" <%= category === 'rosévin' ? 'selected' : '' %>>Rosévin</option>
-            <option value="rødvin" <%= category === 'rødvin' ? 'selected' : '' %>>Rødvin</option>
-            <option value="sake" <%= category === 'sake' ? 'selected' : '' %>>Sake</option>
-            <option value="sider" <%= category === 'sider' ? 'selected' : '' %>>Sider</option>
-            <option value="sterkvin" <%= category === 'sterkvin' ? 'selected' : '' %>>Sterkvin</option>
-            <option value="øl" <%= category === 'øl' ? 'selected' : '' %>>Øl</option>
-          </select>
-
-          <div>
-            <select name="sort" id="sort" onchange="applyFilters()">
-              <option value="discount" <%= sort === 'discount' ? 'selected' : '' %>>Prisendring</option>
-              <option value="price" <%= sort === 'price' ? 'selected' : '' %>>Pris</option>
-              <option value="literprice" <%= sort === 'literprice' ? 'selected' : '' %>>Literpris</option>
-              <option value="alcoholprice" <%= sort === 'alcoholprice' ? 'selected' : '' %>>Alkoholpris</option>
-              <option value="alcohol" <%= sort === 'alcohol' ? 'selected' : '' %>>Alkoholprosent</option>
-            </select>
-
-            <button id="sortButton">
-              <%= ascending === true ? '↑' : '↓' %>
-            </button>
-          </div>
-
-          <select name="store" id="store" onchange="applyFilters(true)">
-            <!-- Options will be dynamically populated by `public/js/stores.js`. -->
-          </select>
-
-          <div id="clearAll">
-            <button id="clearFilters">x</button>
-          </div>
-        </div>
-
-        <button id="toggleAdvanced">+</button>
-
-      </div>
-
-      <div id="advancedSelection" class="advancedSelection" style="display: none;">
-        <div>
-          <label for="volume">Volum over</label>
-          <input type="float" id="fvolume" name="volume" min="0" step="1" value="<%= volume || '' %>">
-          <label for="volume">cL</label>
-        </div>
-
-        <div>
-          <label for="alcohol">Alkohol over</label>
-          <input type="float" id="falcohol" name="alcohol" min="0" step="0.5" value="<%= alcohol || '' %>">
-          <label for="alcohol" id="percent">%</label>
-        </div>
-
-        <div>
-          <label for="search">Søk etter</label>
-          <input type="search" id="fsearch" name="search" value="<%= search || null %>">
-        </div>
-
-        <button id="newsButton">
-          <%= news ? 'Kun nyheter' : 'Alle produkter' %>
-        </button>
-
-        <label id="disclaimer-1">Under utvikling.</label>
-        <label id="disclaimer-2">Mere kommer.</label>
-      </div>
-    </form>
-  </header>
-
-  <div id="selectCookies" class="modal">
-    <div class="selectCookies">
-      <p style="line-height: 1.5;">
-        For å gjøre <b>SNUBLEJUICE.no</b> enda bedre ønsker vi å samle inn informasjonskapsler. Ved å godta, samtykker du til bruk av informasjonskapsler.
-      </p>
-      <div class="cookieSelection">
-        <button id="decline" onclick="declineCookies()">ELLERS TAKK</button>
-        <img src="images/800x800.png" alt="SNUBLEJUICE.no">
-        <button id="accept" onclick="acceptCookies()">DEN ER GREI</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="infobox" class="modal">
-    <div class="infobox">
-      <div class="header">
-        <b>Hva er SNUBLEJUICE?</b>
-        <span class="exit">x</span>
-      </div>
-      <p style="line-height: 1.5;">Vinmonopolet justerer prisene hvert månedsskifte. For å gjøre livet ditt litt enklere holder vi styr på prishistorikken til varer, og gir en oversikt over tilbudsvarer.<br><br>Lagerbeholdning oppdateres jevnlig, så avvik kan forekomme. Alltid dobbeltsjekk på produktets side.</p>
-    </div>
-  </div>
-
-  <div class="pagination" id="top">
-    <div>SNUBLEJUICE.no</div>
-    <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
-    <div>
-      <% if (page > 1) { %>
-          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
-      <% } %>
-
-      <span><%= page %> av <%= totalPages %></span>
-
-      <% if (page < totalPages) { %>
-          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
-      <% } %>
-    </div>
-  </div>
-
-  <div id="message" style="display: none;">N.b.: Faktisk lagerbeholdning kan avvike. Oppdateres med jevne mellomrom.</div>
+  <%- include('partials/header') %>
 
   <% if (data.length === 0) { %>
     <p style="text-align: center;">Ingen resultater finnes for valgt kominasjon.</p>
@@ -152,10 +30,12 @@
 
   <% data.forEach((item, index) => { %>
     <section class="product" index="<%= index %>" style="--highlight: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--darkgray)' %>; --marker: <%= item.discount > 0 ? 'var(--red)' : item.discount < 0 ? 'var(--green)' : 'var(--blackish)' %>;">
+
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">
         <div class="text"><b><%= (item.volume % 1 === 0) ? item.volume.toFixed(0) : item.volume.toFixed(1) %></b> cL</div>
       </div>
+
       <div class="information">
         <div class="name">
           <p><%= item.name %></p>
@@ -193,7 +73,6 @@
         </div>
       </div>
 
-      <!-- Modal structure -->
       <div id="detailed-<%= index %>" class="modal">
 
         <div class="navigation" id="above">
@@ -210,251 +89,7 @@
           <% } %>
         </div>
 
-        <div class="detailed">
-
-          <div class="heading">
-            <div class="link">
-              <a href="<%= item.url %>" target="_blank"><img src="images/www.png" class="www"><%= item.name %></a>
-            </div>
-            <div class="close" index="<%= index %>">x</div>
-          </div>
-
-          <hr>
-
-          <div class="price">
-            <div class="text">KR <b><%= Math.ceil(item.price) %></b>
-            <% if (item.oldprice) { %>
-              FØR <b><%= Math.ceil(item.oldprice) %></b>
-            <% } %>
-            </div>
-            <% if (item.discount) { %>
-              <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b></div>
-            <% } %>
-          </div>
-
-          <div class="price">
-            <div class="text">
-              <div class="text">
-                LITERPRIS <b><%= Math.ceil(item.literprice) %></b>
-              </div>
-            <% if (item.alcoholprice) { %>
-              <div class="text">
-                <div class="text">
-                  ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b>
-                </div>
-              </div></div>
-              <div class="text">
-                <div class="text">
-                  ALKOHOL <b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>
-                </div>
-              </div>
-            <% } else { %>
-              </div>
-            <% } %>
-          </div>
-
-          <hr>
-
-          <table class="fractions">
-            <tbody>
-
-              <!-- Characteristics. -->
-              <% if (item.characteristics && Array.isArray(item.characteristics) && item.characteristics.length > 0) { %>
-                <tr>
-                  <td>EGENSKAPER<td>
-                  <td><td>
-                </tr>
-                <% item.characteristics.forEach(function(character) {
-                  var parts = character.split(', ');
-                  var values = parts[1].split(' av ');
-                %>
-                  <tr>
-                    <td class="label"><%= parts[0] %>&nbsp;</td>
-                    <td class="value" style="--value: <%= parseInt(values[0]) %>; --total: <%= parseInt(values[1]) %>;"></td>
-                  </tr>
-                <% }); %>
-              <% } %>
-
-              <!-- Ingredients. -->
-              <% if (item.ingredients && Array.isArray(item.ingredients) && item.ingredients.length > 0) { %>
-                <tr>
-                  <td>&nbsp;<td>
-                  <td><td>
-                </tr>
-                <tr>
-                  <td>INGREDIENSER<td>
-                  <td><td>
-                </tr>
-                <% item.ingredients.forEach(function(ingredient) {
-                  const patterns = [
-                    /(\d+)\s*%\s*([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)/i, // Matches "90% eple" or "10% (rips, solbær)"
-                    /([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)\s*(\d+)\s*prosent/i, // Matches "Sumoll (Vijariego Negro) 10 prosent" or "Pinot Bianco 80 prosent"
-                    /([a-zA-ZæøåÆØÅéÉèÈêÊëËáÁàÀâÂäÄíÍìÌîÎïÏóÓòÒôÔöÖúÚùÙûÛüÜ, ()]+)/i, // Matches single word types like "Riesling"
-                  ];
-                  let result = null;
-                  for (const pattern of patterns) {
-                    const match = ingredient.match(pattern);
-                    if (match) {
-                      if (pattern === patterns[0]) {
-                        result = { grape: match[2].trim(), percentage: parseFloat(match[1].trim()) };
-                        result.grape = result.grape.charAt(0).toUpperCase() + result.grape.slice(1);
-                      } else if (pattern === patterns[1]) {
-                        result = { grape: match[1].trim(), percentage: parseFloat(match[2].trim()) };
-                      } else if (pattern === patterns[2]) {
-                        result = { grape: match[1].trim(), percentage: 100.0 };
-                      }
-                      break;
-                    }
-                  }
-                  if (result) {
-                %>
-                  <tr>
-                    <td class="label">
-                      <%= result.grape %>&nbsp;
-                    </td>
-                    <td class="percentage" style="--percentage: <%= result.percentage %>;"></td>
-                  </tr>
-                <% } }); %>
-              <% } %>
-
-              </tbody>
-            </table>
-
-          <hr>
-
-          <!-- Various fields of the product. -->
-          <table class="key-val">
-            <tbody>
-              <% if (item.description.lang) { %>
-                <tr>
-                  <td class="key">BESKRIVELSE &nbsp;</td>
-                  <td class="val"><%= item.description.lang %></td>
-                </tr>
-              <% } %>
-              <% if (item.smell) { %>
-                <tr>
-                  <td class="key">LUKT</td>
-                  <td class="val"><%= item.smell %></td>
-                </tr>
-              <% } %>
-              <% if (item.taste) { %>
-                <tr>
-                  <td class="key">SMAK</td>
-                  <td class="val"><%= item.taste %></td>
-                </tr>
-              <% } %>
-              <% if (item.storage) { %>
-                <tr>
-                  <td class="key">LAGRING</td>
-                  <td class="val"><%= item.storage %></td>
-                </tr>
-              <% } %>
-              <% if (item.colour) { %>
-                <tr>
-                  <td class="key">FARGE</td>
-                  <td class="val"><%= item.colour %></td>
-                </tr>
-              <% } %>
-              <% if (item.selection) { %>
-                <tr>
-                  <td class="key">VAREUTVALG &nbsp;</td>
-                  <td class="val"><%= item.selection %></td>
-                </tr>
-              <% } %>
-              <% if (item.pair && item.pair.length > 0) { %>
-                <tr>
-                  <td class="key">PASSER TIL &nbsp;</td>
-                  <td class="val"><%=
-                    item.pair.map(function(pair) {
-                      return pair.trim();
-                    }).join(' & ')
-                    %></td>
-                </tr>
-              <% } %>
-              <% if (item.method) { %>
-                <tr>
-                  <td class="key">METODE</td>
-                  <td class="val"><%= item.method %></td>
-                </tr>
-              <% } %>
-              <% if (item.year) { %>
-                <tr>
-                  <td class="key">ÅRGANG</td>
-                  <td class="val"><%= item.year %></td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-
-          <hr>
-
-          <!-- Price chart. -->
-          <div style="height:200px;">
-            <b>PRISHISTORIKK</b>
-            <canvas id="graph-<%= index %>"></canvas>
-          </div>
-
-          <script>
-            var prices = <%= JSON.stringify(item.prices) %>;
-            if (!prices || prices.length === 0) {
-              prices = [0, 0];
-            }
-            var dates = generateDates(prices.length);
-
-            // Duplicate the last price and add today's date to the end of the list
-            prices.push(prices[prices.length - 1]);
-            dates.push("nå");
-
-            // Store the price history in session.
-            sessionStorage.setItem("<%= index %>", JSON.stringify({
-              price: prices,
-              date: dates
-            }));
-          </script>
-
-          <hr>
-
-          <div class="price">
-            <div class="text">KR <b><%= Math.ceil(item.price) %></b>
-            <% if (item.oldprice) { %>
-              FØR <b><%= Math.ceil(item.oldprice) %></b>
-            <% } %>
-            </div>
-            <% if (item.discount) { %>
-              <div class="text">ENDRING <b><%= Math.floor(item.discount) %></b></div>
-            <% } %>
-          </div>
-
-          <div class="price">
-            <div class="text">
-              <div class="text">
-                LITERPRIS <b><%= Math.ceil(item.literprice) %></b>
-              </div>
-            <% if (item.alcoholprice) { %>
-              <div class="text">
-                <div class="text">
-                  ALKOHOLLITERPRIS <b><%= Math.ceil(item.alcoholprice) %></b>
-                </div>
-              </div></div>
-              <div class="text">
-                <div class="text">
-                  ALKOHOL <b id="alcohol"><%= item.alcohol %></b><b id="percent">%</b>
-                </div>
-              </div>
-            <% } else { %>
-              </div>
-            <% } %>
-          </div>
-
-          <hr>
-
-          <div class="heading">
-            <div class="link">
-              <a href="<%= item.url %>" target="_blank"><img src="images/www.png" class="www"><%= item.name %></a>
-            </div>
-            <div class="close" index="<%= index %>">x</div>
-          </div>
-        </div>
+        <%- include('partials/detailed', { item: item, index: index }) %>
 
         <div class="navigation" id="below">
           <% if (index > 0) { %>
@@ -463,44 +98,18 @@
             <span></span>
           <% } %>
 
-          <% if (index < 15) { %>
+          <% if (index < 14) { %>
             <a onclick="changeModal(<%= index %>, <%= index + 1 %>, event)">NESTE</a>
           <% } else { %>
             <span></span>
           <% } %>
         </div>
+
       </div>
+
     </section>
   <% }) %>
 
-
-
-
-  <div class="pagination" id="bottom">
-    <div>SNUBLEJUICE.no</div>
-    <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
-    <div>
-      <% if (page > 1) { %>
-          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
-      <% } %>
-
-      <span><%= page %> av <%= totalPages %></span>
-
-      <% if (page < totalPages) { %>
-          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
-      <% } %>
-    </div>
-  </div>
-
-  <footer>
-    <div class="copyright">
-        ©
-        <div class="names"><div style="letter-spacing: 0.03em;"><a href="https://dilettant.no" target="_blank" style="color: var(--black)">Hallvard H. Lavik</a></div><div>Carlos Hebbinghaus</div></div>
-    </div>
-    <a href="https://github.com/hallvardnmbu/snubleJS" target="_blank">Kildekode</a>
-  </footer>
-
-  <script src="js/buttons.js"></script>
-  <script src="js/cookie.js"></script>
+  <%- include('partials/footer') %>
 </body>
 </html>
