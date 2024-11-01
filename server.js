@@ -133,6 +133,8 @@ async function load({
     buyable: true,
     updated: true,
 
+    ...(news ? { $and: [] } : {}),
+
     // Match the specified parameters if they are not null.
     ...(category && !search ? { category: category } : {}),
     ...(subcategory && !search ? { subcategory: subcategory } : {}),
