@@ -16,6 +16,7 @@ const _PER_PAGE = 15;
 
 const port = 8080;
 const app = express();
+app.set("trust proxy", true);
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 100, // Limit each IP to 100 requests per `window` (10 minutes)
