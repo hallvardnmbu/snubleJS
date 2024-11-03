@@ -327,7 +327,10 @@ snublejuice.get("/", async (req, res) => {
       fresh: true,
     });
 
+    let visitors = (await visits.findOne({ class: "fresh" }))?.month[currentMonth] || 0;
+
     res.render("products", {
+      visitors: visitors,
       data: data,
       page: page,
       totalPages: total,
