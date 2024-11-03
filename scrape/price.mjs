@@ -234,7 +234,7 @@ async function getProducts(_proxy, startPage = 0, alreadyUpdated = []) {
         throw new Error(`No items for the last 10 pages. Aborting.`);
       }
 
-      console.log(`Upserting ${items.length} products.`);
+      console.log(`Updating ${items.length} products.`);
 
       const result = await updateDatabase(items);
       console.log(` Modified ${result.modifiedCount} records`);

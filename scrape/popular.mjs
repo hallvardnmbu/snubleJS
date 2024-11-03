@@ -165,6 +165,9 @@ async function main() {
     .project({ index: 1, _id: 0 })
     .toArray();
 
+  // Display the number of items to be updated.
+  console.log(`Updating ${itemIds.length} items.`);
+
   // TODO: Roter proxy hver X sider. Test ut proxyene.
   const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
 

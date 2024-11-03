@@ -135,7 +135,7 @@ async function getProducts(_proxy) {
     try {
       let products = await getPage(page, _proxy);
       if (products.length === 0) {
-        console.log(`No more new products (final page: ${page - 1}).`);
+        console.log(`No more new products (final page: ${page}).`);
         break;
       } else {
         items = items.concat(products);
