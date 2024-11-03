@@ -76,8 +76,8 @@ function graphPrice(index) {
 
   // Calculate scales
   var xScale = plotWidth / (dates.length - 1);
-  var yMax = Math.max(...prices) * 1.05;
-  var yMin = Math.min(...prices) * 0.95;
+  var yMax = Math.max(...prices);
+  var yMin = Math.min(...prices);
   var yScale = plotHeight / (yMax - yMin);
 
   // Draw line
