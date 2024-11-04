@@ -27,7 +27,7 @@ document.getElementById("sortButton").onclick = function (event) {
 document.getElementById("clearFilters").onclick = function (event) {
   event.preventDefault();
   sessionStorage.clear();
-  window.location.href = "/";
+  window.location.href = "/?fresh=false";
 };
 
 // Toggle advanced visibility.

@@ -16,7 +16,6 @@ const _PER_PAGE = 15;
 
 const port = 8080;
 const app = express();
-app.set("trust proxy", true);
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 100, // Limit each IP to 100 requests per `window` (10 minutes)
@@ -264,23 +263,23 @@ snublejuice.get("/", async (req, res) => {
     );
   }
 
+  const page = parseInt(req.query.page) || 1;
+  const sort = req.query.sort || "discount";
+  const ascending = !(req.query.ascending === "false");
+  const category = req.query.category || "null";
+  const volume = parseFloat(req.query.volume) || null;
+  const alcohol = parseFloat(req.query.alcohol) || null;
+  const search = req.query.search || null;
+  const news = req.query.news === "true";
+  let store = req.query.store || "Kan bestilles";
+
+  let orderable = store === "Kan bestilles";
+  let instores = store === "Tilgjengelig i butikk";
+  if (orderable || instores) {
+    store = null;
+  }
+
   try {
-    const page = parseInt(req.query.page) || 1;
-    const sort = req.query.sort || "discount";
-    const ascending = !(req.query.ascending === "false");
-    const category = req.query.category || "null";
-    const volume = parseFloat(req.query.volume) || null;
-    const alcohol = parseFloat(req.query.alcohol) || null;
-    const search = req.query.search || null;
-    const news = req.query.news === "true";
-    let store = req.query.store || "Kan bestilles";
-
-    let orderable = store === "Kan bestilles";
-    let instores = store === "Tilgjengelig i butikk";
-    if (orderable || instores) {
-      store = null;
-    }
-
     let { data, total } = await load({
       collection,
 
@@ -345,7 +344,20 @@ snublejuice.get("/", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error fetching data from MongoDB.");
+    res.render("products", {
+      visitors: "X",
+      data: [],
+      page: 1,
+      totalPages: 1,
+      sort: sort,
+      ascending: ascending,
+      category: category,
+      volume: volume,
+      alcohol: alcohol,
+      search: search,
+      news: news,
+      store: store,
+    });
   }
 });
 
