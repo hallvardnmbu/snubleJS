@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 
@@ -20,16 +21,29 @@ const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
-  {
-    protocol: "http",
-    host: ip,
-    port: parseInt(process.env.PROXY_PRT),
-    auth: {
-      username: process.env.PROXY_USR,
-      password: process.env.PROXY_PWD,
-    },
-  },
+  new HttpsProxyAgent(
+    `http://${process.env.PROXY_USR}:${process.env.PROXY_PWD}@${ip}:${process.env.PROXY_PRT}`,
+  ),
 ]);
+
+function getNextProxy(proxy) {
+  if (proxies.length === 0) {
+    throw new Error("No more proxies available!");
+  }
+
+  const index = proxy ? proxies.findIndex((p) => p.proxy.host === proxy.proxy.host) : -1;
+  return proxies[(index + 1) % proxies.length];
+}
+
+function removeProxy(proxy) {
+  const index = proxies.findIndex((p) => p.proxy.host === proxy.proxy.host);
+  if (index > -1) {
+    const removedProxy = proxies.splice(index, 1)[0];
+    console.log(
+      `Removed failing proxy ${removedProxy.proxy.host}. ${proxies.length} proxies remaining.`,
+    );
+  }
+}
 
 const URL =
   "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&currentPage={}&q=%3Arelevance";
@@ -101,27 +115,34 @@ function processProducts(products, alreadyUpdated) {
   return processed;
 }
 
-async function getPage(page, _proxy, alreadyUpdated) {
-  for (let i = 0; i < 5; i++) {
-    const response = await session.get(URL.replace("{}", page), {
-      // proxy: _proxy,
-      timeout: 10000,
-    });
+async function getPage(page, proxy, alreadyUpdated) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const response = await session.get(URL.replace("{}", page), {
+        httpsAgent: proxy,
+        timeout: 10000,
+      });
 
-    if (response.status === 200) {
-      return processProducts(response.data["productSearchResult"]["products"], alreadyUpdated);
-    } else {
+      if (response.status === 200) {
+        return processProducts(response.data["productSearchResult"]["products"], alreadyUpdated);
+      }
+
       console.log(`Status code ${response.status} at page ${page} (trying another proxy); ${err}`);
+    } catch (err) {
+      console.log(`Request failed with proxy ${proxy.host} for page ${page}: ${err.message}`);
+      if (err.code === "ECONNREFUSED" || err.code === "ETIMEDOUT") {
+        removeProxy(proxy);
+      }
+    }
 
-      throw new Error(`Failed to fetch page ${page}. Aborting.`);
-
-      // Rotate proxy.
-      _proxy = proxies[(proxies.indexOf(_proxy) + 1) % proxies.length];
-
-      // Delay before retrying.
+    try {
+      proxy = getNextProxy(proxy);
       await new Promise((resolve) => setTimeout(resolve, 2000));
+    } catch (err) {
+      throw new Error(`No more proxies available to fetch id ${id}`);
     }
   }
+
   throw new Error(`Failed to fetch page ${page} after 5 attempts.`);
 }
 
@@ -208,23 +229,26 @@ async function updateDatabase(data) {
   return await itemCollection.bulkWrite(operations);
 }
 
-async function getProducts(_proxy, startPage = 0, alreadyUpdated = []) {
+async function getProducts(startPage = 0, alreadyUpdated = []) {
   let items = [];
+  let proxy = getNextProxy();
+
   for (let page = startPage; page < 10000; page++) {
     // Fetch products of page.
     console.log(`Page ${page}.`);
     try {
-      let products = await getPage(page, _proxy, alreadyUpdated);
+      let products = await getPage(page, proxy, alreadyUpdated);
       if (products.length === 0) {
         console.log(`No more products (final page: ${page - 1}).`);
         break;
-      } else {
-        items = items.concat(products);
-        // Timeout 1.1sec
-        await new Promise((resolve) => setTimeout(resolve, 900));
       }
+
+      items = items.concat(products);
+      proxy = getNextProxy();
+
+      await new Promise((resolve) => setTimeout(resolve, 900));
     } catch (err) {
-      console.log(`Error: Page ${page}. Skipping this. ${err}`);
+      console.log(`Error page ${page}! ${err}`);
       break;
     }
 
@@ -235,7 +259,6 @@ async function getProducts(_proxy, startPage = 0, alreadyUpdated = []) {
       }
 
       console.log(`Updating ${items.length} products.`);
-
       const result = await updateDatabase(items);
       console.log(` Modified ${result.modifiedCount} records`);
       console.log(` Upserted ${result.upsertedCount} records`);
@@ -248,6 +271,7 @@ async function getProducts(_proxy, startPage = 0, alreadyUpdated = []) {
   if (items.length === 0) {
     return;
   }
+  console.log(`Updating ${items.length} final products.`);
   const result = await updateDatabase(items);
   console.log(` Modified ${result.modifiedCount} records`);
   console.log(` Upserted ${result.upsertedCount} records`);
@@ -278,18 +302,16 @@ async function syncUnupdatedProducts(threshold = null) {
 const session = axios.create();
 
 async function main() {
-  const startPage = 0;
   await itemCollection.updateMany({}, { $set: { updated: false } });
   const alreadyUpdated = await itemCollection
     .find({ updated: true })
     .map((item) => item.index)
     .toArray();
 
-  // TODO: Roter proxy hver X sider. Test ut proxyene.
-  const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
-  await getProducts(_proxy, startPage, alreadyUpdated);
+  const startPage = 0;
+  await getProducts(startPage, alreadyUpdated);
 
-  // ONLY RUN THIS AFTER ALL PRICES HAVE BEEN UPDATED
+  // [!] ONLY RUN THIS AFTER ALL PRICES HAVE BEEN UPDATED [!]
   await syncUnupdatedProducts(null);
 }
 

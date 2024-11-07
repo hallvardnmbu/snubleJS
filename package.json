@@ -1,5 +1,5 @@
 {
-  "name": "snubleJS",
+  "name": "snublejuice",
   "module": "server.js",
   "type": "module",
   "devDependencies": {
@@ -12,6 +12,7 @@
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
     "fs": "^0.0.1-security",
+    "https-proxy-agent": "^7.0.5",
     "mongodb": "^6.9.0",
     "path": "^0.12.7",
     "vhost": "^3.0.2"

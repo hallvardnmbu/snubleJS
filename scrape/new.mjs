@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 
@@ -21,16 +22,29 @@ const itemCollection = database.collection("products");
 const itemIds = await itemCollection.distinct("index");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
-  {
-    protocol: "http",
-    host: ip,
-    port: parseInt(process.env.PROXY_PRT),
-    auth: {
-      username: process.env.PROXY_USR,
-      password: process.env.PROXY_PWD,
-    },
-  },
+  new HttpsProxyAgent(
+    `http://${process.env.PROXY_USR}:${process.env.PROXY_PWD}@${ip}:${process.env.PROXY_PRT}`,
+  ),
 ]);
+
+function getNextProxy(proxy) {
+  if (proxies.length === 0) {
+    throw new Error("No more proxies available!");
+  }
+
+  const index = proxy ? proxies.findIndex((p) => p.proxy.host === proxy.proxy.host) : -1;
+  return proxies[(index + 1) % proxies.length];
+}
+
+function removeProxy(proxy) {
+  const index = proxies.findIndex((p) => p.proxy.host === proxy.proxy.host);
+  if (index > -1) {
+    const removedProxy = proxies.splice(index, 1)[0];
+    console.log(
+      `Removed failing proxy ${removedProxy.proxy.host}. ${proxies.length} proxies remaining.`,
+    );
+  }
+}
 
 const URL =
   "https://www.vinmonopolet.no/vmpws/v2/vmp/search?fields=FULL&searchType=product&currentPage={}&q=%3Arelevance%3AnewProducts%3Atrue";
@@ -99,27 +113,34 @@ function processProducts(products) {
   return processedProducts;
 }
 
-async function getPage(page, _proxy) {
-  for (let i = 0; i < 5; i++) {
-    const response = await session.get(URL.replace("{}", page), {
-      // proxy: _proxy,
-      timeout: 10000,
-    });
+async function getPage(page, proxy) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const response = await session.get(URL.replace("{}", page), {
+        httpsAgent: proxy,
+        timeout: 10000,
+      });
 
-    if (response.status === 200) {
-      return processProducts(response.data["productSearchResult"]["products"]);
-    } else {
+      if (response.status === 200) {
+        return processProducts(response.data["productSearchResult"]["products"]);
+      }
+
       console.log(`Status code ${response.status} at page ${page} (trying another proxy); ${err}`);
+    } catch (err) {
+      console.log(`Request failed with proxy ${proxy.host} for page ${page}: ${err.message}`);
+      if (err.code === "ECONNREFUSED" || err.code === "ETIMEDOUT") {
+        removeProxy(proxy);
+      }
+    }
 
-      throw new Error(`Failed to fetch page ${page}. Aborting.`);
-
-      // Rotate proxy.
-      _proxy = proxies[(proxies.indexOf(_proxy) + 1) % proxies.length];
-
-      // Delay before retrying.
+    try {
+      proxy = getNextProxy(proxy);
       await new Promise((resolve) => setTimeout(resolve, 2000));
+    } catch (err) {
+      throw new Error(`No more proxies available to fetch id ${id}`);
     }
   }
+
   throw new Error(`Failed to fetch page ${page} after 5 attempts.`);
 }
 
@@ -127,34 +148,36 @@ async function updateDatabase(data) {
   return await itemCollection.insertMany(data);
 }
 
-async function getProducts(_proxy) {
+async function getProducts() {
   let items = [];
+  let proxy = getNextProxy();
+
   for (let page = 0; page < 10000; page++) {
-    // Fetch products of page.
     console.log(`Page ${page}.`);
+
     try {
-      let products = await getPage(page, _proxy);
-      if (products.length === 0) {
+      let products = await getPage(page, proxy);
+      if (products.length === 0 || !products) {
         console.log(`No more new products (final page: ${page}).`);
         break;
-      } else {
-        items = items.concat(products);
-        // Timeout 1.1sec
-        await new Promise((resolve) => setTimeout(resolve, 1100));
       }
+
+      items = items.concat(products);
+      proxy = getNextProxy(proxy);
+
+      await new Promise((resolve) => setTimeout(resolve, 1100));
     } catch (err) {
-      console.log(`Error: Page ${page}. Skipping this. ${err}`);
+      console.log(`Error page ${page}! ${err}`);
       break;
     }
 
     // Upsert to the database every 10 pages.
     if (page % 10 === 0) {
       if (items.length === 0) {
-        throw new Error(`No items for the last 10 pages. Aborting.`);
+        return;
       }
 
       console.log(`Adding ${items.length} products.`);
-
       const result = await updateDatabase(items);
       console.log(` Inserted ${result.insertedCount} records`);
 
@@ -166,6 +189,7 @@ async function getProducts(_proxy) {
   if (items.length === 0) {
     return;
   }
+  console.log(`Adding ${items.length} final products.`);
   const result = await updateDatabase(items);
   console.log(` Inserted ${result.insertedCount} records`);
 }
@@ -173,9 +197,7 @@ async function getProducts(_proxy) {
 const session = axios.create();
 
 async function main() {
-  // TODO: Roter proxy hver X sider. Test ut proxyene.
-  const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
-  await getProducts(_proxy);
+  await getProducts();
 }
 
 await main();

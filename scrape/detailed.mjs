@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from "dotenv";
 
@@ -20,16 +21,29 @@ const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
-  {
-    protocol: "http",
-    host: ip,
-    port: parseInt(process.env.PROXY_PRT),
-    auth: {
-      username: process.env.PROXY_USR,
-      password: process.env.PROXY_PWD,
-    },
-  },
+  new HttpsProxyAgent(
+    `http://${process.env.PROXY_USR}:${process.env.PROXY_PWD}@${ip}:${process.env.PROXY_PRT}`,
+  ),
 ]);
+
+function getNextProxy(proxy) {
+  if (proxies.length === 0) {
+    throw new Error("No more proxies available!");
+  }
+
+  const index = proxy ? proxies.findIndex((p) => p.proxy.host === proxy.proxy.host) : -1;
+  return proxies[(index + 1) % proxies.length];
+}
+
+function removeProxy(proxy) {
+  const index = proxies.findIndex((p) => p.proxy.host === proxy.proxy.host);
+  if (index > -1) {
+    const removedProxy = proxies.splice(index, 1)[0];
+    console.log(
+      `Removed failing proxy ${removedProxy.proxy.host}. ${proxies.length} proxies remaining.`,
+    );
+  }
+}
 
 const URL = "https://www.vinmonopolet.no/vmpws/v3/vmp/products/{}?fields=FULL";
 
@@ -99,27 +113,34 @@ function processInformation(product) {
   return processed;
 }
 
-async function getInformation(id, _proxy) {
-  for (let i = 0; i < 5; i++) {
-    const response = await session.get(URL.replace("{}", id), {
-      // proxy: _proxy,
-      timeout: 10000,
-    });
+async function getInformation(id, proxy) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const response = await session.get(URL.replace("{}", id), {
+        httpsAgent: proxy,
+        timeout: 10000,
+      });
 
-    if (response.status === 200) {
-      return processInformation(response.data);
-    } else {
-      console.log(`Status code ${response.status} for id ${id} (trying another proxy); ${err}`);
+      if (response.status === 200) {
+        return processInformation(response.data);
+      }
 
-      throw new Error(`Failed to fetch id ${id}. Aborting.`);
+      console.log(`Status code ${response.status} for id ${id} (trying another proxy)`);
+    } catch (err) {
+      console.log(`Request failed with proxy ${proxy.host} for id ${id}: ${err.message}`);
+      if (err.code === "ECONNREFUSED" || err.code === "ETIMEDOUT") {
+        removeProxy(proxy);
+      }
+    }
 
-      // Rotate proxy.
-      _proxy = proxies[(proxies.indexOf(_proxy) + 1) % proxies.length];
-
-      // Delay before retrying.
+    try {
+      proxy = getNextProxy(proxy);
       await new Promise((resolve) => setTimeout(resolve, 2000));
+    } catch (err) {
+      throw new Error(`No more proxies available to fetch id ${id}`);
     }
   }
+
   throw new Error(`Failed to fetch id ${id} after 5 attempts.`);
 }
 
@@ -135,30 +156,34 @@ async function updateDatabase(data) {
   return await itemCollection.bulkWrite(operations);
 }
 
-async function updateInformation(_proxy, itemIds) {
+async function updateInformation(itemIds) {
   let items = [];
+  let proxy = getNextProxy();
+
+  console.log(`Fetching ${itemIds.length} items.`);
   for (const element of itemIds) {
     const id = element["index"];
     console.log(`Id ${id}.`);
+
     try {
-      let product = await getInformation(id, _proxy);
+      let product = await getInformation(id, proxy);
       if (!product) {
         console.log(`Unable to find product of Id ${id}. Aborting.`);
         break;
-      } else {
-        items.push(product);
-        // Timeout 1.1sec
-        await new Promise((resolve) => setTimeout(resolve, 1100));
       }
+
+      items.push(product);
+      proxy = getNextProxy(proxy);
+
+      await new Promise((resolve) => setTimeout(resolve, 1100));
     } catch (err) {
-      console.log(`Error: Id ${id}. Skipping this. ${err}`);
+      console.log(`Error! ${err}`);
       break;
     }
 
     // Upsert to the database every 10 items.
     if (items.length >= 10) {
       console.log(`Adding ${items.length} products.`);
-
       const result = await updateDatabase(items);
       console.log(` Modified ${result.modifiedCount} records`);
       console.log(` Upserted ${result.upsertedCount} records`);
@@ -171,6 +196,7 @@ async function updateInformation(_proxy, itemIds) {
   if (items.length === 0) {
     return;
   }
+  console.log(`Adding ${items.length} final products.`);
   const result = await updateDatabase(items);
   console.log(` Modified ${result.modifiedCount} records`);
   console.log(` Upserted ${result.upsertedCount} records`);
@@ -184,10 +210,7 @@ async function main() {
     .project({ index: 1, _id: 0 })
     .toArray();
 
-  // TODO: Roter proxy hver X sider. Test ut proxyene.
-  const _proxy = proxies[Math.floor(Math.random() * proxies.length)];
-
-  await updateInformation(_proxy, itemIds);
+  await updateInformation(itemIds);
 }
 
 await main();
