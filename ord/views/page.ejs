@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Orden</title>
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <header>
+          <p><%=
+            new Date().toLocaleDateString('en-GB', {
+              day: '2-digit', month: '2-digit', year: 'numeric'
+            })
+              .split('/')
+              .join('-')
+          %></p>
+        </header>
+
+        <main id="words">
+            <% if (words && words.length > 0) { %>
+                <% words.forEach(function(item) { %>
+                    <section>
+                        <div class="word"><%= item.word %></div>
+
+                        <div class="group">(<%= item.group %>)</div>
+
+                        <% if (item.etymology) { %>
+                          <% item.etymology.forEach(function(etymology) { %>
+                              <% if (etymology.text) { %>
+                                  <div class="etymology">
+                                      <%= etymology.text %>
+                                  </div>
+                              <% } %>
+                          <% }); %>
+                        <% } %>
+
+                        <hr />
+
+                        <% if (item.definitions) { %>
+                          <% item.definitions.forEach(function(definition) { %>
+                              <% if (definition.text) { %>
+                                  <div class="definition">
+                                    <%= definition.type %>: <%= formatDefinition(definition) %>
+                                  </div>
+                              <% } %>
+                          <% }); %>
+                        <% } %>
+
+                        <button id="toggleInflection" onclick="toggleInflection()">
+                          hallo, hvordan bøyes det?
+                        </button>
+
+                        <script>
+                        function toggleInflection() {
+                            const button = document.getElementById('toggleInflection');
+                            button.textContent = button.textContent.trim() === 'hallo, hvordan bøyes det?' ? 'jaja ok, jeg forstår' : 'hallo, hvordan bøyes det?';
+                            const inflections = document.querySelectorAll('.inflection');
+                            inflections.forEach((inflection) => {
+                                inflection.style.display = inflection.style.display === 'table' ? 'none' : 'table';
+                            });
+                        }
+                        </script>
+
+                        <% if (item.lemmas) { %>
+                          <% item.lemmas.forEach(function(lemma) { %>
+                              <% if (lemma.inflection) { %>
+                                  <table class="inflection" style="display: none;">
+                                      <tbody>
+                                          <% lemma.inflection.inflections.forEach(function(inflect) { %>
+                                              <% if (inflect.word_form) { %>
+                                                  <tr>
+                                                      <td class="word-cell"><%= inflect.word_form %></td>
+                                                      <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
+                                                  </tr>
+                                              <% } %>
+                                          <% }); %>
+                                      </tbody>
+                                  </table>
+                              <% } %>
+                          <% }); %>
+
+                        <% } %>
+
+                    </section>
+                <% }); %>
+            <% } else if (error) { %>
+                <section class="error">
+                    Noe gikk galt: <%= error %>
+                </section>
+            <% } else { %>
+                <section>Noe gikk galt.</section>
+            <% } %>
+
+            <button id="new" onclick="window.location.reload()">gi meg et nytt ord</button>
+        </main>
+
+        <footer>
+          <div class="copyright">
+              (C)
+              <div class="names">
+                  <div><a href="https://dilettant.no" target="_blank" style="color: var(--black)">Hallvard H. Lavik</a></div>
+                  <div>Kim Son Ly</div>
+              </div>
+          </div>
+          <a href="https://github.com/hallvardnmbu/ord" target="_blank">Kildekode</a>
+        </footer>
+    </body>
+</html>

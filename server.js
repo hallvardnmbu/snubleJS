@@ -366,9 +366,9 @@ snublejuice.get("/", async (req, res) => {
 
 const api = express();
 api.use(express.json());
-api.use(express.static(path.join(__dirname, "other")));
+api.use(express.static(path.join(__dirname, "api")));
 
-const dataFile = path.join(__dirname, "other/data.json");
+const dataFile = path.join(__dirname, "api/data.json");
 (async () => {
   try {
     await fs.access(dataFile);
@@ -378,7 +378,7 @@ const dataFile = path.join(__dirname, "other/data.json");
 })();
 
 api.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "other", "index.html"));
+  res.sendFile(path.join(__dirname, "api", "index.html"));
 });
 
 api.get("/dates", async (req, res) => {
@@ -452,11 +452,66 @@ api.get("/id", async (req, res) => {
   }
 });
 
-// FINAL APP WITH BOTH VHOSTS
+// ORD APPLICATION (ord.dilettant.no)
+// ------------------------------------------------------------------------------------------------
+
+const ord = express();
+ord.set("view engine", "ejs");
+ord.set("views", path.join(__dirname, "ord", "views"));
+ord.use(express.static(path.join(__dirname, "ord", "public")));
+
+let client2;
+try {
+  client2 = await MongoClient.connect(
+    `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@ord.c8trc.mongodb.net/?retryWrites=true&w=majority&appName=ord`,
+    {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: false,
+        deprecationErrors: true,
+      },
+    },
+  );
+} catch (err) {
+  console.error("Failed to connect to MongoDB", err);
+  process.exit(1);
+}
+const db2 = client2.db("ord");
+let collection2 = db2.collection("ord");
+
+function formatDefinition(definition) {
+  if (Array.isArray(definition.text)) {
+    return definition.text
+      .map((subDef) => formatDefinition(subDef))
+      .filter(Boolean)
+      .join(" | ");
+  }
+  return definition.text;
+}
+
+ord.get("/", async (req, res) => {
+  try {
+    const words = await collection2.aggregate([{ $sample: { size: 1 } }]).toArray();
+    res.render("page", {
+      words,
+      error: null,
+      formatDefinition: formatDefinition,
+    });
+  } catch (error) {
+    res.status(500).render("page", {
+      words: [],
+      error: error.message,
+      formatDefinition: formatDefinition,
+    });
+  }
+});
+
+// FINAL APP WITH ALL VHOSTS
 // ------------------------------------------------------------------------------------------------
 
 app.use(vhost("snublejuice.no", snublejuice));
 app.use(vhost("api.ind320.no", api));
+app.use(vhost("ord.dilettant.no", ord));
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
