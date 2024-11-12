@@ -146,6 +146,7 @@ input {
     width: calc(2.5 * var(--height));
     padding-left: var(--padding);
     border: none;
+    border-radius: 0;
     border-right: 1px solid var(--darkgray);
 }
 form {
@@ -157,7 +158,7 @@ button {
     height: var(--height);
     padding: var(--padding);
     border: none;
-
+    color: var(--darkgray);
     background-color: white;
 }
 button:hover {
