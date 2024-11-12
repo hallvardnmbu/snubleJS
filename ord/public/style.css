@@ -5,11 +5,13 @@
     --black: #000;
     --darkgray: #333;
     --gray: #ccc;
+    --lightgray: #f9f9f9;
 }
 
 body {
     font-family: monospace;
-    color: var(--black);
+    color: var(--darkgray);
+    font-size: 1.1em;
 
     display: flex;
     flex-direction: column;
@@ -27,6 +29,10 @@ footer {
     display: flex;
     justify-content: center;
 }
+header {
+    gap: var(--padding);
+    margin: var(--padding);
+}
 
 a {
     display: inline-block;
@@ -36,37 +42,51 @@ a:hover {
     background-color: lightgray;
 }
 
+.heading {
+    padding: var(--padding);
+    align-self: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 section {
     margin: var(--padding);
-    border: 1px solid var(--gray);
-    box-shadow: 0 0 var(--padding) rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--darkgray);
 }
 hr {
     margin: 0;
     border: none;
-    border-top: 1px solid var(--gray);
+    border-top: 1px solid var(--darkgray);
 }
 
-.word {
+.top {
+    display: flex;
+    justify-content: space-between;
+    text-decoration: none;
+}
+.top:hover {
+    background-color: var(--gray);
+}
+.word,
+.group {
     display: flex;
     align-items: center;
     height: var(--height);
-    padding-left: var(--padding);
-
+    padding: 0 var(--padding) 0 var(--padding);
+}
+.word {
     font-size: 1.5em;
     font-weight: bold;
-    border-bottom: 1px solid var(--gray);
-}
-.word:hover {
-    background-color: var(--gray);
+    color: var(--darkgray);
 }
 .etymology {
     font-style: italic;
 }
-.group,
 .etymology,
 .definition {
     padding: var(--padding);
+    background-color: var(--lightgray);
 }
 
 button {
@@ -77,9 +97,9 @@ button {
     font-family: monospace;
     font-size: 1em;
     border: none;
-    border-top: 1px solid var(--gray);
+    border-top: 1px solid var(--darkgray);
     background-color: white;
-    color: var(--black);
+    color: var(--darkgray);
 }
 button:hover {
     background-color: var(--gray);
@@ -89,8 +109,9 @@ button:hover {
 .inflection {
     border-collapse: collapse;
     table-layout: fixed;
-    border-top: 1px solid var(--gray);
+    border-top: 1px solid var(--darkgray);
     width: 100%;
+    background-color: var(--lightgray);
 }
 
 .inflection tr {

@@ -481,38 +481,63 @@ let collection2 = db2.collection("ord");
 
 function formatDefinition(definition) {
   if (Array.isArray(definition.text)) {
-    return definition.text
-      .map((subDef) => formatDefinition(subDef))
-      .filter(Boolean)
-      .join(" | ");
+    return definition.text.flatMap((subDef) => formatDefinition(subDef)).filter(Boolean);
   }
-  return definition.text;
+  return [definition.text];
+}
+
+function processDefinitions(words) {
+  for (const word of words) {
+    const definitions = word.definitions;
+    const formattedDefinitions = {};
+    for (const definition of definitions) {
+      if (Array.isArray(definition.text)) {
+        for (const element of definition.text) {
+          const formattedDefinition = formatDefinition(element);
+          formattedDefinitions[element.type] = formattedDefinitions[element.type]
+            ? formattedDefinitions[element.type].concat(formattedDefinition)
+            : formattedDefinition;
+        }
+      } else {
+        const formattedDefinition = formatDefinition(definition);
+        formattedDefinitions[definition.type] = formattedDefinitions[definition.type]
+          ? formattedDefinitions[definition.type].concat(formattedDefinition)
+          : formattedDefinition;
+      }
+    }
+    word.definitions = formattedDefinitions;
+  }
+  return words;
 }
 
 ord.get("/", async (req, res) => {
+  const date = new Date();
+  const week = Math.ceil(((date - new Date(date.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
+  const day = date.toLocaleDateString("no-NB", { weekday: "long" }).toLowerCase();
+  const today = date
+    .toLocaleDateString("no-NB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .split(".")
+    .join("-");
   try {
-    const today = new Date()
-      .toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-      .split("/")
-      .join("-");
-
     const words = await collection2.find({ date: today }).toArray();
     res.render("page", {
-      words,
+      words: processDefinitions(words),
       date: today,
+      week: week,
+      day: day,
       error: null,
-      formatDefinition: formatDefinition,
     });
   } catch (error) {
     res.status(500).render("page", {
       words: [],
       date: today,
+      week: week,
+      day: day,
       error: error.message,
-      formatDefinition: formatDefinition,
     });
   }
 });
@@ -523,7 +548,6 @@ ord.get("/", async (req, res) => {
 app.use(vhost("snublejuice.no", snublejuice));
 app.use(vhost("api.ind320.no", api));
 app.use(vhost("ord.dilettant.no", ord));
-app.use(vhost("www.dagsord.no", ord));
 app.use(vhost("dagsord.no", ord));
 
 app.listen(port, () => {

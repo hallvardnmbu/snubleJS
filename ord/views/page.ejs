@@ -8,16 +8,23 @@
     </head>
     <body>
         <header>
-          <p><%= date %></p>
+          <div><%= day.charAt(0).toUpperCase() + day.slice(1) %></div>
+          <div>•</div>
+          <div>Uke <%= week %></div>
+          <div>•</div>
+          <div><%= date %></div>
         </header>
 
         <main id="words">
             <% if (words && words.length > 0) { %>
                 <% words.forEach(function(item) { %>
-                    <section>
-                        <div class="word"><%= item.word %></div>
+                    <div class="heading">Dagens ord: <b><%= item.word %></b>.</div>
 
-                        <div class="group">(<%= item.group %>)</div>
+                    <section>
+                      <a href="https://ordbokene.no/nob/bm/<%= item.id %>" class="top" target="_blank">
+                        <div class="word"><%= item.word %></div>
+                        <div class="group"><%= item.group %></div>
+                      </a>
 
                         <% if (item.etymology) { %>
                           <% item.etymology.forEach(function(etymology) { %>
@@ -32,12 +39,11 @@
                         <hr />
 
                         <% if (item.definitions) { %>
-                          <% item.definitions.forEach(function(definition) { %>
-                              <% if (definition.text) { %>
-                                  <div class="definition">
-                                    <%= definition.type %>: <%= formatDefinition(definition) %>
-                                  </div>
-                              <% } %>
+                          <% Object.entries(item.definitions).forEach(([type, elements]) => { %>
+                              <div class="definition"><b><%= type %></b></div>
+                              <% elements.forEach(element => { %>
+                                <div class="definition"><%= element %></div>
+                              <% }); %>
                           <% }); %>
                         <% } %>
 
@@ -56,23 +62,21 @@
                         }
                         </script>
 
-                        <% if (item.lemmas) { %>
-                          <% item.lemmas.forEach(function(lemma) { %>
-                              <% if (lemma.inflection) { %>
-                                  <table class="inflection" style="display: none;">
-                                      <tbody>
-                                          <% lemma.inflection.inflections.forEach(function(inflect) { %>
-                                              <% if (inflect.word_form) { %>
-                                                  <tr>
-                                                      <td class="word-cell"><%= inflect.word_form %></td>
-                                                      <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
-                                                  </tr>
-                                              <% } %>
-                                          <% }); %>
-                                      </tbody>
-                                  </table>
-                              <% } %>
-                          <% }); %>
+                        <% if (item.lemmas && item.lemmas[0]) { %>
+                            <% if (item.lemmas[0].inflection) { %>
+                                <table class="inflection" style="display: none;">
+                                    <tbody>
+                                        <% item.lemmas[0].inflection.inflections.slice(0, 5).forEach(function(inflect) { %>
+                                            <% if (inflect.word_form) { %>
+                                                <tr>
+                                                    <td class="word-cell"><%= inflect.word_form %></td>
+                                                    <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
+                                                </tr>
+                                            <% } %>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            <% } %>
 
                         <% } %>
 
