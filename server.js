@@ -523,6 +523,7 @@ ord.get("/", async (req, res) => {
 app.use(vhost("snublejuice.no", snublejuice));
 app.use(vhost("api.ind320.no", api));
 app.use(vhost("ord.dilettant.no", ord));
+app.use(vhost("www.dagsord.no", ord));
 app.use(vhost("dagsord.no", ord));
 
 app.listen(port, () => {
