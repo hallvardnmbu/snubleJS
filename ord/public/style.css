@@ -82,14 +82,14 @@ hr {
 }
 .etymology {
     font-style: italic;
+    padding: var(--padding);
 }
-.etymology,
 .definition {
     padding: var(--padding);
     background-color: var(--lightgray);
 }
 
-button {
+#toggleInflection {
     width: 100%;
     height: var(--height);
     padding: var(--padding);
@@ -101,7 +101,7 @@ button {
     background-color: white;
     color: var(--darkgray);
 }
-button:hover {
+#toggleInflection:hover {
     background-color: var(--gray);
     cursor: pointer;
 }
@@ -134,6 +134,48 @@ button:hover {
     border-bottom: none;
 }
 
+.find {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--padding);
+    flex-wrap: wrap;
+}
+input {
+    height: calc(var(--height) - 2px);
+    width: calc(2.5 * var(--height));
+    padding-left: var(--padding);
+    border: none;
+    border-right: 1px solid var(--darkgray);
+}
+form {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid var(--darkgray);
+}
+button {
+    height: var(--height);
+    padding: var(--padding);
+    border: none;
+
+    background-color: white;
+}
+button:hover {
+    background-color: var(--gray);
+    cursor: pointer;
+}
+@media (max-width: 350px) {
+    .find {
+        flex-direction: column;
+    }
+    input {
+        width: 100%;
+    }
+    button {
+        width: 100%;
+    }
+}
+
 footer {
     display: flex;
     flex-direction: row;
@@ -143,6 +185,11 @@ footer {
     margin: var(--padding);
     font-size: var(--font-description);
     line-height: 1.1rem;
+}
+@media (max-width: 800px) {
+    footer {
+        margin-top: var(--height);
+    }
 }
 .copyright {
     display: flex;

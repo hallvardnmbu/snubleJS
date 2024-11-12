@@ -460,9 +460,9 @@ ord.set("view engine", "ejs");
 ord.set("views", path.join(__dirname, "ord", "views"));
 ord.use(express.static(path.join(__dirname, "ord", "public")));
 
-let client2;
+let clientWord;
 try {
-  client2 = await MongoClient.connect(
+  clientWord = await MongoClient.connect(
     `mongodb+srv://${process.env.MONGO_USR}:${process.env.MONGO_PWD}@ord.c8trc.mongodb.net/?retryWrites=true&w=majority&appName=ord`,
     {
       serverApi: {
@@ -476,8 +476,8 @@ try {
   console.error("Failed to connect to MongoDB", err);
   process.exit(1);
 }
-const db2 = client2.db("ord");
-let collection2 = db2.collection("ord");
+const dbWord = clientWord.db("ord");
+let collectionWord = dbWord.collection("ord");
 
 function formatDefinition(definition) {
   if (Array.isArray(definition.text)) {
@@ -510,6 +510,80 @@ function processDefinitions(words) {
   return words;
 }
 
+ord.get("/random", async (req, res) => {
+  try {
+    const words = await collectionWord.aggregate([{ $sample: { size: 1 } }]).toArray();
+    res.render("page", {
+      words: processDefinitions(words),
+      date: null,
+      week: null,
+      day: null,
+      error: null,
+    });
+  } catch (error) {
+    res.status(500).render("page", {
+      words: [],
+      date: null,
+      week: null,
+      day: null,
+      error: error.message,
+    });
+  }
+});
+
+ord.get("/search", async (req, res) => {
+  const word = req.query.word.trim().toLowerCase();
+  try {
+    const words = await collectionWord
+      .aggregate([
+        {
+          $search: {
+            index: "word",
+            compound: {
+              should: [
+                {
+                  text: {
+                    query: word,
+                    path: "word",
+                    score: { boost: { value: 10 } },
+                  },
+                },
+                {
+                  text: {
+                    query: word,
+                    path: "word",
+                    fuzzy: {
+                      maxEdits: 2,
+                      prefixLength: 1,
+                      maxExpansions: 1,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        { $limit: 1 },
+      ])
+      .toArray();
+    res.render("page", {
+      words: processDefinitions(words),
+      date: null,
+      week: null,
+      day: word,
+      error: null,
+    });
+  } catch (error) {
+    res.status(500).render("page", {
+      words: [],
+      date: null,
+      week: null,
+      day: word,
+      error: error.message,
+    });
+  }
+});
+
 ord.get("/", async (req, res) => {
   const date = new Date();
   const week = Math.ceil(((date - new Date(date.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
@@ -523,7 +597,7 @@ ord.get("/", async (req, res) => {
     .split(".")
     .join("-");
   try {
-    const words = await collection2.find({ date: today }).toArray();
+    const words = await collectionWord.find({ date: today }).toArray();
     res.render("page", {
       words: processDefinitions(words),
       date: today,

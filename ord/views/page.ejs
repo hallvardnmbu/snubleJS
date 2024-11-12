@@ -8,17 +8,30 @@
     </head>
     <body>
         <header>
-          <div><%= day.charAt(0).toUpperCase() + day.slice(1) %></div>
-          <div>•</div>
-          <div>Uke <%= week %></div>
-          <div>•</div>
-          <div><%= date %></div>
+          <% if (day && week && date) { %>
+            <div><%= day.charAt(0).toUpperCase() + day.slice(1) %></div>
+            <div>•</div>
+            <div>Uke <%= week %></div>
+            <div>•</div>
+            <div><%= date %></div>
+          <% } else if (day) { %>
+            <div>Søkte etter <b><%= day %></b>.</div>
+          <% } else { %>
+            <div></div>
+          <% } %>
         </header>
 
         <main id="words">
             <% if (words && words.length > 0) { %>
                 <% words.forEach(function(item) { %>
+
+                  <% if (day && week && date) { %>
                     <div class="heading">Dagens ord: <b><%= item.word %></b>.</div>
+                  <% } else if (day) { %>
+                    <div class="heading">Fant ord: <b><%= item.word %></b>.</div>
+                  <% } else { %>
+                    <div class="heading">Tilfeldig ord: <b><%= item.word %></b>.</div>
+                  <% } %>
 
                     <section>
                       <a href="https://ordbokene.no/nob/bm/<%= item.id %>" class="top" target="_blank">
@@ -83,20 +96,36 @@
                     </section>
                 <% }); %>
             <% } else if (error) { %>
-                <section class="error">
-                    Noe gikk galt: <%= error %>
+                <section>
+                    <div class="heading">Noe gikk galt: <%= error %></div>
                 </section>
             <% } else { %>
-                <section>Noe gikk galt.</section>
+                <section>
+                  <div class="heading">Fant ikke dette ordet i databasen.</div>
+                </section>
             <% } %>
         </main>
+
+        <div class="find">
+          <form action="/" method="get">
+            <button type="submit">dagens ord</button>
+          </form>
+
+          <form action="/search" method="get">
+            <input type="text" name="word" placeholder="ord" />
+            <button type="submit">søk</button>
+          </form>
+
+          <form action="/random" method="get">
+            <button type="submit">tilfeldig</button>
+          </form>
+        </div>
 
         <footer>
           <div class="copyright">
               (C)
               <div class="names">
                   <div><a href="https://dilettant.no" target="_blank" style="color: var(--black)">Hallvard H. Lavik</a></div>
-                  <div>Kim Son Ly</div>
               </div>
           </div>
           <a href="https://github.com/hallvardnmbu/ord" target="_blank">Kildekode</a>
