@@ -8,13 +8,7 @@
     </head>
     <body>
         <header>
-          <p><%=
-            new Date().toLocaleDateString('en-GB', {
-              day: '2-digit', month: '2-digit', year: 'numeric'
-            })
-              .split('/')
-              .join('-')
-          %></p>
+          <p><%= date %></p>
         </header>
 
         <main id="words">
@@ -91,8 +85,6 @@
             <% } else { %>
                 <section>Noe gikk galt.</section>
             <% } %>
-
-            <button id="new" onclick="window.location.reload()">gi meg et nytt ord</button>
         </main>
 
         <footer>

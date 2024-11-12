@@ -69,7 +69,7 @@ hr {
     padding: var(--padding);
 }
 
-#toggleInflection {
+button {
     width: 100%;
     height: var(--height);
     padding: var(--padding);
@@ -79,8 +79,9 @@ hr {
     border: none;
     border-top: 1px solid var(--gray);
     background-color: white;
+    color: var(--black);
 }
-#toggleInflection:hover {
+button:hover {
     background-color: var(--gray);
     cursor: pointer;
 }
@@ -110,22 +111,6 @@ hr {
 }
 .inflection tbody tr:last-child {
     border-bottom: none;
-}
-
-#new {
-    width: calc(100% - 2 * var(--padding));
-    margin: var(--height) var(--padding) 0 var(--padding);
-    height: var(--height);
-    box-shadow: 0 0 var(--padding) rgba(0, 0, 0, 0.15);
-    text-align: left;
-    font-family: monospace;
-    font-size: 1em;
-    border: 1px solid var(--gray);
-    background-color: white;
-}
-#new:hover {
-    background-color: var(--gray);
-    cursor: pointer;
 }
 
 footer {

@@ -491,15 +491,26 @@ function formatDefinition(definition) {
 
 ord.get("/", async (req, res) => {
   try {
-    const words = await collection2.aggregate([{ $sample: { size: 1 } }]).toArray();
+    const today = new Date()
+      .toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .split("/")
+      .join("-");
+
+    const words = await collection2.find({ date: today }).toArray();
     res.render("page", {
       words,
+      date: today,
       error: null,
       formatDefinition: formatDefinition,
     });
   } catch (error) {
     res.status(500).render("page", {
       words: [],
+      date: today,
       error: error.message,
       formatDefinition: formatDefinition,
     });
