@@ -42,16 +42,20 @@ a:hover {
     background-color: lightgray;
 }
 
-.heading {
+.heading,
+.message {
     padding: var(--padding);
     align-self: center;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
 }
+.heading {
+    margin-bottom: calc(var(--height) - 2 * var(--padding));
+}
 
 section {
-    margin: 0 var(--padding) 0 var(--padding);
+    margin: 0 var(--padding) var(--height) var(--padding);
     border: 1px solid var(--darkgray);
 }
 hr {
@@ -73,7 +77,7 @@ hr {
 .group {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     min-height: var(--height);
     padding: 0 var(--padding) 0 var(--padding);
 }
@@ -86,10 +90,6 @@ hr {
     font-weight: normal;
     font-size: 0.9em;
     padding-left: var(--padding);
-    padding-bottom: 2px;
-}
-.group {
-    padding-bottom: 2px;
 }
 
 .etymology {
@@ -148,15 +148,13 @@ hr {
 
 .dictionary {
     width: calc(100% - 4 * var(--padding) - 2px);
-    background-color: var(--gray);
+    background-color: var(--lightgray);
     margin: 0 var(--padding) 0 var(--padding);
     padding: var(--padding);
     text-align: center;
     border: 1px solid var(--darkgray);
     border-bottom: none;
-}
-.dictionary:last-of-type {
-    margin-top: var(--height);
+    font-style: italic;
 }
 
 .find {
@@ -170,7 +168,7 @@ hr {
 }
 input {
     height: calc(var(--height) - 2px);
-    width: calc(2 * var(--height));
+    width: calc(1.5 * var(--height));
     padding-left: var(--padding);
     border: none;
     border-radius: 0;
@@ -241,9 +239,32 @@ footer {
         justify-content: space-between;
     }
 }
-@media (max-width: 500px) {
+@media (min-width: 425px) {
+    #wide {
+        display: flex;
+    }
+    #long {
+        display: none;
+    }
+}
+@media (max-width: 425px) {
     .find {
         flex-direction: column;
+    }
+    #wide {
+        display: none;
+    }
+    #long {
+        display: flex;
+    }
+    #long div {
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+        gap: var(--padding);
+    }
+    #long div > * {
+        flex: 1;
     }
     input,
     select {

@@ -1,8 +1,8 @@
 <% const word = item[dictionary]; %>
 <% if (!word) { %>
 
-  <section style="margin-top: var(--height);">
-    <div class="heading">Fant ikke dette ordet i <%= {"nn": "nynorsk", "bm": "bokmåls"}[dictionary] %>ordboka.</div>
+  <section">
+    <div class="message">Fant ikke dette ordet i <%= {"nn": "nynorsk", "bm": "bokmåls"}[dictionary] %>ordboka.</div>
   </section>
 
 <% } else { %>

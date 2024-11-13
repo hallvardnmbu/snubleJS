@@ -41,19 +41,19 @@
                 <% }); %>
             <% } else if (error) { %>
                 <section>
-                    <div class="heading">Noe gikk galt: <%= error %></div>
+                    <div class="message">Noe gikk galt: <%= error %></div>
                 </section>
             <% } else { %>
                 <section>
-                  <div class="heading">Fant ikke dette ordet i databasen.</div>
+                  <div class="message">Fant ikke dette ordet i databasen.</div>
                 </section>
             <% } %>
         </main>
 
-        <div class="find">
+        <div id="wide" class="find">
           <form action="/" method="get">
             <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
-            <button type="submit">dagens ord</button>
+            <button type="submit">dagens</button>
           </form>
 
           <form action="/" method="get">
@@ -74,6 +74,35 @@
             <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
             <button type="submit">tilfeldig</button>
           </form>
+        </div>
+        <div id="long" class="find">
+          <div>
+            <form action="/" method="get">
+              <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
+              <button type="submit">dagens</button>
+            </form>
+
+            <form action="/" method="get">
+              <select name="dictionary" onchange="this.form.submit()">
+                <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
+                <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
+                <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
+              </select>
+            </form>
+          </div>
+
+          <div>
+            <form action="/random" method="get">
+              <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
+              <button type="submit">tilfeldig</button>
+            </form>
+
+            <form action="/search" method="get">
+              <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
+              <input type="text" name="word" placeholder="ord" />
+              <button type="submit">søk</button>
+            </form>
+          </div>
         </div>
 
         <footer>
