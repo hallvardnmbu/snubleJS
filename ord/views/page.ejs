@@ -33,67 +33,8 @@
                     <div class="heading">Tilfeldig ord: <b><%= item.word %></b>.</div>
                   <% } %>
 
-                    <section>
-                      <a href="https://ordbokene.no/nob/bm/<%= item.id %>" class="top" target="_blank">
-                        <div class="word"><%= item.word %></div>
-                        <div class="group"><%= item.group %></div>
-                      </a>
+                  <%- include('partials/word', { item: item }) %>
 
-                        <% if (item.etymology) { %>
-                          <% item.etymology.forEach(function(etymology) { %>
-                              <% if (etymology.text) { %>
-                                  <div class="etymology">
-                                      <%= etymology.text %>
-                                  </div>
-                              <% } %>
-                          <% }); %>
-                        <% } %>
-
-                        <hr />
-
-                        <% if (item.definitions) { %>
-                          <% Object.entries(item.definitions).forEach(([type, elements]) => { %>
-                              <div class="definition"><b><%= type %></b></div>
-                              <% elements.forEach(element => { %>
-                                <div class="definition"><%= element %></div>
-                              <% }); %>
-                          <% }); %>
-                        <% } %>
-
-                        <button id="toggleInflection" onclick="toggleInflection()">
-                          hallo, hvordan bøyes det?
-                        </button>
-
-                        <script>
-                        function toggleInflection() {
-                            const button = document.getElementById('toggleInflection');
-                            button.textContent = button.textContent.trim() === 'hallo, hvordan bøyes det?' ? 'jaja ok, jeg forstår' : 'hallo, hvordan bøyes det?';
-                            const inflections = document.querySelectorAll('.inflection');
-                            inflections.forEach((inflection) => {
-                                inflection.style.display = inflection.style.display === 'table' ? 'none' : 'table';
-                            });
-                        }
-                        </script>
-
-                        <% if (item.lemmas && item.lemmas[0]) { %>
-                            <% if (item.lemmas[0].inflection) { %>
-                                <table class="inflection" style="display: none;">
-                                    <tbody>
-                                        <% item.lemmas[0].inflection.inflections.slice(0, 5).forEach(function(inflect) { %>
-                                            <% if (inflect.word_form) { %>
-                                                <tr>
-                                                    <td class="word-cell"><%= inflect.word_form %></td>
-                                                    <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
-                                                </tr>
-                                            <% } %>
-                                        <% }); %>
-                                    </tbody>
-                                </table>
-                            <% } %>
-
-                        <% } %>
-
-                    </section>
                 <% }); %>
             <% } else if (error) { %>
                 <section>
