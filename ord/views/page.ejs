@@ -34,7 +34,9 @@
                     <div class="heading">Tilfeldig ord: <b><%= item.word %></b>.</div>
                   <% } %>
 
-                  <%- include('partials/word', { item: item }) %>
+                  <% for (const dict of dictionary.split(',')) { %>
+                    <%- include('partials/word', { item: item, dictionary: dict, both: dictionary.includes(',') }) %>
+                  <% } %>
 
                 <% }); %>
             <% } else if (error) { %>
@@ -50,15 +52,26 @@
 
         <div class="find">
           <form action="/" method="get">
+            <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
             <button type="submit">dagens ord</button>
           </form>
 
+          <form action="/" method="get">
+            <select name="dictionary" onchange="this.form.submit()">
+              <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
+              <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
+              <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
+            </select>
+          </form>
+
           <form action="/search" method="get">
+            <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
             <input type="text" name="word" placeholder="ord" />
             <button type="submit">søk</button>
           </form>
 
           <form action="/random" method="get">
+            <input type="hidden" name="dictionary" value="<%= dictionary || 'bm' %>">
             <button type="submit">tilfeldig</button>
           </form>
         </div>

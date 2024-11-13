@@ -51,7 +51,7 @@ a:hover {
 }
 
 section {
-    margin: var(--padding);
+    margin: 0 var(--padding) 0 var(--padding);
     border: 1px solid var(--darkgray);
 }
 hr {
@@ -69,11 +69,11 @@ hr {
 .top:hover {
     background-color: var(--gray);
 }
-.word,
+.words,
 .group {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     min-height: var(--height);
     padding: 0 var(--padding) 0 var(--padding);
 }
@@ -82,6 +82,16 @@ hr {
     font-weight: bold;
     color: var(--darkgray);
 }
+.pronunciation {
+    font-weight: normal;
+    font-size: 0.9em;
+    padding-left: var(--padding);
+    padding-bottom: 2px;
+}
+.group {
+    padding-bottom: 2px;
+}
+
 .etymology {
     font-style: italic;
     padding: var(--padding);
@@ -91,7 +101,7 @@ hr {
     background-color: var(--lightgray);
 }
 
-#toggleInflection {
+.toggleInflection {
     width: 100%;
     min-height: var(--height);
     padding: var(--padding);
@@ -103,7 +113,7 @@ hr {
     background-color: white;
     color: var(--darkgray);
 }
-#toggleInflection:hover {
+.toggleInflection:hover {
     background-color: var(--gray);
     cursor: pointer;
 }
@@ -136,6 +146,19 @@ hr {
     border-bottom: none;
 }
 
+.dictionary {
+    width: calc(100% - 4 * var(--padding) - 2px);
+    background-color: var(--gray);
+    margin: 0 var(--padding) 0 var(--padding);
+    padding: var(--padding);
+    text-align: center;
+    border: 1px solid var(--darkgray);
+    border-bottom: none;
+}
+.dictionary:last-of-type {
+    margin-top: var(--height);
+}
+
 .find {
     display: flex;
     flex-direction: row;
@@ -143,7 +166,7 @@ hr {
     width: auto;
     gap: var(--padding);
     flex-wrap: wrap;
-    margin: var(--padding) 0 0 var(--padding);
+    margin: var(--height) var(--padding) 0 var(--padding);
 }
 input {
     height: calc(var(--height) - 2px);
@@ -152,24 +175,39 @@ input {
     border: none;
     border-radius: 0;
     border-right: 1px solid var(--darkgray);
+    font-family: monospace;
 }
 form {
     display: flex;
     justify-content: space-between;
     border: 1px solid var(--darkgray);
 }
-button {
+button,
+select {
     display: flex;
     align-items: center;
     justify-content: center;
     width: auto;
     min-height: var(--height);
     padding: var(--padding);
-    border: none;
     color: var(--darkgray);
     background-color: white;
+    font-family: monospace;
+
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
-button:hover {
+select {
+    padding-right: calc(var(--padding) * 2);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><text x="2" y="8" font-size="10" fill="rgb(0, 0, 0)">+</text></svg>');
+    background-repeat: no-repeat;
+    background-position: right calc(var(--padding) / 2) center;
+}
+button:hover,
+select:hover {
     background-color: var(--gray);
     cursor: pointer;
 }
@@ -197,17 +235,18 @@ footer {
     flex-direction: column;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
     .find {
         width: calc(100% - 2 * var(--padding));
         justify-content: space-between;
     }
 }
-@media (max-width: 350px) {
+@media (max-width: 500px) {
     .find {
         flex-direction: column;
     }
-    input {
+    input,
+    select {
         width: 100%;
     }
     button {
