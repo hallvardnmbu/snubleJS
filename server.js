@@ -479,42 +479,11 @@ try {
 const dbWord = clientWord.db("ord");
 let collectionWord = dbWord.collection("ord");
 
-function formatDefinition(definition) {
-  if (Array.isArray(definition.text)) {
-    return definition.text.flatMap((subDef) => formatDefinition(subDef)).filter(Boolean);
-  }
-  return [definition.text];
-}
-
-function processDefinitions(words) {
-  for (const word of words) {
-    const definitions = word.definitions;
-    const formattedDefinitions = {};
-    for (const definition of definitions) {
-      if (Array.isArray(definition.text)) {
-        for (const element of definition.text) {
-          const formattedDefinition = formatDefinition(element);
-          formattedDefinitions[element.type] = formattedDefinitions[element.type]
-            ? formattedDefinitions[element.type].concat(formattedDefinition)
-            : formattedDefinition;
-        }
-      } else {
-        const formattedDefinition = formatDefinition(definition);
-        formattedDefinitions[definition.type] = formattedDefinitions[definition.type]
-          ? formattedDefinitions[definition.type].concat(formattedDefinition)
-          : formattedDefinition;
-      }
-    }
-    word.definitions = formattedDefinitions;
-  }
-  return words;
-}
-
 ord.get("/random", async (req, res) => {
   try {
     const words = await collectionWord.aggregate([{ $sample: { size: 1 } }]).toArray();
     res.render("page", {
-      words: processDefinitions(words),
+      words: words,
       date: null,
       week: null,
       day: null,
@@ -567,7 +536,7 @@ ord.get("/search", async (req, res) => {
       ])
       .toArray();
     res.render("page", {
-      words: processDefinitions(words),
+      words: words,
       date: null,
       week: null,
       day: word,
@@ -599,7 +568,7 @@ ord.get("/", async (req, res) => {
   try {
     const words = await collectionWord.find({ date: today }).toArray();
     res.render("page", {
-      words: processDefinitions(words),
+      words: words,
       date: today,
       week: week,
       day: day,

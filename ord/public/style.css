@@ -62,6 +62,7 @@ hr {
 
 .top {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     text-decoration: none;
 }
@@ -71,8 +72,9 @@ hr {
 .word,
 .group {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    height: var(--height);
+    min-height: var(--height);
     padding: 0 var(--padding) 0 var(--padding);
 }
 .word {
@@ -91,7 +93,7 @@ hr {
 
 #toggleInflection {
     width: 100%;
-    height: var(--height);
+    min-height: var(--height);
     padding: var(--padding);
     text-align: left;
     font-family: monospace;
@@ -138,12 +140,14 @@ hr {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    width: auto;
     gap: var(--padding);
     flex-wrap: wrap;
+    margin: var(--padding) 0 0 var(--padding);
 }
 input {
     height: calc(var(--height) - 2px);
-    width: calc(2.5 * var(--height));
+    width: calc(2 * var(--height));
     padding-left: var(--padding);
     border: none;
     border-radius: 0;
@@ -155,7 +159,11 @@ form {
     border: 1px solid var(--darkgray);
 }
 button {
-    height: var(--height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-height: var(--height);
     padding: var(--padding);
     border: none;
     color: var(--darkgray);
@@ -165,32 +173,18 @@ button:hover {
     background-color: var(--gray);
     cursor: pointer;
 }
-@media (max-width: 350px) {
-    .find {
-        flex-direction: column;
-    }
-    input {
-        width: 100%;
-    }
-    button {
-        width: 100%;
-    }
-}
 
 footer {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-end;
     gap: calc(2 * var(--padding));
     margin: var(--padding);
+    margin-top: calc(2 * var(--padding));
     font-size: var(--font-description);
     line-height: 1.1rem;
-}
-@media (max-width: 800px) {
-    footer {
-        margin-top: var(--height);
-    }
 }
 .copyright {
     display: flex;
@@ -201,4 +195,27 @@ footer {
 .names {
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 500px) {
+    .find {
+        width: calc(100% - 2 * var(--padding));
+        justify-content: space-between;
+    }
+}
+@media (max-width: 350px) {
+    .find {
+        flex-direction: column;
+    }
+    input {
+        width: 100%;
+    }
+    button {
+        flex: 1;
+        justify-content: center;
+    }
+    footer {
+        flex-direction: column;
+        align-items: center;
+    }
 }
