@@ -512,6 +512,9 @@ ord.get("/random", async (req, res) => {
 });
 
 ord.get("/search", async (req, res) => {
+  if (!req.query.word || typeof req.query.word !== "string" || !req.query.word.trim()) {
+    return res.redirect(301, "/");
+  }
   const word = req.query.word.trim().toLowerCase();
   const dictionary = req.query.dictionary || "bm,nn";
 

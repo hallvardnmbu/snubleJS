@@ -6,6 +6,19 @@
         <title>Dagens ord</title>
         <link rel="stylesheet" href="/style.css" />
         <link rel="icon" href="data:,dagsord.no">
+
+        <script>
+            // Immediately redirect with dictionary preference before any rendering.
+            (function() {
+              const currentUrl = new URL(window.location.href);
+              // Only add dictionary if it's not already in the URL.
+              if (!currentUrl.searchParams.has('dictionary')) {
+                const savedDictionary = localStorage.getItem('dictionary') || 'bm,nn';
+                currentUrl.searchParams.set('dictionary', savedDictionary);
+                window.location.replace(currentUrl.toString());
+                }
+            })();
+        </script>
     </head>
     <body>
         <header>
@@ -54,8 +67,8 @@
             <button type="submit">dagens</button>
           </form>
 
-          <form onsubmit="event.preventDefault(); window.location.href = window.location.pathname + '?dictionary=' + this.dictionary.value">
-            <select name="dictionary" onchange="this.form.submit()">
+          <form>
+            <select name="dictionary">
               <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
               <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
               <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
@@ -80,8 +93,8 @@
               <button type="submit">dagens</button>
             </form>
 
-            <form action="/" method="get">
-              <select name="dictionary" onchange="this.form.submit()">
+            <form>
+              <select name="dictionary">
                 <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
                 <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
                 <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
@@ -112,5 +125,26 @@
           </div>
           <a href="https://github.com/hallvardnmbu/ord" target="_blank">Kildekode</a>
         </footer>
+
+        <script>
+          // Function to update all dictionary inputs and selects
+          function updateDictionaryElements(dictionary) {
+            document.querySelectorAll('select[name="dictionary"]').forEach(select => {
+              select.value = dictionary;
+            });
+            document.querySelectorAll('input[name="dictionary"]').forEach(input => {
+              input.value = dictionary;
+            });
+          }
+
+          // Update select forms
+          document.querySelectorAll('select[name="dictionary"]').forEach(select => {
+            select.addEventListener('change', function() {
+              const dictionary = this.value;
+              localStorage.setItem('dictionary', dictionary);
+              window.location.href = window.location.pathname + '?dictionary=' + dictionary;
+            });
+          });
+        </script>
     </body>
 </html>
