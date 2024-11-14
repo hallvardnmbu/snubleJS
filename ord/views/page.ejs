@@ -27,16 +27,14 @@
                 <% words.forEach(function(item) { %>
 
                   <% if (day && week && date) { %>
-                    <div class="heading">Dagens ord: <b><%= item.word %></b>.</div>
+                    <div class="heading">Dagens <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ord: <b><%= item.word %></b>.</div>
                   <% } else if (day) { %>
-                    <div class="heading">Fant ord: <b><%= item.word %></b>.</div>
+                    <div class="heading">Fant ord: <b><%= item.word %></b> i <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
                   <% } else { %>
-                    <div class="heading">Tilfeldig ord: <b><%= item.word %></b>.</div>
+                    <div class="heading">Tilfeldig ord: <b><%= item.word %></b> i <%= {bm: "bokmåsl", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
                   <% } %>
 
-                  <% for (const dict of dictionary.split(',')) { %>
-                    <%- include('partials/word', { item: item, dictionary: dict, both: dictionary.includes(',') }) %>
-                  <% } %>
+                  <%- include('partials/word', { word: item }) %>
 
                 <% }); %>
             <% } else if (error) { %>
@@ -56,7 +54,7 @@
             <button type="submit">dagens</button>
           </form>
 
-          <form action="/" method="get">
+          <form onsubmit="event.preventDefault(); window.location.href = window.location.pathname + '?dictionary=' + this.dictionary.value">
             <select name="dictionary" onchange="this.form.submit()">
               <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
               <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>

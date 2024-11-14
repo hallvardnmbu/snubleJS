@@ -477,14 +477,23 @@ try {
   process.exit(1);
 }
 const dbWord = clientWord.db("ord");
-let collectionWord = dbWord.collection("ordbok");
+let collectionWord = {
+  bm: dbWord.collection("bm"),
+  nn: dbWord.collection("nn"),
+};
 
 ord.get("/random", async (req, res) => {
+  const dictionary = req.query.dictionary || "bm,nn";
+
   try {
-    const words = await collectionWord.aggregate([{ $sample: { size: 1 } }]).toArray();
+    const words = [];
+    for (const dict of dictionary.split(",")) {
+      words.push(...(await collectionWord[dict].aggregate([{ $sample: { size: 1 } }]).toArray()));
+    }
+
     res.render("page", {
       words: words,
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: null,
       week: null,
       day: null,
@@ -493,7 +502,7 @@ ord.get("/random", async (req, res) => {
   } catch (error) {
     res.status(500).render("page", {
       words: [],
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: null,
       week: null,
       day: null,
@@ -504,42 +513,50 @@ ord.get("/random", async (req, res) => {
 
 ord.get("/search", async (req, res) => {
   const word = req.query.word.trim().toLowerCase();
+  const dictionary = req.query.dictionary || "bm,nn";
+
   try {
-    const words = await collectionWord
-      .aggregate([
-        {
-          $search: {
-            index: "word",
-            compound: {
-              should: [
-                {
-                  text: {
-                    query: word,
-                    path: "word",
-                    score: { boost: { value: 10 } },
-                  },
-                },
-                {
-                  text: {
-                    query: word,
-                    path: "word",
-                    fuzzy: {
-                      maxEdits: 2,
-                      prefixLength: 1,
-                      maxExpansions: 1,
+    const words = [];
+    for (const dict of dictionary.split(",")) {
+      words.push(
+        ...(await collectionWord[dict]
+          .aggregate([
+            {
+              $search: {
+                index: "word",
+                compound: {
+                  should: [
+                    {
+                      text: {
+                        query: word,
+                        path: "word",
+                        score: { boost: { value: 10 } },
+                      },
                     },
-                  },
+                    {
+                      text: {
+                        query: word,
+                        path: "word",
+                        fuzzy: {
+                          maxEdits: 2,
+                          prefixLength: 1,
+                          maxExpansions: 1,
+                        },
+                      },
+                    },
+                  ],
                 },
-              ],
+              },
             },
-          },
-        },
-        { $limit: 1 },
-      ])
-      .toArray();
+            { $limit: 1 },
+          ])
+          .toArray()),
+      );
+    }
+
     res.render("page", {
       words: words,
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: null,
       week: null,
       day: word,
@@ -548,7 +565,7 @@ ord.get("/search", async (req, res) => {
   } catch (error) {
     res.status(500).render("page", {
       words: [],
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: null,
       week: null,
       day: word,
@@ -558,6 +575,8 @@ ord.get("/search", async (req, res) => {
 });
 
 ord.get("/", async (req, res) => {
+  const dictionary = req.query.dictionary || "bm,nn";
+
   const date = new Date();
   const week = Math.ceil(((date - new Date(date.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
   const day = date.toLocaleDateString("no-NB", { weekday: "long" }).toLowerCase();
@@ -569,11 +588,16 @@ ord.get("/", async (req, res) => {
     })
     .split(".")
     .join("-");
+
   try {
-    const words = await collectionWord.find({ date: today }).toArray();
+    const words = [];
+    for (const dict of dictionary.split(",")) {
+      words.push(...(await collectionWord[dict].find({ date: today }).toArray()));
+    }
+
     res.render("page", {
       words: words,
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: today,
       week: week,
       day: day,
@@ -582,7 +606,7 @@ ord.get("/", async (req, res) => {
   } catch (error) {
     res.status(500).render("page", {
       words: [],
-      dictionary: req.query.dictionary || "bm,nn",
+      dictionary: dictionary,
       date: today,
       week: week,
       day: day,
