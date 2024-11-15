@@ -7,17 +7,17 @@
 <% } else { %>
 
   <section>
-    <a href="https://ordbokene.no/nob/<%= dictionary %>/<%= word.id %>" class="top" target="_blank">
-      <div class="words">
-        <div class="word"><%= word.word %></div>
-        <% if (word.pronunciation && word.pronunciation.length > 0) { %>
-            <div class="pronunciation">
-                [<%= word.pronunciation %>]
-            </div>
-        <% } %>
+      <div class="top">
+        <div class="words">
+          <div class="word"><%= word.word %></div>
+          <% if (word.pronunciation && word.pronunciation.length > 0) { %>
+              <div class="pronunciation">
+                  [<%= word.pronunciation %>]
+              </div>
+          <% } %>
+        </div>
+        <div class="group"><%= word.wordgroup.split(",")[0] %></div>
       </div>
-      <div class="group"><%= word.wordgroup.split(",")[0] %></div>
-    </a>
 
       <% if (word.etymology) { %>
         <% word.etymology.forEach(function(etymology) { %>

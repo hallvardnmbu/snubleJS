@@ -119,7 +119,7 @@ async function getPage(page, proxy, alreadyUpdated) {
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       const response = await session.get(URL.replace("{}", page), {
-        httpsAgent: proxy,
+        // httpsAgent: proxy,
         timeout: 10000,
       });
 

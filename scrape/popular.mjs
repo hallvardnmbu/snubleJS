@@ -52,7 +52,7 @@ async function processId(index, proxy) {
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       const response = await session.get(URL.replace("{}", index), {
-        httpsAgent: proxy,
+        // httpsAgent: proxy,
         timeout: 10000,
       });
 

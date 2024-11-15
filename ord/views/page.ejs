@@ -3,9 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dagens ord</title>
+        <title>dagsord</title>
         <link rel="stylesheet" href="/style.css" />
-        <link rel="icon" href="data:,dagsord.no">
+        <link rel="icon" type="image/png" href="/dagsord.png">
+        <link rel="apple-touch-icon" href="/dagsord.png">
+        <meta property="og:image" content="/dagsord.png">
+        <meta property="og:title" content="dagsord.no" />
+        <meta property="og:description" content="Dagens ord." />
 
         <script>
             // Immediately redirect with dictionary preference before any rendering.
@@ -40,11 +44,11 @@
                 <% words.forEach(function(item) { %>
 
                   <% if (day && week && date) { %>
-                    <div class="heading">Dagens <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ord: <b><%= item.word %></b>.</div>
+                    <div class="heading">Dagens <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ord: <b><a href="https://ordbokene.no/nob/<%= item.dictionary %>/<%= item.id %>" target="_blank"><%= item.word %></a></b>.</div>
                   <% } else if (day) { %>
-                    <div class="heading">Fant ord: <b><%= item.word %></b> i <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
+                    <div class="heading">Fant ord: <b><a href="https://ordbokene.no/nob/<%= item.dictionary %>/<%= item.id %>" target="_blank"><%= item.word %></a></b> i <%= {bm: "bokmåls", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
                   <% } else { %>
-                    <div class="heading">Tilfeldig ord: <b><%= item.word %></b> i <%= {bm: "bokmåsl", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
+                    <div class="heading">Tilfeldig ord: <b><a href="https://ordbokene.no/nob/<%= item.dictionary %>/<%= item.id %>" target="_blank"><%= item.word %></a></b> i <%= {bm: "bokmåsl", nn: "nynorsk"}[item.dictionary] %>ordboka.</div>
                   <% } %>
 
                   <%- include('partials/word', { word: item }) %>

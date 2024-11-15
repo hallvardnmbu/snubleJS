@@ -117,7 +117,7 @@ async function getInformation(id, proxy) {
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       const response = await session.get(URL.replace("{}", id), {
-        httpsAgent: proxy,
+        // httpsAgent: proxy,
         timeout: 10000,
       });
 

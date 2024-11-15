@@ -70,9 +70,6 @@ hr {
     justify-content: space-between;
     text-decoration: none;
 }
-.top:hover {
-    background-color: var(--gray);
-}
 .words,
 .group {
     display: flex;
