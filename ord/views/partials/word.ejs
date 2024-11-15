@@ -16,7 +16,7 @@
               </div>
           <% } %>
         </div>
-        <div class="group"><%= word.wordgroup.split(",")[0] %></div>
+        <div class="group"><%= word.wordgroup.includes(',') ? word.wordgroup.split(",")[0] : word.wordgroup %></div>
       </div>
 
       <% if (word.etymology) { %>
