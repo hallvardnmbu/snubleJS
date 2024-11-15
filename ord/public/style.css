@@ -2,15 +2,22 @@
     --padding: 10px;
     --height: 40px;
 
-    --black: #000;
-    --darkgray: #333;
-    --gray: #ccc;
-    --lightgray: #f9f9f9;
+    --background: #ffffff;
+    --contrast: #333333;
+    --hover: #cccccc;
+    --tint: #f9f9f9;
+}
+[data-theme="natt"] {
+    --background: #333333;
+    --contrast: #cccccc;
+    --hover: #7a7a7a;
+    --tint: #444444;
 }
 
 body {
+    background-color: var(--background);
+    color: var(--contrast);
     font-family: monospace;
-    color: var(--darkgray);
     font-size: 1.1em;
 
     display: flex;
@@ -36,10 +43,10 @@ header {
 
 a {
     display: inline-block;
-    color: black;
+    color: var(--contrast);
 }
 a:hover {
-    background-color: lightgray;
+    background-color: var(--hover);
 }
 
 .heading,
@@ -56,12 +63,12 @@ a:hover {
 
 section {
     margin: 0 var(--padding) var(--height) var(--padding);
-    border: 1px solid var(--darkgray);
+    border: 1px solid var(--contrast);
 }
 hr {
     margin: 0;
     border: none;
-    border-top: 1px solid var(--darkgray);
+    border-top: 1px solid var(--contrast);
 }
 
 .top {
@@ -81,7 +88,7 @@ hr {
 .word {
     font-size: 1.5em;
     font-weight: bold;
-    color: var(--darkgray);
+    color: var(--contrast);
 }
 .pronunciation {
     font-weight: normal;
@@ -95,7 +102,7 @@ hr {
 }
 .definition {
     padding: var(--padding);
-    background-color: var(--lightgray);
+    background-color: var(--tint);
 }
 
 .toggleInflection {
@@ -106,38 +113,38 @@ hr {
     font-family: monospace;
     font-size: 1em;
     border: none;
-    border-top: 1px solid var(--darkgray);
-    background-color: white;
-    color: var(--darkgray);
+    border-top: 1px solid var(--contrast);
+    background-color: var(--background);
+    color: var(--contrast);
 }
 .toggleInflection:hover {
-    background-color: var(--gray);
+    background-color: var(--hover);
     cursor: pointer;
 }
 
 .inflection {
     border-collapse: collapse;
     table-layout: fixed;
-    border-top: 1px solid var(--darkgray);
+    border-top: 1px solid var(--contrast);
     width: 100%;
-    background-color: var(--lightgray);
+    background-color: var(--tint);
 }
 
 .inflection tr {
     text-align: left;
-    border-bottom: 1px solid var(--gray);
+    border-bottom: 1px solid var(--hover);
 }
 .inflection td {
     padding: var(--padding);
 }
 
 .form-cell {
-    color: var(--darkgray);
+    color: var(--contrast);
     font-style: italic;
 }
 
 .inflection tbody tr:hover {
-    background-color: var(--gray);
+    background-color: var(--hover);
 }
 .inflection tbody tr:last-child {
     border-bottom: none;
@@ -145,11 +152,11 @@ hr {
 
 .dictionary {
     width: calc(100% - 4 * var(--padding) - 2px);
-    background-color: var(--lightgray);
+    background-color: var(--tint);
     margin: 0 var(--padding) 0 var(--padding);
     padding: var(--padding);
     text-align: center;
-    border: 1px solid var(--darkgray);
+    border: 1px solid var(--contrast);
     border-bottom: none;
     font-style: italic;
 }
@@ -169,13 +176,15 @@ input {
     padding-left: var(--padding);
     border: none;
     border-radius: 0;
-    border-right: 1px solid var(--darkgray);
+    border-right: 1px solid var(--contrast);
     font-family: monospace;
+    background-color: var(--background);
+    color: var(--contrast);
 }
 form {
     display: flex;
     justify-content: space-between;
-    border: 1px solid var(--darkgray);
+    border: 1px solid var(--contrast);
 }
 button,
 select {
@@ -185,9 +194,10 @@ select {
     width: auto;
     min-height: var(--height);
     padding: var(--padding);
-    color: var(--darkgray);
-    background-color: white;
+    color: var(--contrast);
+    background-color: var(--tint);
     font-family: monospace;
+    cursor: pointer;
 
     border: none;
     border-radius: 0;
@@ -202,9 +212,13 @@ select {
     background-position: right calc(var(--padding) / 2) center;
 }
 button:hover,
-select:hover {
-    background-color: var(--gray);
+select:hover,
+#theme:hover {
+    background-color: var(--hover);
+}
+#theme {
     cursor: pointer;
+    text-decoration: underline;
 }
 
 footer {
