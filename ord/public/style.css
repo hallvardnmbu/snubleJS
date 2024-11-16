@@ -233,16 +233,6 @@ footer {
     font-size: var(--font-description);
     line-height: 1.1rem;
 }
-.copyright {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--padding);
-}
-.names {
-    display: flex;
-    flex-direction: column;
-}
 
 @media (max-width: 600px) {
     .find {

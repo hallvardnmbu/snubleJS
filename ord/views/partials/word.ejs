@@ -11,9 +11,7 @@
         <div class="words">
           <div class="word"><%= word.word %></div>
           <% if (word.pronunciation && word.pronunciation.length > 0) { %>
-              <div class="pronunciation">
-                  [<%= word.pronunciation %>]
-              </div>
+              <div class="pronunciation">[<%= word.pronunciation %>]</div>
           <% } %>
         </div>
         <div class="group"><%= word.wordgroup.includes(',') ? word.wordgroup.split(",")[0] : word.wordgroup %></div>
@@ -21,29 +19,34 @@
 
       <% if (word.etymology) { %>
         <% word.etymology.forEach(function(etymology) { %>
-            <% if (etymology.text) { %>
-                <div class="etymology">
-                    <%= etymology.text %>
-                </div>
-            <% } %>
+            <div class="etymology"><%= etymology %></div>
         <% }); %>
       <% } %>
 
       <hr />
 
+      <%
+      function formatDefinitions(definitions) {
+        if (Array.isArray(definitions)) {
+          items = [];
+          for (const item of definitions) {
+            items.push(...formatDefinitions(item));
+          }
+          return items;
+        } else if (typeof definitions === "object" && definitions !== null) {
+          return Object.entries(definitions).map(([key, values]) => {
+            const elements = formatDefinitions(values);
+            return `${key}: ${elements.join(', ')}`;
+          });
+        }
+        return [String(definitions).replace(/<i>/g, "").replace(/<\/i>/g, "")]
+      }
+      %>
+
       <% if (word.definitions) { %>
-        <% Object.entries(word.definitions).forEach(([type, elements]) => { %>
-            <div class="definition"><b><%= type %></b></div>
-            <% elements.forEach(element => { %>
-              <% if(typeof element === 'string') { %>
-                <div class="definition"><%= element %></div>
-              <% } else { %>
-                <div class="definition">
-                  <a href="https://ordbokene.no/nob/bm/<%= element.id %>" target="_blank"><%= element.word %></a>
-                </div>
-              <% } %>
-            <% }); %>
-        <% }); %>
+          <% for (const row of formatDefinitions(word.definitions)) { %>
+              <div class="definition"><%= row %></div>
+          <% } %>
       <% } %>
 
       <button class="toggleInflection" id="toggleInflection-<%= word.dictionary %>" onclick="toggleInflection('<%= word.dictionary %>')">
@@ -65,22 +68,19 @@
       }
       </script>
 
-      <% if (word.lemmas && word.lemmas[0]) { %>
-          <% if (word.lemmas[0].inflection) { %>
-              <table class="inflection" style="display: none;" id="inflection-<%= word.dictionary %>">
-                  <tbody>
-                      <% word.lemmas[0].inflection.inflections.forEach(function(inflect) { %>
-                        <% if (inflect.word_form && !(inflect.tags ? inflect.tags.join(' ') : '').includes(' <')) { %>
-                              <tr>
-                                  <td class="word-cell"><%= inflect.word_form %></td>
-                                  <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
-                              </tr>
-                          <% } %>
-                      <% }); %>
-                  </tbody>
-              </table>
-          <% } %>
-
+      <% if (word.inflection && word.inflection[0]) { %>
+        <table class="inflection" style="display: none;" id="inflection-<%= word.dictionary %>">
+          <tbody>
+            <% word.inflection[0].forEach(function(inflect) { %>
+              <% if (inflect.word_form && !(inflect.tags ? inflect.tags.join(' ') : '').includes(' <')) { %>
+                <tr>
+                  <td class="word-cell"><%= inflect.word_form %></td>
+                  <td class="form-cell"><%= inflect.tags ? inflect.tags.join(' ') : '' %></td>
+                </tr>
+              <% } %>
+            <% }); %>
+          </tbody>
+        </table>
       <% } %>
 
   </section>
