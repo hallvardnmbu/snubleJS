@@ -159,12 +159,12 @@
         // Function to set theme
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
+            sessionStorage.setItem('theme', theme);
             themeToggle.innerHTML = theme === 'natt' ? 'dag' : 'natt';
         }
 
         // Check for saved theme preference or system preference
-        const savedTheme = localStorage.getItem('theme');
+        const savedTheme = sessionStorage.getItem('theme');
         if (savedTheme) {
             setTheme(savedTheme);
         } else if (prefersDarkScheme.matches) {
@@ -179,7 +179,7 @@
 
         // Listen for system theme changes
         prefersDarkScheme.addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
+            if (!sessionStorage.getItem('theme')) {
                 setTheme(e.matches ? 'natt' : 'dag');
             }
         });
