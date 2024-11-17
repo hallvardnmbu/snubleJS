@@ -581,7 +581,25 @@ ord.get("/", async (req, res) => {
   const dictionary = req.query.dictionary || "bm,nn";
 
   const date = new Date();
-  const week = Math.ceil(((date - new Date(date.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
+  const getWeek = (date) => {
+    // Copy date to avoid modifying the original
+    const target = new Date(date.valueOf());
+
+    // ISO weeks start on Monday (1), so adjust when the week starts on Sunday (0)
+    const dayNum = date.getDay() || 7;
+
+    // Set to nearest Thursday: current date + 4 - current day number
+    target.setDate(target.getDate() + 4 - dayNum);
+
+    // Get first day of year
+    const yearStart = new Date(target.getFullYear(), 0, 1);
+
+    // Calculate full weeks to nearest Thursday
+    const weekNo = Math.ceil(((target - yearStart) / 86400000 + 1) / 7);
+
+    return weekNo;
+  };
+  const week = getWeek(date);
   const day = date.toLocaleDateString("no-NB", { weekday: "long" }).toLowerCase();
   const today = date
     .toLocaleDateString("no-NB", {
