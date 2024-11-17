@@ -7,7 +7,7 @@
     --hover: #cccccc;
     --tint: #f9f9f9;
 }
-[data-theme="natt"] {
+[data-theme="dark"] {
     --background: #333333;
     --contrast: #cccccc;
     --hover: #7a7a7a;

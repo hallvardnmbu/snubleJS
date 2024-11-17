@@ -25,28 +25,49 @@
 
       <hr />
 
-      <%
-      function formatDefinitions(definitions) {
-        if (Array.isArray(definitions)) {
-          items = [];
-          for (const item of definitions) {
-            items.push(...formatDefinitions(item));
-          }
-          return items;
-        } else if (typeof definitions === "object" && definitions !== null) {
-          return Object.entries(definitions).map(([key, values]) => {
-            const elements = formatDefinitions(values);
-            return `${key}: ${elements.join(', ')}`;
-          });
-        }
-        return [String(definitions).replace(/<i>/g, "").replace(/<\/i>/g, "")]
-      }
-      %>
+      <% function renderDefinitions(data, indent = 2) { %>
+          <% if (Array.isArray(data)) { %>
+              <% data.forEach(item => { %>
+                  <% if (typeof item === 'object' && item !== null) { %>
+                      <%= renderDefinitions(item, indent + 1) %>
+                  <% } else { %>
+                      <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><%- item %></div>
+                  <% } %>
+              <% }); %>
+          <% } else if (typeof data === 'object' && data !== null) { %>
+              <% for (const [key, value] of Object.entries(data)) { %>
+                <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><b><%= key %></b></div>
+                <% if (key === "underartikkel") { %>
+                  <% indent += 1 %>
+                  <% for (const element of value) { %>
+                    <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));">
+                      <a href="https://ordbokene.no/nob/bm/<%= element.id %>" target="_blank"><%= element.word %></a>
+                    </div>
+                    <%= renderDefinitions(element.definitions, indent) %>
+                  <% } %>
+                <% } else { %>
+                  <%= renderDefinitions(value, indent + 1) %>
+                <% } %>
+              <% } %>
+          <% } else { %>
+              <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><%= data %></div>
+          <% } %>
+      <% } %>
 
       <% if (word.definitions) { %>
-          <% for (const row of formatDefinitions(word.definitions)) { %>
-              <div class="definition"><%= row %></div>
-          <% } %>
+        <% for (const [type, values] of Object.entries(word.definitions)) { %>
+            <div class="definition"><b><%= type %></b></div>
+            <% if (type === "underartikkel") { %>
+              <% for (const element of values) { %>
+                <div class="definition" style="padding-left: calc(2 * var(--padding));">
+                  <a href="https://ordbokene.no/nob/bm/<%= element.id %>" target="_blank"><%= element.word %></a>
+                </div>
+                <%= renderDefinitions(element.definitions) %>
+              <% } %>
+            <% } else { %>
+              <%= renderDefinitions(values) %>
+            <% } %>
+        <% } %>
       <% } %>
 
       <button class="toggleInflection" id="toggleInflection-<%= word.dictionary %>" onclick="toggleInflection('<%= word.dictionary %>')">
