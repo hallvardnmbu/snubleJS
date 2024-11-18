@@ -22,6 +22,7 @@ const limiter = rateLimit({
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
+app.set("trust proxy", 1);
 app.use(limiter);
 
 // SNUBLEJUICE APPLICATION
