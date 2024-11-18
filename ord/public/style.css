@@ -100,8 +100,16 @@ hr {
     font-style: italic;
     padding: var(--padding);
 }
-.definition {
+.define {
     padding: var(--padding);
+}
+.definition {
+    padding-bottom: var(--padding);
+}
+.define,
+.definition {
+    --indent: 1;
+    padding-left: calc(var(--indent) * var(--padding));
     background-color: var(--tint);
 }
 

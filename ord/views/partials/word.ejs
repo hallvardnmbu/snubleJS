@@ -25,41 +25,43 @@
 
       <hr />
 
-      <% function renderDefinitions(data, indent = 2) { %>
+      <% function renderDefinitions(data, indent = 1) { %>
           <% if (Array.isArray(data)) { %>
               <% data.forEach(item => { %>
                   <% if (typeof item === 'object' && item !== null) { %>
-                      <%= renderDefinitions(item, indent + 1) %>
+                      <%= renderDefinitions(item, indent) %>
                   <% } else { %>
-                      <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><%- item %></div>
+                      <div class="definition" style="--indent: <%= indent %>;"><%- item %></div>
                   <% } %>
               <% }); %>
           <% } else if (typeof data === 'object' && data !== null) { %>
               <% for (const [key, value] of Object.entries(data)) { %>
-                <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><b><%= key %></b></div>
+                <% indent += 1 %>
+                <div class="define" style="--indent: <%= indent %>;"><b><%= key %></b></div>
                 <% if (key === "underartikkel") { %>
-                  <% indent += 1 %>
                   <% for (const element of value) { %>
-                    <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));">
+                    <div class="definition" style="--indent: <%= indent %>;">
                       <a href="https://ordbokene.no/nob/bm/<%= element.id %>" target="_blank"><%= element.word %></a>
                     </div>
                     <%= renderDefinitions(element.definitions, indent) %>
                   <% } %>
+                <% } else if (key === "eksempel") { %>
+                  <%= renderDefinitions(value, indent) %>
                 <% } else { %>
-                  <%= renderDefinitions(value, indent + 1) %>
+                  <%= renderDefinitions(value, indent) %>
                 <% } %>
               <% } %>
           <% } else { %>
-              <div class="definition" style="padding-left: calc(<%= indent %> * var(--padding));"><%= data %></div>
+              <div class="definition" style="--indent: <%= indent %>;"><%= data %></div>
           <% } %>
       <% } %>
 
       <% if (word.definitions) { %>
         <% for (const [type, values] of Object.entries(word.definitions)) { %>
-            <div class="definition"><b><%= type %></b></div>
+            <div class="define"><b><%= type %></b></div>
             <% if (type === "underartikkel") { %>
               <% for (const element of values) { %>
-                <div class="definition" style="padding-left: calc(2 * var(--padding));">
+                <div class="define" style="--indent: 2;">
                   <a href="https://ordbokene.no/nob/bm/<%= element.id %>" target="_blank"><%= element.word %></a>
                 </div>
                 <%= renderDefinitions(element.definitions) %>
@@ -70,26 +72,26 @@
         <% } %>
       <% } %>
 
-      <button class="toggleInflection" id="toggleInflection-<%= word.dictionary %>" onclick="toggleInflection('<%= word.dictionary %>')">
-        bøying
-      </button>
+      <% if (word.inflection && word.inflection[0] && word.inflection[0].length > 1) { %>
+        <button class="toggleInflection" id="toggleInflection-<%= word.dictionary %>" onclick="toggleInflection('<%= word.dictionary %>')">
+          bøying
+        </button>
 
-      <script>
-      function toggleInflection(dictionaryId) {
-          const button = document.getElementById(`toggleInflection-${dictionaryId}`);
-          const inflection = document.getElementById(`inflection-${dictionaryId}`);
+        <script>
+        function toggleInflection(dictionaryId) {
+            const button = document.getElementById(`toggleInflection-${dictionaryId}`);
+            const inflection = document.getElementById(`inflection-${dictionaryId}`);
 
-          // Toggle button text
-          button.textContent = button.textContent.trim() === 'bøying'
-              ? 'skjul'
-              : 'bøying';
+            // Toggle button text
+            button.textContent = button.textContent.trim() === 'bøying'
+                ? 'skjul'
+                : 'bøying';
 
-          // Toggle inflection table visibility
-          inflection.style.display = inflection.style.display === 'table' ? 'none' : 'table';
-      }
-      </script>
+            // Toggle inflection table visibility
+            inflection.style.display = inflection.style.display === 'table' ? 'none' : 'table';
+        }
+        </script>
 
-      <% if (word.inflection && word.inflection[0]) { %>
         <table class="inflection" style="display: none;" id="inflection-<%= word.dictionary %>">
           <tbody>
             <% word.inflection[0].forEach(function(inflect) { %>
@@ -102,6 +104,15 @@
             <% }); %>
           </tbody>
         </table>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const inflectionTable = document.getElementById('inflection-<%= word.dictionary %>');
+            if (inflectionTable && inflectionTable.getElementsByTagName('tr').length < 2) {
+              document.getElementById('toggleInflection-<%= word.dictionary %>').style.display = 'none';
+            }
+          });
+        </script>
       <% } %>
 
   </section>
