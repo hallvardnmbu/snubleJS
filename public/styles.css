@@ -38,11 +38,12 @@
     --logo: 70px;
     --margin: 50px;
 
-    --black: black;
-    --blackish: #666666;
-    --darkgray: #cccccc;
-    --gray: #eeeeee;
-    --lightgray: #fafafa;
+    --background: #ffffff;
+    --text: #000000;
+    --dimtext: #666666;
+    --block: #cccccc;
+    --dimmed: #eeeeee;
+    --faint: #fafafa;
 
     --negative: rgba(100, 0, 0, 0.2);
     --positive: rgba(0, 100, 0, 0.2);
@@ -57,15 +58,18 @@ body {
     line-height: 1rem;
     font-family: "Fixedsys", monospace;
     margin: 0;
+
+    color: var(--text);
+    background-color: var(--background);
 }
 
 a,
 a:visited {
-    color: var(--blackish);
+    color: var(--dimtext);
     text-decoration-thickness: 2px;
 }
 a:hover {
-    background-color: var(--darkgray);
+    background-color: var(--block);
 }
 
 footer {
@@ -97,14 +101,14 @@ input,
 button {
     font-family: "Fixedsys", monospace;
     font-size: var(--font-normal);
-    color: var(--blackish);
+    color: var(--dimtext);
     background-color: transparent;
     appearance: none;
     border-radius: 0;
     border: none;
     cursor: pointer;
     text-align: left;
-    border-bottom: 2px solid var(--blackish);
+    border-bottom: 2px solid var(--dimtext);
     padding: 0;
 }
 button {
@@ -115,7 +119,7 @@ button {
 #sortButton,
 #toggleAdvanced,
 #clearFilters {
-    color: var(--black);
+    color: var(--text);
 }
 
 select {
@@ -128,11 +132,8 @@ select {
 header form select:hover,
 header form button:hover,
 header form input:hover {
-    background-color: var(--darkgray);
+    background-color: var(--block);
 }
-/* header {
-    background-color: var(--lightgray);
-} */
 
 .filterSelection {
     display: flex;
@@ -142,9 +143,9 @@ header form input:hover {
 
     padding: var(--padding);
     gap: var(--margin);
-    border-bottom: var(--padding) solid var(--gray);
+    border-bottom: var(--padding) solid var(--dimmed);
 
-    background-color: var(--lightgray);
+    background-color: var(--faint);
 }
 .advancedSelection {
     display: flex;
@@ -154,12 +155,12 @@ header form input:hover {
 
     padding: var(--padding);
     gap: var(--padding);
-    border-bottom: var(--padding) solid var(--darkgray);
+    /* border-bottom: var(--padding) solid var(--block); */
 
     font-size: var(--font-normal);
-    color: var(--blackish);
+    color: var(--dimtext);
 
-    background-color: var(--gray);
+    background-color: var(--dimmed);
 }
 .advancedSelection div {
     display: flex;
@@ -218,11 +219,6 @@ header form input:hover {
     text-align: center;
     background-color: var(--negative);
 }
-#disclaimer-1,
-#disclaimer-2 {
-    font-size: var(--font-description);
-    color: var(--darkgray);
-}
 
 section {
     display: flex;
@@ -230,38 +226,37 @@ section {
     margin: var(--margin) var(--padding) var(--margin) var(--padding);
     padding-bottom: var(--padding);
     border-bottom: var(--padding) solid var(--highlight);
+    background-color: var(--background);
 }
 
 p {
-    color: var(--blackish);
+    color: var(--dimtext);
 }
 .name #name {
-    color: var(--blackish);
+    color: var(--dimtext);
 }
 .name b {
     font-size: var(--font-title);
-    color: var(--black);
+    color: var(--text);
 }
 
 .text {
     display: flex;
     align-items: center;
     gap: var(--padding);
-    color: var(--blackish);
+    color: var(--dimtext);
     flex-wrap: wrap;
 }
 .text b {
     font-family: "m04", monospace;
     font-weight: bold;
-    color: var(--black);
-}
-#alcohol {
-    font-size: var(--font-alcohol);
+    color: var(--text);
 }
 #percent {
     font-family: "alpha-beta", monospace;
 }
-#alcohol #percent {
+#alcohol,
+#percent {
     font-size: var(--font-alcohol);
 }
 
@@ -321,7 +316,6 @@ p {
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%;
     overflow: auto;
     backdrop-filter: saturate(0) blur(3px);
 }
@@ -330,14 +324,18 @@ p {
     height: auto;
     top: auto;
 }
+#infobox {
+    top: var(--logo);
+}
 .infobox,
 .selectCookies {
     font-size: var(--font-normal);
     position: relative;
+    padding: var(--padding);
     width: 100%;
-    background-color: var(--gray);
-    border-top: var(--padding) solid var(--darkgray);
-    border-bottom: var(--padding) solid var(--darkgray);
+    background-color: var(--dimmed);
+    border-top: var(--padding) solid var(--block);
+    border-bottom: var(--padding) solid var(--block);
     display: flex;
     flex-direction: column;
     gap: var(--padding);
@@ -346,7 +344,7 @@ p {
     border-bottom: none;
 }
 .selectCookies p {
-    color: var(--black);
+    color: var(--text);
     text-align: center;
 }
 .cookieSelection {
@@ -370,11 +368,11 @@ p {
 }
 .cookieSelection #accept:hover,
 .cookieSelection #decline:hover {
-    color: var(--black);
+    color: var(--text);
 }
 .exit,
 .close {
-    color: var(--blackish);
+    color: var(--dimtext);
     float: right;
     font-size: var(--font-pagination);
     font-weight: bold;
@@ -406,8 +404,8 @@ p {
     position: relative;
     background-color: white;
     padding: var(--padding);
-    border-top: var(--padding) solid var(--darkgray);
-    border-bottom: var(--padding) solid var(--darkgray);
+    border-top: var(--padding) solid var(--block);
+    border-bottom: var(--padding) solid var(--block);
     display: flex;
     flex-direction: column;
     gap: var(--padding);
@@ -431,13 +429,13 @@ p {
     align-content: center;
 
     font-size: var(--font-title);
-    color: var(--blackish);
+    color: var(--dimtext);
     font-weight: bold;
     line-height: 1.05;
 }
 .detailed .heading .link a:hover {
     background-color: transparent;
-    color: var(--black);
+    color: var(--text);
 }
 .detailed .heading .close {
     cursor: pointer;
@@ -457,10 +455,10 @@ p {
 .navigation a {
     pointer-events: auto;
     cursor: pointer;
-    background-color: var(--darkgray);
+    background-color: var(--block);
 }
 .navigation a:hover {
-    color: var(--black);
+    color: var(--text);
 }
 #above a {
     margin-top: calc(2 * var(--padding));
@@ -474,7 +472,7 @@ p {
 hr {
     border: 0;
     height: var(--padding);
-    background-color: var(--gray);
+    background-color: var(--dimmed);
     margin: 0 calc(-1 * var(--padding));
 }
 
@@ -487,15 +485,15 @@ hr {
 }
 .key {
     font-size: var(--font-normal);
-    color: var(--black);
+    color: var(--text);
     white-space: nowrap;
     vertical-align: top;
 }
 .val {
     font-size: var(--font-description);
-    color: var(--blackish);
+    color: var(--dimtext);
     position: relative;
-    background-color: var(--gray);
+    background-color: var(--dimmed);
     padding-left: 5px;
 }
 .val::before {
@@ -521,7 +519,7 @@ hr {
 }
 .fractions tr .label {
     font-size: var(--font-normal);
-    color: var(--blackish);
+    color: var(--dimtext);
     min-width: calc(1.5 * var(--image));
 }
 .fractions tr .value {
@@ -531,7 +529,7 @@ hr {
         var(--highlight) 0 calc(var(--value) * 100% / var(--total) - var(--padding)),
         var(--marker) 0 calc(var(--value) * 100% / var(--total) - var(--padding)),
         var(--marker) 0 calc(var(--value) * 100% / var(--total)),
-        var(--gray) calc(var(--value) * 100% / var(--total)) 100%
+        var(--dimmed) calc(var(--value) * 100% / var(--total)) 100%
     );
     background-size: 100% var(--padding);
     background-repeat: no-repeat;
@@ -544,7 +542,7 @@ hr {
         var(--highlight) calc(var(--percentage) * 1% - var(--padding)),
         var(--marker) calc(var(--percentage) * 1% - var(--padding)),
         var(--marker) calc(var(--percentage) * 1%),
-        var(--gray) calc(var(--percentage) * 1%)
+        var(--dimmed) calc(var(--percentage) * 1%)
     );
     background-size: 100% var(--padding);
     background-repeat: no-repeat;

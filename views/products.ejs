@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
     <script src="scripts/graph.js"></script>
     <script src="scripts/stores.js"></script>
+    <script src="scripts/countries.js"></script>
 
     <title>Snublejuice</title>
     <meta name="theme-color" content="#ffffff"/>
@@ -29,7 +30,7 @@
   <% } %>
 
   <% data.forEach((item, index) => { %>
-    <section class="product" index="<%= index %>" style="--highlight: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--darkgray)' %>; --marker: <%= item.discount > 0 ? 'var(--red)' : item.discount < 0 ? 'var(--green)' : 'var(--blackish)' %>;">
+    <section class="product" index="<%= index %>" style="--highlight: <%= item.discount > 0 ? 'var(--negative)' : item.discount < 0 ? 'var(--positive)' : 'var(--block)' %>; --marker: <%= item.discount > 0 ? 'var(--red)' : item.discount < 0 ? 'var(--green)' : 'var(--dimtext)' %>;">
 
       <div class="image">
         <img src="<%= item.images.product %>" alt="flaske">

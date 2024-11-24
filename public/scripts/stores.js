@@ -65,11 +65,11 @@ function displayMessage(selectedValue) {
 }
 
 // Fetch stores on page load or use cached data
-window.onload = () => {
+window.addEventListener("load", () => {
   const cachedStores = sessionStorage.getItem("storesData");
   if (cachedStores) {
     populateStores(JSON.parse(cachedStores));
   } else {
     fetchStores();
   }
-};
+});

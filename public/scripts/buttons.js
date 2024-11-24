@@ -60,6 +60,9 @@ document.getElementById("fvolume").addEventListener("change", function () {
 document.getElementById("falcohol").addEventListener("change", function () {
   applyFilters(true);
 });
+document.getElementById("iyear").addEventListener("change", function () {
+  applyFilters(true);
+});
 document.getElementById("fsearch").addEventListener("change", function () {
   applyFilters(true);
 });

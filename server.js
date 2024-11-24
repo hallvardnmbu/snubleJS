@@ -142,7 +142,7 @@ async function load({
     ...(country && !search ? { country: country } : {}),
     ...(district && !search ? { district: district } : {}),
     ...(subdistrict && !search ? { subdistrict: subdistrict } : {}),
-    ...(year && !search ? { year: year } : {}),
+    ...(year && !search ? { year: { $lte: year } } : {}),
     ...(cork && !search ? { cork: cork } : {}),
     ...(storage && !search ? { storage: storage } : {}),
 
@@ -238,6 +238,15 @@ snublejuice.get("/api/stores", async (req, res) => {
   }
 });
 
+snublejuice.get("/api/countries", async (req, res) => {
+  try {
+    const countries = await collection.distinct("country");
+    res.json(countries);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 snublejuice.get("/", async (req, res) => {
   const currentMonth = new Date().toISOString().slice(0, 7);
   if (Object.keys(req.query).length === 0) {
@@ -267,9 +276,11 @@ snublejuice.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const sort = req.query.sort || "discount";
   const ascending = !(req.query.ascending === "false");
-  const category = req.query.category || "null";
+  const category = req.query.category || "Alle land";
+  const country = req.query.country || null;
   const volume = parseFloat(req.query.volume) || null;
   const alcohol = parseFloat(req.query.alcohol) || null;
+  const year = parseInt(req.query.year) || null;
   const search = req.query.search || null;
   const news = req.query.news === "true";
   let store = req.query.store || "Kan bestilles";
@@ -287,10 +298,10 @@ snublejuice.get("/", async (req, res) => {
       // Single parameters;
       category: categories[category],
       subcategory: null,
-      country: null,
+      country: country === "Alle land" ? null : country,
       district: null,
       subdistrict: null,
-      year: null,
+      year: year,
       cork: null,
       storage: null,
 
@@ -337,8 +348,10 @@ snublejuice.get("/", async (req, res) => {
       sort: sort,
       ascending: ascending,
       category: category,
+      country: country,
       volume: volume,
       alcohol: alcohol,
+      year: year,
       search: search,
       news: news,
       store: store,
@@ -353,8 +366,10 @@ snublejuice.get("/", async (req, res) => {
       sort: sort,
       ascending: ascending,
       category: category,
+      country: country,
       volume: volume,
       alcohol: alcohol,
+      year: year,
       search: search,
       news: news,
       store: store,
