@@ -111,6 +111,14 @@ button {
     border-bottom: 2px solid var(--dimtext);
     padding: 0;
 }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
 button {
     padding-left: var(--padding);
     padding-right: var(--padding);
@@ -320,16 +328,23 @@ p {
     overflow: auto;
     backdrop-filter: saturate(0) blur(3px);
 }
+.infobox {
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding);
+    gap: var(--padding);
+    border-bottom: var(--padding) solid var(--dimmed);
+}
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 #selectCookies {
     bottom: 0;
     height: auto;
     top: auto;
 }
-#infobox {
-    top: var(--logo);
-    height: auto;
-}
-.infobox,
 .selectCookies {
     font-size: var(--font-normal);
     position: relative;

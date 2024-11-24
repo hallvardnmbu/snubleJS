@@ -75,19 +75,15 @@ document.getElementById("newsButton").onclick = function (event) {
   applyFilters();
 };
 
-// Information popup modal.
+// Information toggle.
 document.getElementById("info").onclick = function (event) {
   event.preventDefault();
-  document.getElementById("infobox").style.display = "flex";
+  const div = document.getElementById("infobox");
+  div.style.display = div.style.display === "flex" ? "none" : "flex";
 };
 document.querySelector(".exit").onclick = function (event) {
   event.preventDefault();
   document.getElementById("infobox").style.display = "none";
-};
-window.onclick = function (event) {
-  if (event.target === document.getElementById("infobox")) {
-    document.getElementById("infobox").style.display = "none";
-  }
 };
 
 function changeModal(currentModal, newModal, event) {

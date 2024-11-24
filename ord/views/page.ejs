@@ -72,11 +72,13 @@
           </form>
 
           <form>
-            <select name="dictionary">
-              <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
-              <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
-              <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
-            </select>
+            <div class="select">
+              <select name="dictionary">
+                <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
+                <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
+                <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
+              </select>
+            </div>
           </form>
 
           <form action="/search" method="get">
@@ -98,11 +100,13 @@
             </form>
 
             <form>
-              <select name="dictionary">
-                <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
-                <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
-                <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
-              </select>
+              <div class="select">
+                <select name="dictionary">
+                  <option value="bm" <%= dictionary === 'bm' ? 'selected' : '' %>>bokmål</option>
+                  <option value="nn" <%= dictionary === 'nn' ? 'selected' : '' %>>nynorsk</option>
+                  <option value="bm,nn" <%= dictionary === 'bm,nn' ? 'selected' : '' %>>begge</option>
+                </select>
+              </div>
             </form>
           </div>
 
