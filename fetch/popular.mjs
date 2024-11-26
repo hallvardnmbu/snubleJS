@@ -19,6 +19,7 @@ await client.connect();
 
 const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
+const visitCollection = database.collection("visits");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
   new HttpsProxyAgent(
@@ -193,6 +194,13 @@ async function main() {
   // Display the number of items to be updated.
   console.log(`Updating ${itemIds.length} items.`);
   await updateStores(itemIds);
+
+  // Store the time of the last update.
+  await visitCollection.updateOne(
+    { class: "updated" },
+    { $set: { date: new Date() } },
+    { upsert: true },
+  );
 }
 
 await main();

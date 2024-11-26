@@ -18,12 +18,6 @@ function generateDates(numPrices) {
   return dates;
 }
 
-function graphPrices() {
-  for (let index = 0; index < _PER_PAGE; index++) {
-    graphPrice(index);
-  }
-}
-
 function graphPrice(index) {
   // Extract prices and dates from session storage
   const data = JSON.parse(sessionStorage.getItem(`${index}`));
@@ -78,7 +72,7 @@ function graphPrice(index) {
   var xScale = plotWidth / (dates.length - 1);
   var yMax = Math.max(...prices);
   var yMin = Math.min(...prices);
-  var yScale = plotHeight / (yMax - yMin);
+  var yScale = plotHeight / (yMax - yMin === 0 ? 1 : yMax - yMin);
 
   // Draw line
   ctx.beginPath();

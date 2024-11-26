@@ -54,6 +54,7 @@ const categories = {
 
 async function load({
   collection,
+  visits,
 
   // Single parameters;
   category = null,
@@ -152,12 +153,28 @@ async function load({
     // ...(pair.length && !search ? { pair: { $in: pair } } : {}),
   };
 
+  let updated = null;
   if (!store) {
     if (orderable) {
       matchStage["orderable"] = true;
     }
     if (instores) {
       matchStage["instores"] = true;
+    }
+  } else {
+    const date = await visits.findOne({ class: "updated" }, { _id: 0 });
+    // Set the `updated` variable as the difference wrt. today as text.
+    if (date) {
+      const ONE_DAY = 1000 * 60 * 60 * 24;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+
+      const compareDate = new Date(date.date);
+      compareDate.setHours(0, 0, 0, 0); // Reset time to start of day
+
+      const diff = Math.floor((today - compareDate) / ONE_DAY);
+
+      updated = diff === 0 ? "i dag" : diff === 1 ? "i går" : `for ${diff} dager siden`;
     }
   }
 
@@ -203,9 +220,9 @@ async function load({
 
   try {
     const data = await collection.aggregate(pipeline).toArray();
-    return { data, total };
+    return { data, total, updated };
   } catch (err) {
-    return { data: null, total: 1 };
+    return { data: null, total: 1, updated: null };
   }
 }
 
@@ -292,8 +309,9 @@ snublejuice.get("/", async (req, res) => {
   }
 
   try {
-    let { data, total } = await load({
+    let { data, total, updated } = await load({
       collection,
+      visits,
 
       // Single parameters;
       category: categories[category],
@@ -342,6 +360,7 @@ snublejuice.get("/", async (req, res) => {
 
     res.render("products", {
       visitors: visitors,
+      updated: updated,
       data: data,
       page: page,
       totalPages: total,
@@ -360,6 +379,7 @@ snublejuice.get("/", async (req, res) => {
     console.error(err);
     res.render("products", {
       visitors: "X",
+      updated: null,
       data: [],
       page: 1,
       totalPages: 1,
@@ -382,9 +402,9 @@ snublejuice.get("/", async (req, res) => {
 
 const api = express();
 api.use(express.json());
-api.use(express.static(path.join(__dirname, "api")));
+api.use(express.static(path.join(__dirname, "other", "api")));
 
-const dataFile = path.join(__dirname, "api/data.json");
+const dataFile = path.join(__dirname, "other", "api", "data.json");
 (async () => {
   try {
     await fs.access(dataFile);
@@ -394,7 +414,7 @@ const dataFile = path.join(__dirname, "api/data.json");
 })();
 
 api.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "api", "index.html"));
+  res.sendFile(path.join(__dirname, "other", "api", "index.html"));
 });
 
 api.get("/dates", async (req, res) => {
@@ -473,8 +493,8 @@ api.get("/id", async (req, res) => {
 
 const ord = express();
 ord.set("view engine", "ejs");
-ord.set("views", path.join(__dirname, "ord", "views"));
-ord.use(express.static(path.join(__dirname, "ord", "public")));
+ord.set("views", path.join(__dirname, "other", "ord", "views"));
+ord.use(express.static(path.join(__dirname, "other", "ord", "public")));
 
 let clientWord;
 try {
