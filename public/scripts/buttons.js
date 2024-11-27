@@ -92,6 +92,8 @@ function changeModal(currentModal, newModal, event) {
 
   document.getElementById(`detailed-${currentModal}`).style.display = "none";
   document.getElementById(`detailed-${newModal}`).style.display = "block";
+
+  console.log("changeModal(" + newModal + ")");
   graphPrice(newModal);
 }
 
@@ -102,6 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
     section.addEventListener("click", function () {
       const itemIndex = this.getAttribute("index");
       const modal = document.getElementById(`detailed-${itemIndex}`);
+
+      // Prevent modal from opening if it's already open (to avoid graphing etc.)
+      if (modal.style.display === "block") {
+        return;
+      }
       modal.style.display = "block";
 
       // Graph the price history
