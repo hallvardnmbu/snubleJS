@@ -7,16 +7,8 @@ from pymongo.mongo_client import MongoClient
 from pymongo.results import BulkWriteResult
 
 import pandas as pd
-import pyarrow
 
 
-# _OLD = MongoClient(
-#     f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
-#     f'@vinskraper.wykjrgz.mongodb.net/'
-#     f'?retryWrites=true&w=majority&appName=vinskraper'
-# )['vinskraper']
-# _DATABASE = _OLD['vinskraper']['varer']
-# _EXPIRED = _OLD['vinskraper']['utgått']
 _DATABASE = MongoClient(
     f'mongodb+srv://{os.environ.get("MONGO_USR")}:{os.environ.get("MONGO_PWD")}'
     f'@snublejuice.faktu.mongodb.net/'

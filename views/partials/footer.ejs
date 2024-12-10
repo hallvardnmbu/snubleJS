@@ -1,17 +1,21 @@
   <div class="pagination" id="bottom">
     <div>SNUBLEJUICE.no</div>
     <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
-    <div>
-      <% if (page > 1) { %>
-          <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
-      <% } %>
+    <% if (typeof page !== 'undefined') { %>
+      <div>
+        <% if (page > 1) { %>
+            <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
+        <% } %>
 
-      <span><%= page %> av <%= totalPages %></span>
+        <span><%= page %> av <%= totalPages %></span>
 
-      <% if (page < totalPages) { %>
-          <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
-      <% } %>
-    </div>
+        <% if (page < totalPages) { %>
+            <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div>SNUBLEJUICE.no</div>
+    <% } %>
   </div>
 
   <footer>

@@ -6,6 +6,7 @@ Icon?
 **/*.pattern
 
 database/backup/
+fetch/remote/
 
 **/node_modules/
 **/package-lock.json

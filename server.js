@@ -264,8 +264,13 @@ snublejuice.get("/api/countries", async (req, res) => {
   }
 });
 
+snublejuice.get("/maintenance", async (req, res) => {
+  res.render("maintenance");
+});
+
 snublejuice.get("/", async (req, res) => {
-  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentDate = new Date();
+  const currentMonth = currentDate.toISOString().slice(0, 7);
   if (Object.keys(req.query).length === 0) {
     await visits.updateOne(
       { class: "fresh" },
@@ -288,6 +293,11 @@ snublejuice.get("/", async (req, res) => {
       },
       { upsert: true },
     );
+  }
+
+  // If the year is 2025, reroute to maintenance page.
+  if (currentDate.getFullYear() >= 2025) {
+    return res.redirect(301, "/maintenance");
   }
 
   const page = parseInt(req.query.page) || 1;
