@@ -55,6 +55,10 @@
 }
 
 body {
+    min-height: 98vh;
+    display: flex;
+    flex-direction: column;
+
     line-height: 1rem;
     font-family: "Fixedsys", monospace;
     margin: 0;
@@ -81,6 +85,8 @@ footer {
     margin: var(--padding);
     font-size: var(--font-description);
     line-height: 1.1rem;
+    line-height: 1.1rem;
+    margin-top: auto;
 }
 
 .pagination {
@@ -605,7 +611,6 @@ hr {
     footer {
         flex-direction: column;
         align-items: center;
-        margin-top: calc(3 * var(--padding));
     }
     #bottom {
         flex-direction: column-reverse;

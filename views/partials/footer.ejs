@@ -1,7 +1,7 @@
-  <div class="pagination" id="bottom">
-    <div>SNUBLEJUICE.no</div>
-    <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
-    <% if (typeof page !== 'undefined') { %>
+  <% if (typeof page !== 'undefined') { %>
+    <div class="pagination" id="bottom">
+      <div>SNUBLEJUICE.no</div>
+      <img src="images/snublejuice.png" alt="SNUBLEJUICE.no">
       <div>
         <% if (page > 1) { %>
             <a href="#" onclick="changePage(<%= page - 1 %>)">FORRIGE</a>
@@ -13,10 +13,8 @@
             <a href="#" onclick="changePage(<%= page + 1 %>)">NESTE</a>
         <% } %>
       </div>
-    <% } else { %>
-      <div>SNUBLEJUICE.no</div>
-    <% } %>
-  </div>
+    </div>
+  <% } %>
 
   <footer>
     <div class="copyright">

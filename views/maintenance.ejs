@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="./styles.css" />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
-        <script src="scripts/graph.js"></script>
+        <script type="module" src="/scripts/graph.js"></script>
         <script src="scripts/stores.js"></script>
         <script src="scripts/countries.js"></script>
 
@@ -30,6 +30,10 @@
 
     <body>
         <div class="message">Nede for vedlikehold i noen dager.</div>
+
+        <div style="display: flex; justify-content: center; margin-top: var(--margin);">
+          <img src="images/snublejuice.png" alt="SNUBLEJUICE.no" style="width: 70%;">
+        </div>
 
         <%- include('partials/footer') %>
     </body>
