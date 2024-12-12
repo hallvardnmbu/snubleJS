@@ -86,6 +86,13 @@ document.querySelector(".exit").onclick = function (event) {
   document.getElementById("infobox").style.display = "none";
 };
 
+// Update cookies.
+document.getElementById("updateCookies").onclick = function (event) {
+  event.preventDefault();
+  const selectCookies = document.getElementById("selectCookies");
+  selectCookies.style.display = "flex";
+};
+
 function changeModal(currentModal, newModal, event) {
   // Stop event from bubbling up to window
   event.stopPropagation();
@@ -136,4 +143,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   };
+
+  // Close modal when ESC key is pressed
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "Escape" ||
+      event.key === "Esc" ||
+      event.key === "Enter" ||
+      event.key === "Return"
+    ) {
+      const modals = document.querySelectorAll(".modal");
+      modals.forEach((modal) => {
+        if (modal.style.display === "block" && modal.id !== "selectCookies") {
+          modal.style.display = "none";
+        }
+      });
+    }
+  });
 });

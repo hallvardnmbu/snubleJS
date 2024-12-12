@@ -36,7 +36,7 @@
     --padding: 10px;
     --image: 100px;
     --logo: 70px;
-    --margin: 50px;
+    --margin: 25px;
 
     --background: #ffffff;
     --text: #000000;
@@ -55,7 +55,7 @@
 }
 
 body {
-    min-height: 98vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 
@@ -73,6 +73,7 @@ a:visited {
     text-decoration-thickness: 2px;
 }
 a:hover {
+    color: var(--text);
     background-color: var(--block);
 }
 
@@ -82,11 +83,17 @@ footer {
     justify-content: space-between;
     align-items: flex-end;
     gap: calc(2 * var(--padding));
-    margin: var(--padding);
+    padding: var(--padding);
+    color: var(--dimtext);
     font-size: var(--font-description);
-    line-height: 1.1rem;
-    line-height: 1.1rem;
+    line-height: 1.2rem;
     margin-top: auto;
+
+    border-top: var(--padding) solid var(--dimmed);
+    background-color: var(--faint);
+}
+footer button {
+    font-size: var(--font-description);
 }
 
 .pagination {
@@ -125,15 +132,13 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
-button {
-    padding-left: var(--padding);
-    padding-right: var(--padding);
-}
 #info,
 #sortButton,
 #toggleAdvanced,
 #clearFilters {
     color: var(--text);
+    padding-left: var(--padding);
+    padding-right: var(--padding);
 }
 
 select {
@@ -144,8 +149,9 @@ select {
     background-position: right calc(var(--padding) / 2) bottom;
 }
 header form select:hover,
-header form button:hover,
+button:hover,
 header form input:hover {
+    color: var(--text);
     background-color: var(--block);
 }
 
@@ -156,7 +162,7 @@ header form input:hover {
     align-items: flex-end;
 
     padding: var(--padding);
-    gap: var(--margin);
+    gap: calc(2 * var(--margin));
     border-bottom: var(--padding) solid var(--dimmed);
 
     background-color: var(--faint);
@@ -169,28 +175,34 @@ header form input:hover {
 
     padding: var(--padding);
     gap: var(--padding);
-    /* border-bottom: var(--padding) solid var(--block); */
 
     font-size: var(--font-normal);
     color: var(--dimtext);
 
     background-color: var(--dimmed);
 }
+.advancedSelection select {
+    width: 100%;
+    max-width: 350px;
+}
 .advancedSelection div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto auto 30px;
     gap: var(--padding);
     align-items: center;
     width: 100%;
     max-width: 350px;
 }
-.advancedSelection div label {
-    flex-shrink: 0;
+.advancedSelection div label:first-of-type {
+    text-align: left;
+    white-space: nowrap;
+}
+.advancedSelection div label:last-of-type {
+    text-align: right;
+    white-space: nowrap;
 }
 .advancedSelection div input {
-    flex-grow: 1;
-    min-width: 0;
+    width: 100%;
     text-align: center;
     height: 20px;
 }
@@ -384,6 +396,10 @@ p {
 .cookieSelection button {
     border: none;
 }
+.cookieSelection button:hover {
+    color: initial;
+    background-color: initial;
+}
 .cookieSelection #accept {
     color: var(--green);
 }
@@ -405,7 +421,7 @@ p {
 .exit:focus,
 .close:hover,
 .close:focus {
-    color: black;
+    color: var(--text);
     text-decoration: none;
     cursor: pointer;
 }
@@ -489,7 +505,7 @@ p {
     padding: var(--padding) var(--padding) 0 var(--padding);
 }
 #below a {
-    margin-bottom: var(--margin);
+    margin-bottom: calc(2 * var(--margin));
     padding: 0 var(--padding) var(--padding) var(--padding);
 }
 
@@ -608,15 +624,18 @@ hr {
         min-width: var(--image);
     }
 
-    footer {
-        flex-direction: column;
-        align-items: center;
-    }
     #bottom {
         flex-direction: column-reverse;
     }
     #dot {
         overflow: hidden;
         display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    footer {
+        flex-direction: column;
+        align-items: center;
     }
 }
