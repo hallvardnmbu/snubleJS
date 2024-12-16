@@ -136,8 +136,6 @@ async function load({
     buyable: true,
     updated: true,
 
-    ...(news ? { $and: [] } : {}),
-
     // Match the specified parameters if they are not null.
     ...(category && !search ? { category: category } : {}),
     ...(subcategory && !search ? { subcategory: subcategory } : {}),
@@ -189,12 +187,6 @@ async function load({
     }
     if (!nonalcoholic) {
       matchStage["alcohol"] = { ...matchStage["alcohol"], $ne: null, $exists: true, $gt: 0 };
-    }
-
-    if (news) {
-      matchStage.$and.push({
-        $or: [{ oldprice: { $exists: false } }, { oldprice: null }],
-      });
     }
 
     matchStage[sort] = { ...matchStage[sort], $exists: true, $ne: null };
@@ -307,18 +299,16 @@ snublejuice.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const sort = req.query.sort || "discount";
   const ascending = !(req.query.ascending === "false");
-  const category = req.query.category || "Alle land";
+  const category = req.query.category || "Velg kategori";
   const country = req.query.country || null;
   const volume = parseFloat(req.query.volume) || null;
   const alcohol = parseFloat(req.query.alcohol) || null;
   const year = parseInt(req.query.year) || null;
   const search = req.query.search || null;
-  const news = req.query.news === "true";
-  let store = req.query.store || "Kan bestilles";
+  let store = req.query.store || "Velg butikk";
 
-  let orderable = store === "Kan bestilles";
-  let instores = store === "Tilgjengelig i butikk";
-  if (orderable || instores) {
+  let orderable = store === "Velg butikk";
+  if (orderable) {
     store = null;
   }
 
@@ -340,12 +330,8 @@ snublejuice.get("/", async (req, res) => {
       // Include non-alcoholic products;
       nonalcoholic: false,
 
-      // Only show new products;
-      news: news,
-
-      // Only show products that are orderable or in stores;
+      // Only show products that are orderable;
       orderable: orderable,
-      instores: instores,
 
       // Array parameters;
       description: null,
@@ -386,7 +372,6 @@ snublejuice.get("/", async (req, res) => {
       alcohol: alcohol,
       year: year,
       search: search,
-      news: news,
       store: store,
     });
   } catch (err) {
@@ -405,7 +390,6 @@ snublejuice.get("/", async (req, res) => {
       alcohol: alcohol,
       year: year,
       search: search,
-      news: news,
       store: store,
     });
   }
