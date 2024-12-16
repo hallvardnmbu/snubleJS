@@ -37,6 +37,7 @@
     --image: 100px;
     --logo: 70px;
     --margin: 25px;
+    --shadow: 2px;
 
     --background: #ffffff;
     --text: #000000;
@@ -70,7 +71,7 @@ body {
 a,
 a:visited {
     color: var(--dimtext);
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: var(--shadow);
 }
 a:hover {
     color: var(--text);
@@ -125,7 +126,7 @@ button {
     border-radius: 0;
     padding: 0;
     border: none;
-    border-bottom: 2px solid var(--dimtext);
+    border-bottom: var(--shadow) solid var(--dimtext);
 
     cursor: pointer;
 }
@@ -169,6 +170,7 @@ header form input:hover {
     align-items: center;
 
     padding: var(--padding);
+    padding-bottom: calc(2 * var(--padding));
     gap: var(--padding);
 
     font-size: var(--font-normal);
@@ -229,8 +231,9 @@ header form input:hover {
 }
 .mainButtons button,
 #sortButton {
-    border: 2px solid var(--dimtext);
-    padding: 0 2px 0 2px;
+    border: var(--shadow) solid var(--dimtext);
+    padding: var(--shadow);
+    box-shadow: var(--shadow) var(--shadow) 0 0 var(--dimtext);
 }
 
 .message {
@@ -339,7 +342,7 @@ p {
     width: 100%;
     height: 100%;
     overflow: auto;
-    backdrop-filter: saturate(0) blur(2px);
+    backdrop-filter: saturate(0) blur(var(--shadow));
 }
 .infobox {
     display: flex;
