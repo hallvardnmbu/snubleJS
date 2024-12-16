@@ -13,6 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const _PER_PAGE = 15;
+const _PRODUCTION = process.env.SJS_ENV === "production";
 
 const port = 8080;
 const app = express();
@@ -271,28 +272,31 @@ snublejuice.get("/maintenance", async (req, res) => {
 snublejuice.get("/", async (req, res) => {
   const currentDate = new Date();
   const currentMonth = currentDate.toISOString().slice(0, 7);
-  if (Object.keys(req.query).length === 0) {
-    await visits.updateOne(
-      { class: "fresh" },
-      {
-        $inc: {
-          total: 1,
-          [`month.${currentMonth}`]: 1,
+
+  if (_PRODUCTION) {
+    if (Object.keys(req.query).length === 0) {
+      await visits.updateOne(
+        { class: "fresh" },
+        {
+          $inc: {
+            total: 1,
+            [`month.${currentMonth}`]: 1,
+          },
         },
-      },
-      { upsert: true },
-    );
-  } else {
-    await visits.updateOne(
-      { class: "newpage" },
-      {
-        $inc: {
-          total: 1,
-          [`month.${currentMonth}`]: 1,
+        { upsert: true },
+      );
+    } else {
+      await visits.updateOne(
+        { class: "newpage" },
+        {
+          $inc: {
+            total: 1,
+            [`month.${currentMonth}`]: 1,
+          },
         },
-      },
-      { upsert: true },
-    );
+        { upsert: true },
+      );
+    }
   }
 
   // If the year is 2025, reroute to maintenance page.
@@ -692,6 +696,12 @@ app.use(vhost("ord.dilettant.no", ord));
 app.use(vhost("dagsord.no", ord));
 app.use(vhost("www.dagsord.no", ord));
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+if (_PRODUCTION) {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+} else {
+  snublejuice.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
