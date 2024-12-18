@@ -1,6 +1,5 @@
 {
   "name": "snublejuice",
-  "module": "server.js",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
