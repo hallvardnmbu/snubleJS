@@ -187,7 +187,9 @@ async function main() {
 
   // Fetch products with discount.
   const itemIds = await itemCollection
-    .find({ discount: { $lt: 0.0 } })
+    // TODO: Change back to 0.0 next month
+    // This month (2025-01) 6300 products was below 0.0
+    .find({ discount: { $lt: -2.0 } })
     .project({ index: 1, _id: 0 })
     .toArray();
 
@@ -197,7 +199,7 @@ async function main() {
 
   // Store the time of the last update.
   await visitCollection.updateOne(
-    { class: "updated" },
+    { class: "stores" },
     { $set: { date: new Date() } },
     { upsert: true },
   );

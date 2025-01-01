@@ -19,6 +19,7 @@ await client.connect();
 
 const database = client.db("snublejuice");
 const itemCollection = database.collection("products");
+const visitCollection = database.collection("visits");
 
 const proxies = process.env.PROXY_IPS.split(",").flatMap((ip) => [
   new HttpsProxyAgent(
@@ -302,6 +303,13 @@ async function syncUnupdatedProducts(threshold = null) {
 const session = axios.create();
 
 async function main() {
+  await visitCollection.updateOne(
+    { class: "prices" },
+    {
+      $set: { updated: false },
+    },
+  );
+
   await itemCollection.updateMany({}, { $set: { updated: false } });
   const alreadyUpdated = await itemCollection
     .find({ updated: true })
@@ -313,6 +321,13 @@ async function main() {
 
   // [!] ONLY RUN THIS AFTER ALL PRICES HAVE BEEN UPDATED [!]
   await syncUnupdatedProducts(null);
+
+  await visitCollection.updateOne(
+    { class: "prices" },
+    {
+      $set: { updated: true },
+    },
+  );
 }
 
 await main();
